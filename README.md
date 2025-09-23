@@ -1,2 +1,2 @@
 # KEYBOARD-SMASHERS-310
-Our final project, based upon movie-reviews
+Our COSC310 final project, based upon movie-reviews.
