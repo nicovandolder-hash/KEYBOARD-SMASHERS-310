@@ -1,26 +1,37 @@
 from datetime import datetime
-import bcrypt
+import re
 class User():
-    def __init__ (self, username, email, userid, password=None, reputation=3, creation_date=None):
+    def __init__ (self, username, email, userid, password=None, reputation=3, 
+                  creation_date=None, is_admin=False):
         self.username = username
         self.email = email
         self.userid = userid
-        self.password_hash = None
+        self.password = None
         self.reputation = reputation
         self.creation_date = creation_date if creation_date else datetime.now()
         self.reviews = []
         self.total_reviews = 0
+        self.is_admin = is_admin
         if password:
             self.set_password(password)
 
     def set_password(self, password):
-        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), 
-                                           bcrypt.gensalt()).decode('utf-8')
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long.")
+        if not any(char.isdigit() for char in password):
+            raise ValueError("Password must contain at least one digit.")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            raise ValueError("Password must contain at least one special character.")
+        if not re.search(r'[A-Z]', password):
+            raise ValueError("Password must contain at least one uppercase letter.")
+        if not re.search(r'[a-z]', password):
+            raise ValueError("Password must contain at least one lowercase letter.")
+        
+        self.password = password
+        return "Password set successfully"
     
     def check_password(self, password): 
-        if not self.password_hash:
-            return False
-        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+        return self.password == password
 
     def add_review(self, review):
         self.reviews.append(review)

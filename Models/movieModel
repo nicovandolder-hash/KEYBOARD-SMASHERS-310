@@ -1,0 +1,12 @@
+class Movie():
+    def __init__ (self, movie_id, title, genre, release_year, director, cast, description):
+        self.movie_id = movie_id
+        self.title = title
+        self.genre = genre
+        self.release_year = release_year
+        self.director = director
+        self.cast = cast
+        self.description = description
+        self.reviews = []
+        self.average_rating = 0.0
+        self.total_reviews = 0
