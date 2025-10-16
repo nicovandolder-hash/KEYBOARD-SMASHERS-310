@@ -1,0 +1,27 @@
+from datetime import datetime
+import bcrypt
+class User():
+    def __init__ (self, username, email, userid, password=None, reputation=3, creation_date=None):
+        self.username = username
+        self.email = email
+        self.userid = userid
+        self.password_hash = None
+        self.reputation = reputation
+        self.creation_date = creation_date if creation_date else datetime.now()
+        self.reviews = []
+        self.total_reviews = 0
+        if password:
+            self.set_password(password)
+
+    def set_password(self, password):
+        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), 
+                                           bcrypt.gensalt()).decode('utf-8')
+    
+    def check_password(self, password): 
+        if not self.password_hash:
+            return False
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+
+    def add_review(self, review):
+        self.reviews.append(review)
+        self.total_reviews += 1
