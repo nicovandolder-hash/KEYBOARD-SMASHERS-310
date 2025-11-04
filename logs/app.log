@@ -1,0 +1,6 @@
+2025-10-28 10:03:54 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:04:13 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:10:48 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:13:48 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:13:48 - keyboard_smashers.models.user_model - INFO - __init__:22 - User created: test_user (ID: 12345, Admin: False)
+2025-10-28 10:13:48 - keyboard_smashers.models.user_model - INFO - set_password:48 - Password set successfully for user: test_user
