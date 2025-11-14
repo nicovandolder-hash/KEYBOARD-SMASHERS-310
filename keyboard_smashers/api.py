@@ -1,68 +1,45 @@
 from fastapi import FastAPI, Query
 from pathlib import Path
-from keyboard_smashers.logging_config import setup_logging
-from keyboard_smashers.controllers.review_controller import router as review_router, review_controller_instance
-from keyboard_smashers.controllers.user_controller import router as user_router, user_controller_instance
-from .models.user_model import User
-import logging
-
-setup_logging()
-logger = logging.getLogger(__name__)
+from keyboard_smashers.controllers.review_controller import ReviewController
 
 app = FastAPI(title="IMDB Reviews API")
 
-app.include_router(review_router)
-app.include_router(user_router)
+controller = ReviewController()
 
 @app.on_event("startup")
 async def load_data():
     try:
-        logger.info("Starting up and loading dataset...")
         dataset_dir = Path("data")
-
-        user_csv = dataset_dir / "users.csv"
-        if user_csv.exists():
-            logger.info(f"Loading users from: {user_csv}")
-            user_controller_instance.load_users(str(user_csv))
-            logger.info(f"Loaded {len(user_controller_instance.users)} users.")
-        else:
-            logger.warning(f"Warning: User CSV not found at {user_csv}")
-
         csv_files = list(dataset_dir.glob("*.csv"))
-        review_csv_files = [f for f in csv_files if f.name != "users.csv"]
         
-        if not review_csv_files:
-            logger.error("No review CSV files found in data directory")
-            raise FileNotFoundError("No review CSV files found in data directory")
+        if not csv_files:
+            raise FileNotFoundError("No CSV files found in data directory")
         
-        csv_file = review_csv_files[0]
-        logger.info(f"Loading reviews from: {csv_file}")
-        review_controller_instance.load_dataset(str(csv_file))
-        logger.info(f"Loaded {len(review_controller_instance.reviews)} reviews for {len(review_controller_instance.movies)} movies.")
-        
-        logger.info("Application ready.")
-        
-    except Exception as e:
-        logger.error(f"ERROR loading dataset: {e}")
-        raise
+        csv_file = csv_files[0]
 
-@app.on_event("shutdown")
-async def save_data():
-    try:
-        logger.info("Shutting down and saving user data...")
-        dataset_dir = Path("data")
-        user_csv = dataset_dir / "users.csv"
-        user_controller_instance.save_users_to_csv(str(user_csv))
-        logger.info("User data saved successfully.")
+        controller.load_dataset(str(csv_file))
+        print("Application ready.")
+        
     except Exception as e:
-        logger.error(f"Error saving user data: {e}")
+        print(f"FATAL ERROR loading dataset: {e}")
+        raise
 
 @app.get("/")
 async def root():
     return {
         "message": "IMDB Reviews API",
         "status": "online",
-        "total_reviews": len(review_controller_instance.reviews),
-        "total_movies": len(review_controller_instance.movies),
-        "total_users": len(user_controller_instance.users),
+        "total_reviews": len(controller.reviews),
+        "total_movies": len(controller.movies),
+    }
+
+@app.get("/reviews")
+async def get_reviews(
+    limit: int = Query(default=10, ge=1, le=100, description="Number of reviews to return")
+):
+    reviews = controller.get_all_reviews(limit=limit)
+    
+    return {
+        "count": len(reviews),
+        "reviews": reviews
     }

@@ -1,8 +1,8 @@
 import pandas as pd
-from fastapi import APIRouter, Depends
 from typing import List
 from keyboard_smashers.models.review_model import Review
 from keyboard_smashers.models.movie_model import Movie
+
 
 class ReviewController:
     def __init__(self):
@@ -47,7 +47,6 @@ class ReviewController:
                 review_id=f"review_{idx}",
                 user_id=row.get('User', 'anonymous'),
                 movie_id=self.movies[movie_title].movie_id,
-                movie_title = movie_title,
                 rating=row.get("User's Rating out of 10", 0),
                 comment=row.get('Review', ''),
                 review_date=row.get('Date of Review', ''), 
@@ -69,24 +68,8 @@ class ReviewController:
             "review_id": review.review_id,
             "user_id": review.user_id,
             "movie_id": review.movie_id,
-            "movie_title": movie_title, 
+            "movie_title": movie_title, # <-- ADDED MOVIE TITLE HERE
             "rating": review.rating,
             "comment": review.comment,
             "helpful_votes": review.helpful_votes,
-
         }
-    
-review_controller_instance = ReviewController()
-
-router = APIRouter(
-    prefix="/reviews",
-    tags=["reviews"],
-)
-
-@router.get("/")
-def get_reviews_endpoint(limit: int = 10):
-    reviews = review_controller_instance.get_all_reviews(limit=limit)
-    return {
-        "count": len(reviews),
-        "reviews": reviews
-    }

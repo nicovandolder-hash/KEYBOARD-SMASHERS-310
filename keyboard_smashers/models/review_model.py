@@ -4,12 +4,11 @@ from keyboard_smashers.interfaces.observer_interface import Observer
 
 
 class Review(ReviewSubject):
-    def __init__ (self, review_id, user_id, movie_id, movie_title, rating, comment, review_date
+    def __init__ (self, review_id, user_id, movie_id, rating, comment, review_date
                   , creation_date=None, helpful_votes=0):
         self.review_id = review_id
         self.user_id = user_id
         self.movie_id = movie_id
-        self.movie_title = movie_title
         self.rating = rating
         self.comment = comment
         self.review_date = review_date
@@ -30,6 +29,7 @@ class Review(ReviewSubject):
         return "Helpful vote added."
     
     def remove_by_admin(self, admin_id, reason):
+        """Admin removes review and notifies the author"""
         if self.is_removed:
             return "Review already removed"
         
@@ -43,6 +43,7 @@ class Review(ReviewSubject):
         })
 
     def set_spotlight(self, status, featured_by=None):
+        """Set spotlight status and notify the author"""
         self.is_spotlighted = status
         
         if status:
