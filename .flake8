@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 127
+max-complexity = 10
+
+# Enforce indentation, whitespace, and comment rules
+select = E111,E114,E117,E231,E261,E262,N
+
+ignore = W503
