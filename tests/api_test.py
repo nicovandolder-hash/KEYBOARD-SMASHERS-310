@@ -1,11 +1,17 @@
+from keyboard_smashers.api import app
+from fastapi.testclient import TestClient
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from fastapi.testclient import TestClient
-from keyboard_smashers.api import app
+sys.path.insert(
+    0,
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '..')))
 
 
 client = TestClient(app)
+
 
 def test_root_endpoint():
     response = client.get("/")
@@ -15,6 +21,7 @@ def test_root_endpoint():
     assert data["status"] == "online"
     assert "total_reviews" in data
     assert "total_movies" in data
+
 
 def test_get_reviews_endpoint():
     response = client.get("/reviews?limit=5")
