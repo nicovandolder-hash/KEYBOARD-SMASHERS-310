@@ -20,7 +20,6 @@ app.include_router(review_router)
 app.include_router(user_router)
 
 
-
 @app.on_event("startup")
 async def load_data():
     try:

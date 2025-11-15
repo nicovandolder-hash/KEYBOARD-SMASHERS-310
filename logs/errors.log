@@ -8,3 +8,8 @@
 2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one special character.
 2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one uppercase letter.
 2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one lowercase letter.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must be at least 8 characters long
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one digit.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one special character.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one uppercase letter.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one lowercase letter.
