@@ -87,9 +87,8 @@ class User(Observer):
 
     def add_review(self, review):
         logger.debug(
-            f"User {
-                self.username} adding review ID: {
-                review.review_id}")
+            f"User {self.username} adding review ID: {review.review_id}"
+        )
         self.reviews.append(review)
         self.total_reviews += 1
 
