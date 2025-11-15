@@ -1,6 +1,13 @@
 class Movie:
-    def __init__(self, movie_id, title, genre, release_year, director,
-                 cast, description):
+    def __init__(
+            self,
+            movie_id,
+            title,
+            genre,
+            release_year,
+            director,
+            cast,
+            description):
         self.movie_id = movie_id
         self.title = title
         self.genre = genre

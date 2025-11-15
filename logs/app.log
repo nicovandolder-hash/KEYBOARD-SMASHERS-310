@@ -1,0 +1,175 @@
+2025-10-28 10:03:54 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:04:13 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:10:48 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:13:48 - root - INFO - setup_logging:64 - Logging system initialized
+2025-10-28 10:13:48 - keyboard_smashers.models.user_model - INFO - __init__:22 - User created: test_user (ID: 12345, Admin: False)
+2025-10-28 10:13:48 - keyboard_smashers.models.user_model - INFO - set_password:48 - Password set successfully for user: test_user
+2025-11-15 02:36:14 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-15 02:36:14 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 02:36:14 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 02:36:14 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 02:44:00 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 02:44:00 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 02:44:00 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 02:44:00 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 02:45:40 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 02:45:40 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 02:45:40 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 02:45:40 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 02:47:26 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 02:47:42 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 02:47:42 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 02:47:42 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 02:47:42 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - WARNING - set_password:36 - Password validation failed for test_user: Too short
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must be at least 8 characters long
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - WARNING - set_password:41 - Password validation failed for test_user: No digit
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one digit.
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - WARNING - set_password:46 - Password validation failed for test_user: No special character
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one special character.
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - WARNING - set_password:52 - Password validation failed for test_user: No uppercase letter
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one uppercase letter.
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - WARNING - set_password:58 - Password validation failed for test_user: No lowercase letter
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one lowercase letter.
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 02:47:42 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-15 02:59:45 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 02:59:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 02:59:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 02:59:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - WARNING - set_password:36 - Password validation failed for test_user: Too short
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must be at least 8 characters long
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - WARNING - set_password:41 - Password validation failed for test_user: No digit
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one digit.
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - WARNING - set_password:46 - Password validation failed for test_user: No special character
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one special character.
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - WARNING - set_password:52 - Password validation failed for test_user: No uppercase letter
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one uppercase letter.
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - WARNING - set_password:58 - Password validation failed for test_user: No lowercase letter
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - ERROR - set_password:69 - Error setting password for user test_user: Password must contain at least one lowercase letter.
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - set_password:65 - Password set successfully for user: test_user
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 02:59:45 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-15 03:07:30 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 03:07:30 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 03:07:30 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 03:07:30 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - WARNING - set_password:36 - Password validation failed for test_user: Too short
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must be at least 8 characters long
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - WARNING - set_password:42 - Password validation failed for test_user: No digit
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one digit.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - WARNING - set_password:48 - Password validation failed for test_user: No special character
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one special character.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - WARNING - set_password:55 - Password validation failed for test_user: No uppercase letter
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one uppercase letter.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - WARNING - set_password:62 - Password validation failed for test_user: No lowercase letter
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one lowercase letter.
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - add_review:96 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - add_review:96 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 03:07:30 - keyboard_smashers.models.user_model - INFO - add_review:96 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-15 03:11:28 - root - INFO - setup_logging:65 - Logging system initialized
+2025-11-15 03:11:28 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-15 03:11:28 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-15 03:11:28 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - WARNING - set_password:36 - Password validation failed for test_user: Too short
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must be at least 8 characters long
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - WARNING - set_password:42 - Password validation failed for test_user: No digit
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one digit.
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - WARNING - set_password:48 - Password validation failed for test_user: No special character
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one special character.
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - WARNING - set_password:55 - Password validation failed for test_user: No uppercase letter
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one uppercase letter.
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - WARNING - set_password:62 - Password validation failed for test_user: No lowercase letter
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - ERROR - set_password:74 - Error setting password for user test_user: Password must contain at least one lowercase letter.
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - set_password:70 - Password set successfully for user: test_user
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - add_review:95 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - add_review:95 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - add_review:95 - Review ID: r2 added by user: test_user. Total reviews: 2
