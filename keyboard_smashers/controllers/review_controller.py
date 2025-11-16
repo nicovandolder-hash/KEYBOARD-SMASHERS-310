@@ -33,10 +33,6 @@ class ReviewController:
                 release_year=0,
                 director="",
                 cast=[],
-                genre="",
-                release_year=0,
-                director="",
-                cast=[],
                 description=""
             )
             self.movies[movie_name] = movie
@@ -75,7 +71,6 @@ class ReviewController:
             "review_id": review.review_id,
             "user_id": review.user_id,
             "movie_id": review.movie_id,
-            "movie_title": movie_title,
             "movie_title": movie_title,
             "rating": review.rating,
             "comment": review.comment,
