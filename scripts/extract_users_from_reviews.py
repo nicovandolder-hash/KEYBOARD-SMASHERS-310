@@ -11,11 +11,11 @@ def extract_users_from_reviews(input_file: Path, output_file: Path):
 
     try:
 
-        BASE_DIR = Path(__file__).resolve().parent.parent
-        DATA_DIR = BASE_DIR / "data"
+        base_dir = Path(__file__).resolve().parent.parent
+        data_dir = base_dir / "data"
         transferring_users = set()
-        users_file = DATA_DIR / "users.csv"
-        review_file = DATA_DIR / "imdb_reviews.csv"
+        users_file = data_dir / "users.csv"
+        review_file = data_dir / "imdb_reviews.csv"
 
         if users_file.exists():
             logger.info(f"Reading existing users from {users_file}")
