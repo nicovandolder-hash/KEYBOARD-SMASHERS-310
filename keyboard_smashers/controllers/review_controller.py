@@ -48,7 +48,6 @@ class ReviewController:
                 user_id=row.get('User', 'anonymous'),
                 movie_id=self.movies[movie_title].movie_id,
                 movie_title=movie_title,
-                movie_title=movie_title,
                 rating=row.get("User's Rating out of 10", 0),
                 comment=row.get('Review', ''),
                 review_date=row.get('Date of Review', ''),
