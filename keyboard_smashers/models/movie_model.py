@@ -39,4 +39,3 @@ class Movie:
             reverse=True
         )
         return sorted_reviews[:limit]
-    

@@ -71,6 +71,9 @@ class UserController:
                 return
 
             with open(csv_path, 'r', encoding='utf-8') as f:
+                return
+
+            with open(csv_path, 'r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     creation_date = (
@@ -81,6 +84,13 @@ class UserController:
                     is_admin = row.get('is_admin', 'false').lower() == 'true'
 
                     user = User(
+                        userid=row['userid'],
+                        username=row['username'],
+                        email=row['email'],
+                        password=row.get('password'),
+                        reputation=int(row.get('reputation', 3)),
+                        creation_date=creation_date,
+                        is_admin=is_admin,
                         userid=row['userid'],
                         username=row['username'],
                         email=row['email'],
@@ -99,6 +109,8 @@ class UserController:
                             user_num = int(user.userid.split("_")[1])
                             self._user_counter = max(
                                 self._user_counter, user_num + 1)
+                            self._user_counter = max(
+                                self._user_counter, user_num + 1)
                         except (IndexError, ValueError):
                             pass
 
@@ -115,6 +127,15 @@ class UserController:
             csv_file.parent.mkdir(parents=True, exist_ok=True)
 
             with open(csv_file, 'w', encoding='utf-8', newline='') as f:
+                fieldnames = [
+                    'userid',
+                    'username',
+                    'email',
+                    'password',
+                    'reputation',
+                    'creation_date',
+                    'is_admin',
+                    'total_reviews']
                 fieldnames = [
                     'userid',
                     'username',
@@ -183,6 +204,13 @@ class UserController:
                 password=user_data.password,
                 reputation=user_data.reputation,
                 creation_date=datetime.now(),
+                is_admin=user_data.is_admin,
+                userid=user_id,
+                username=user_data.username,
+                email=user_data.email,
+                password=user_data.password,
+                reputation=user_data.reputation,
+                creation_date=datetime.now(),
                 is_admin=user_data.is_admin
             )
 
@@ -214,6 +242,9 @@ class UserController:
         user = self.user_map.get(user_id)
         if not user:
             logger.error(f"User with ID '{user_id}' not found for update")
+            raise HTTPException(status_code=404,
+                                detail=f"User with ID '{user_id}' not found")
+
             raise HTTPException(status_code=404,
                                 detail=f"User with ID '{user_id}' not found")
 
@@ -273,6 +304,8 @@ class UserController:
         user = self.user_map.get(user_id)
         if not user:
             logger.error(f"User with ID '{user_id}' not found for deletion")
+            raise HTTPException(status_code=404,
+                                detail=f"User with ID '{user_id}' not found")
             raise HTTPException(status_code=404,
                                 detail=f"User with ID '{user_id}' not found")
 
@@ -448,6 +481,8 @@ def get_user(
 
     user = user_controller_instance.get_user_by_id(user_id)
     if user is None:
+        raise HTTPException(status_code=404,
+                            detail=f"User with ID '{user_id}' not found")
         raise HTTPException(status_code=404,
                             detail=f"User with ID '{user_id}' not found")
     return user

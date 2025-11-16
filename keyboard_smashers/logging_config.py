@@ -32,6 +32,7 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
     file_handler = logging.handlers.RotatingFileHandler(
         all_logs_file,
         maxBytes=10 * 1024 * 1024,
+        maxBytes=10 * 1024 * 1024,
         backupCount=5
     )
     file_handler.setLevel(logging.DEBUG)
@@ -42,6 +43,7 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
     error_handler = logging.handlers.RotatingFileHandler(
         error_file,
         maxBytes=10 * 1024 * 1024,
+        maxBytes=10 * 1024 * 1024,
         backupCount=5
     )
     error_handler.setLevel(logging.ERROR)
@@ -51,6 +53,7 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
     review_file = os.path.join(log_dir, 'review_activity.log')
     review_handler = logging.handlers.RotatingFileHandler(
         review_file,
+        maxBytes=10 * 1024 * 1024,
         maxBytes=10 * 1024 * 1024,
         backupCount=5
     )
@@ -64,3 +67,4 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
     logging.info("Logging system initialized")
 
     return root_logger
+

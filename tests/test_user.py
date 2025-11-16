@@ -11,11 +11,20 @@ sys.path.insert(
             os.path.dirname(__file__),
             '..')))
 
+sys.path.insert(
+    0,
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '..')))
+
 
 @pytest.fixture
 def standard_user():
     """Create a standard user for testing"""
     return User(
+        username="test_user",
+        email="test_user@gmail.com",
         username="test_user",
         email="test_user@gmail.com",
         userid="u12345",
@@ -26,7 +35,6 @@ def standard_user():
 
 
 def standard_review():
-    """Create a standard review for testing"""
     return Review(
         review_id="r1",
         user_id="u1",
@@ -129,6 +137,8 @@ def test_add_multiple_review(standard_user):
 
     review1 = standard_review()
     standard_user.add_review(review1)
+    review1 = standard_review()
+    standard_user.add_review(review1)
 
     review2 = Review(
         review_id="r2",
@@ -143,7 +153,10 @@ def test_add_multiple_review(standard_user):
 
     standard_user.add_review(review2)
 
+    standard_user.add_review(review2)
+
     assert len(standard_user.reviews) == 2
     assert standard_user.total_reviews == 2
+    assert standard_user.reviews[0] == review1
     assert standard_user.reviews[0] == review1
     assert standard_user.reviews[1] == review2

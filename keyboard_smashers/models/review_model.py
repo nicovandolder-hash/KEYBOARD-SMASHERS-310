@@ -51,6 +51,7 @@ class Review(ReviewSubject):
 
         self.notify('ADMIN_REMOVAL', {
             'message': 'Your review was removed by an administrator',
+            'message': 'Your review was removed by an administrator',
             'admin_id': admin_id,
             'reason': reason,
             'removed_at': datetime.now()
@@ -68,7 +69,9 @@ class Review(ReviewSubject):
         else:
             self.notify('SPOTLIGHT_REMOVED', {
                 'message': 'Your review spotlight status was removed',
+                'message': 'Your review spotlight status was removed',
                 'removed_by': featured_by
             })
 
         return f"Review spotlight status set to {status}"
+

@@ -90,27 +90,25 @@ def extract_users_from_reviews(input_file: Path, output_file: Path):
             logger.info(f"Adding {len(new_users)} new users to {users_file}")
 
             existing_rows = []
-            if users_file.exists():
-                with open(users_file, 'r', encoding='utf-8') as f:
-                    reader = csv.DictReader(f)
-                    existing_rows = list(reader)
+        if users_file.exists():
+            with open(users_file, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                existing_rows = list(reader)
 
-            with open(users_file, 'w', encoding='utf-8', newline='') as f:
-                fieldnames = ['userid', 'username', 'email', 'password',
-                              'reputation',
-                              'creation_date', 'is_admin', 'total_reviews']
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
+        with open(users_file, 'w', encoding='utf-8', newline='') as f:
+            fieldnames = ['userid', 'username', 'email', 'password',
+                          'reputation',
+                          'creation_date', 'is_admin', 'total_reviews']
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
 
-                for row in existing_rows:
-                    writer.writerow(row)
+            for user in existing_rows:
+                writer.writerow(user)
 
-                for user in new_users:
-                    writer.writerow(user)
+            for user in new_users:
+                writer.writerow(user)
 
             logger.info(f"Successfully added {len(new_users)} new users!")
-        else:
-            logger.info("All reviewers are already in users file.")
 
         return len(new_users)
 
@@ -124,6 +122,6 @@ if __name__ == "__main__":
     users_csv = "data/users.csv"
 
     new_user_count = extract_users_from_reviews(reviews_csv, users_csv)
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Extraction complete! Added {new_user_count} new users.")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
