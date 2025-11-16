@@ -220,7 +220,7 @@ class UserController:
             logger.error(f"User with ID '{user_id}' not found for update")
             raise HTTPException(status_code=404,
                                 detail=f"User with ID '{user_id}' not found")
-        
+
         logger.debug("Updating user fields")
         try:
             if user_data.username is not None:
@@ -279,7 +279,7 @@ class UserController:
             logger.error(f"User with ID '{user_id}' not found for deletion")
             raise HTTPException(status_code=404,
                                 detail=f"User with ID '{user_id}' not found")
-        
+
         email_lower = user.email.lower()
         if email_lower in self.email_map:
             del self.email_map[email_lower]
