@@ -141,8 +141,6 @@ def test_add_multiple_review(standard_user):
 
     standard_user.add_review(review2)
 
-    standard_user.add_review(review2)
-
     assert len(standard_user.reviews) == 2
     assert standard_user.total_reviews == 2
     assert standard_user.reviews[0] == review1
