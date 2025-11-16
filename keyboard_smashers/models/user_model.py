@@ -21,9 +21,8 @@ class User(Observer):
         self.notifications = []
 
         logger.info(
-            f"User created: {
-                self.username} (ID: {userid}, Admin: {
-                self.is_admin})")
+            f"User created:"
+            f"{self.username} (ID: {userid}, Admin: {self.is_admin})")
 
         if password:
             self.set_password(password)

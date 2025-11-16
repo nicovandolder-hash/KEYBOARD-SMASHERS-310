@@ -74,4 +74,3 @@ class Review(ReviewSubject):
             })
 
         return f"Review spotlight status set to {status}"
-

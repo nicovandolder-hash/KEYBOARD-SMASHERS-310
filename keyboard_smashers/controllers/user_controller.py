@@ -180,9 +180,8 @@ class UserController:
             return None
 
         logger.info(
-            f"User authenticated successfully: {
-                user.username} ({
-                user.userid})")
+            f"User authenticated successfully:"
+            f"{user.username} ({user.userid})")
         return user
 
     def create_user(self, user_data: UserCreateSchema) -> UserAPISchema:

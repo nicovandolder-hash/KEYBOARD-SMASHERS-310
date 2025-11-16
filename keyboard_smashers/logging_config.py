@@ -67,4 +67,3 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
     logging.info("Logging system initialized")
 
     return root_logger
-
