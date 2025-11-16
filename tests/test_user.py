@@ -21,10 +21,7 @@ sys.path.insert(
 
 @pytest.fixture
 def standard_user():
-    """Create a standard user for testing"""
     return User(
-        username="test_user",
-        email="test_user@gmail.com",
         username="test_user",
         email="test_user@gmail.com",
         userid="u12345",

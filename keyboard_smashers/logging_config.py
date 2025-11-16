@@ -32,7 +32,6 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
     file_handler = logging.handlers.RotatingFileHandler(
         all_logs_file,
         maxBytes=10 * 1024 * 1024,
-        maxBytes=10 * 1024 * 1024,
         backupCount=5
     )
     file_handler.setLevel(logging.DEBUG)
