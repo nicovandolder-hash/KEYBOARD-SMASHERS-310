@@ -91,13 +91,6 @@ class UserController:
                         reputation=int(row.get('reputation', 3)),
                         creation_date=creation_date,
                         is_admin=is_admin,
-                        userid=row['userid'],
-                        username=row['username'],
-                        email=row['email'],
-                        password=row.get('password'),
-                        reputation=int(row.get('reputation', 3)),
-                        creation_date=creation_date,
-                        is_admin=is_admin
                     )
                     user.total_reviews = int(row.get('total_reviews', 0))
 
@@ -127,15 +120,6 @@ class UserController:
             csv_file.parent.mkdir(parents=True, exist_ok=True)
 
             with open(csv_file, 'w', encoding='utf-8', newline='') as f:
-                fieldnames = [
-                    'userid',
-                    'username',
-                    'email',
-                    'password',
-                    'reputation',
-                    'creation_date',
-                    'is_admin',
-                    'total_reviews']
                 fieldnames = [
                     'userid',
                     'username',
@@ -204,13 +188,6 @@ class UserController:
                 reputation=user_data.reputation,
                 creation_date=datetime.now(),
                 is_admin=user_data.is_admin,
-                userid=user_id,
-                username=user_data.username,
-                email=user_data.email,
-                password=user_data.password,
-                reputation=user_data.reputation,
-                creation_date=datetime.now(),
-                is_admin=user_data.is_admin
             )
 
             self.users.append(new_user)
@@ -243,10 +220,7 @@ class UserController:
             logger.error(f"User with ID '{user_id}' not found for update")
             raise HTTPException(status_code=404,
                                 detail=f"User with ID '{user_id}' not found")
-
-            raise HTTPException(status_code=404,
-                                detail=f"User with ID '{user_id}' not found")
-
+        
         logger.debug("Updating user fields")
         try:
             if user_data.username is not None:
@@ -305,9 +279,7 @@ class UserController:
             logger.error(f"User with ID '{user_id}' not found for deletion")
             raise HTTPException(status_code=404,
                                 detail=f"User with ID '{user_id}' not found")
-            raise HTTPException(status_code=404,
-                                detail=f"User with ID '{user_id}' not found")
-
+        
         email_lower = user.email.lower()
         if email_lower in self.email_map:
             del self.email_map[email_lower]
@@ -480,8 +452,6 @@ def get_user(
 
     user = user_controller_instance.get_user_by_id(user_id)
     if user is None:
-        raise HTTPException(status_code=404,
-                            detail=f"User with ID '{user_id}' not found")
         raise HTTPException(status_code=404,
                             detail=f"User with ID '{user_id}' not found")
     return user
