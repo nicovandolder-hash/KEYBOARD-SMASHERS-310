@@ -51,7 +51,6 @@ class ReviewController:
                 rating=row.get("User's Rating out of 10", 0),
                 comment=row.get('Review', ''),
                 review_date=row.get('Date of Review', ''),
-                review_date=row.get('Date of Review', ''),
                 helpful_votes=row.get('Usefulness Vote', 0)
             )
             self.reviews.append(review)
