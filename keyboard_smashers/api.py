@@ -2,12 +2,10 @@ from fastapi import FastAPI
 from pathlib import Path
 from keyboard_smashers.logging_config import setup_logging
 from keyboard_smashers.controllers.review_controller import (
-    router as review_router,
-    review_controller_instance
+     router as review_router, review_controller_instance
 )
 from keyboard_smashers.controllers.user_controller import (
-    router as user_router,
-    user_controller_instance
+     router as user_router, user_controller_instance
 )
 import logging
 
@@ -47,9 +45,8 @@ async def load_data():
         review_controller_instance.load_dataset(str(csv_file))
         logger.info(
             f"Loaded {len(review_controller_instance.reviews)} "
-            f"reviews for {len(review_controller_instance.movies)} "
-            f"movies."
-        )
+            f"reviews for {len(review_controller_instance.movies)} movies."
+            )
 
         logger.info("Application ready.")
 

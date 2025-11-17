@@ -21,9 +21,8 @@ class User(Observer):
         self.notifications = []
 
         logger.info(
-            f"User created: {self.username} (ID: {userid}, "
-            f"Admin: {self.is_admin})"
-        )
+            f"User created:"
+            f"{self.username} (ID: {userid}, Admin: {self.is_admin})")
 
         if password:
             self.set_password(password)
@@ -34,35 +33,30 @@ class User(Observer):
         try:
             if len(password) < 8:
                 logger.warning(
-                    f"Password validation failed for {self.username}: "
-                    "Too short"
-                )
+                    f"Password validation failed for"
+                    f"{self.username}: Too short")
                 raise ValueError("Password must be at least 8 characters long")
             if not any(char.isdigit() for char in password):
                 logger.warning(
-                    f"Password validation failed for {self.username}: "
-                    "No digit"
-                )
+                    f"Password validation failed for"
+                    f"{self.username}: No digit")
                 raise ValueError("Password must contain at least one digit.")
             if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
                 logger.warning(
-                    f"Password validation failed for {self.username}: "
-                    "No special character"
-                )
+                    f"Password validation failed for"
+                    f"{self.username}: No special character")
                 raise ValueError(
                     "Password must contain at least one special character.")
             if not re.search(r'[A-Z]', password):
                 logger.warning(
-                    f"Password validation failed for {self.username}: "
-                    "No uppercase letter"
-                )
+                    f"Password validation failed for"
+                    f"{self.username}: No uppercase letter")
                 raise ValueError(
                     "Password must contain at least one uppercase letter.")
             if not re.search(r'[a-z]', password):
                 logger.warning(
-                    f"Password validation failed for {self.username}: "
-                    "No lowercase letter"
-                )
+                    f"Password validation failed for"
+                    f"{self.username}: No lowercase letter")
                 raise ValueError(
                     "Password must contain at least one lowercase letter.")
 
@@ -72,8 +66,8 @@ class User(Observer):
 
         except ValueError as e:
             logger.error(
-                f"Error setting password for user {self.username}: {e}"
-            )
+                f"Error setting password for user"
+                f"{self.username}: {e}")
             raise
 
     def check_password(self, password):
@@ -87,8 +81,8 @@ class User(Observer):
 
     def add_review(self, review):
         logger.debug(
-            f"User {self.username} adding review ID: {review.review_id}"
-        )
+            f"User"
+            f"{self.username} adding review ID: {review.review_id}")
         self.reviews.append(review)
         self.total_reviews += 1
 
@@ -104,13 +98,10 @@ class User(Observer):
         }
         self.notifications.append(notification)
 
-        logger.info(
-            f"User {self.username} notified of event: {event_type} "
-        )
+        logger.info(f"User {self.username} notified of event: {event_type} ")
         print(
-            f"[NOTIFICATION] {self.username}: {event_type} - "
-            f"{event_data.get('message', '')}"
-        )
+            f"[NOTIFICATION] {self.username}: {event_type}"
+            f" - {event_data.get('message', '')}")
 
     def get_notifications(self):
         logger.debug(f"Fetching notifications for user: {self.username}")

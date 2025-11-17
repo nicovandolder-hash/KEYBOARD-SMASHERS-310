@@ -14,7 +14,6 @@ sys.path.insert(
 
 @pytest.fixture
 def standard_user():
-    """Create a standard user for testing"""
     return User(
         username="test_user",
         email="test_user@gmail.com",
@@ -26,7 +25,6 @@ def standard_user():
 
 
 def standard_review():
-    """Create a standard review for testing"""
     return Review(
         review_id="r1",
         user_id="u1",
@@ -52,10 +50,8 @@ def test_create_user(standard_user):
 
 
 def test_set_password_length_short(standard_user):
-    with pytest.raises(
-        ValueError,
-        match="Password must be at least 8 characters long"
-    ):
+    with pytest.raises(ValueError, match=(
+            "Password must be at least 8 characters long")):
         standard_user.set_password("Short1!")
 
 
@@ -70,10 +66,8 @@ def test_set_password_length_exact(standard_user):
 
 
 def test_set_password_no_digit(standard_user):
-    with pytest.raises(
-        ValueError,
-        match="Password must contain at least one digit."
-    ):
+    with pytest.raises(ValueError, match=(
+            "Password must contain at least one digit.")):
         standard_user.set_password("NoDigitPass!")
 
 
@@ -83,10 +77,8 @@ def test_set_password_with_digit(standard_user):
 
 
 def test_set_password_no_special_char(standard_user):
-    with pytest.raises(
-        ValueError,
-        match="Password must contain at least one special character."
-    ):
+    with pytest.raises(ValueError, match=(
+            "Password must contain at least one special character.")):
         standard_user.set_password("NoSpecialChar1")
 
 
@@ -96,10 +88,8 @@ def test_set_password_with_special_char(standard_user):
 
 
 def test_set_password_no_uppercase(standard_user):
-    with pytest.raises(
-        ValueError,
-        match="Password must contain at least one uppercase letter."
-    ):
+    with pytest.raises(ValueError, match=(
+          "Password must contain at least one uppercase letter.")):
         standard_user.set_password("nouppercase1!")
 
 
@@ -109,10 +99,8 @@ def test_set_password_with_uppercase(standard_user):
 
 
 def test_set_password_no_lowercase(standard_user):
-    with pytest.raises(
-        ValueError,
-        match="Password must contain at least one lowercase letter."
-    ):
+    with pytest.raises(ValueError, match=(
+            "Password must contain at least one lowercase letter.")):
         standard_user.set_password("NOLOWERCASE1!")
 
 

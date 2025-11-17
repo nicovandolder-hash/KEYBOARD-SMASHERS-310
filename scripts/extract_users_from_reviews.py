@@ -11,7 +11,6 @@ def extract_users_from_reviews(input_file: Path, output_file: Path):
 
     try:
 
-        # goes up from /scripts to project root
         base_dir = Path(__file__).resolve().parent.parent
         data_dir = base_dir / "data"
         transferring_users = set()
@@ -37,7 +36,8 @@ def extract_users_from_reviews(input_file: Path, output_file: Path):
                 if username and username not in transferring_users:
                     if username not in unique_users:
                         unique_users[username] = {
-                            'first_review_date': row.get('Date of Review', ''),
+                            'first_review_date': row.get('Date of Review',
+                                                         ''),
                             'rating': row.get("User's Rating out of 10", 0)
                         }
                         user_review_count[username] = 1
@@ -64,9 +64,9 @@ def extract_users_from_reviews(input_file: Path, output_file: Path):
             user_id = f"user_{user_counter:03d}"
 
             try:
-                review_date = datetime.strptime(
-                    details['first_review_date'], '%d %B %Y')
-            except BaseException:
+                review_date = datetime.strptime(details['first_review_date'],
+                                                '%d %B %Y')
+            except Exception:
                 review_date = datetime.now()
 
             total_reviews = user_review_count[username]
@@ -90,33 +90,25 @@ def extract_users_from_reviews(input_file: Path, output_file: Path):
             logger.info(f"Adding {len(new_users)} new users to {users_file}")
 
             existing_rows = []
-            if users_file.exists():
-                with open(users_file, 'r', encoding='utf-8') as f:
-                    reader = csv.DictReader(f)
-                    existing_rows = list(reader)
+        if users_file.exists():
+            with open(users_file, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                existing_rows = list(reader)
 
-            with open(users_file, 'w', encoding='utf-8', newline='') as f:
-                fieldnames = [
-                    'userid',
-                    'username',
-                    'email',
-                    'password',
-                    'reputation',
-                    'creation_date',
-                    'is_admin',
-                    'total_reviews']
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
+        with open(users_file, 'w', encoding='utf-8', newline='') as f:
+            fieldnames = ['userid', 'username', 'email', 'password',
+                          'reputation',
+                          'creation_date', 'is_admin', 'total_reviews']
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
 
-                for row in existing_rows:
-                    writer.writerow(row)
+            for user in existing_rows:
+                writer.writerow(user)
 
-                for user in new_users:
-                    writer.writerow(user)
+            for user in new_users:
+                writer.writerow(user)
 
             logger.info(f"Successfully added {len(new_users)} new users!")
-        else:
-            logger.info("All reviewers are already in users file.")
 
         return len(new_users)
 

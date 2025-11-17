@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-# Observer Interface
-
 
 class Observer(ABC):
     @abstractmethod

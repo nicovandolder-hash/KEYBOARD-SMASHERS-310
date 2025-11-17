@@ -19,7 +19,6 @@ class ReviewController:
 
         self._initialize_movies()
         self._initialize_reviews()
-
         return True
 
     def _initialize_movies(self):

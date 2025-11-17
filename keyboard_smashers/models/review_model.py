@@ -37,8 +37,7 @@ class Review(ReviewSubject):
             event_data={
                 "user_id": user_id,
                 "message": (
-                    f"Your review received a helpful vote from user "
-                    f"{user_id}."
+                   "Your review received a helpful vote from user {user_id}."
                 )
             }
         )
@@ -52,6 +51,7 @@ class Review(ReviewSubject):
 
         self.notify('ADMIN_REMOVAL', {
             'message': 'Your review was removed by an administrator',
+            'message': 'Your review was removed by an administrator',
             'admin_id': admin_id,
             'reason': reason,
             'removed_at': datetime.now()
@@ -62,14 +62,13 @@ class Review(ReviewSubject):
 
         if status:
             self.notify('SPOTLIGHTED', {
-                'message': (
-                    'Congratulations! Your review has been spotlighted!'
-                ),
+                'message': 'Congratulations! Your review is spotlighted!',
                 'featured_by': featured_by,
                 'spotlighted_at': datetime.now()
             })
         else:
             self.notify('SPOTLIGHT_REMOVED', {
+                'message': 'Your review spotlight status was removed',
                 'message': 'Your review spotlight status was removed',
                 'removed_by': featured_by
             })

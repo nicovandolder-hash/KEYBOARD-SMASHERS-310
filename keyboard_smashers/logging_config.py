@@ -9,10 +9,9 @@ def setup_logging(log_level=logging.INFO, log_dir="logs"):
         os.makedirs(log_dir)
 
     detailed_formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - '
-        '%(funcName)s:%(lineno)d - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
+        '%(asctime)s - %(name)s - %(levelname)s'
+        ' - %(funcName)s:%(lineno)d - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
 
     simple_formatter = logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s',
