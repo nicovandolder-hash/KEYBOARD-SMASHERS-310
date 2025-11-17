@@ -1,9 +1,10 @@
+from ReviewDAO import ReviewDAO
 import unittest
 from unittest.mock import patch, MagicMock
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../keyboard_smashers/DAO')))
-from ReviewDAO import ReviewDAO
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                              '../../keyboard_smashers/DAO')))
 
 
 class TestReviewDAO(unittest.TestCase):
@@ -17,7 +18,8 @@ class TestReviewDAO(unittest.TestCase):
         self.dao = ReviewDAO(csv_path='tests/unit/test_reviews.csv')
         # Start with a clean slate for each test
         self.dao.reviews = {}
-    
+
+
     def test_create_review(self):
         review_data = {
             'movie_id': 1,
@@ -33,6 +35,7 @@ class TestReviewDAO(unittest.TestCase):
         self.assertEqual(new_review.review_text, review_data['review_text'])
         self.assertEqual(new_review.review_date, review_data['review_date'])
 
+
     def test_update_review(self):
         review_data = {
             'movie_id': 1,
@@ -42,8 +45,10 @@ class TestReviewDAO(unittest.TestCase):
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        updated_review = self.dao.update_review(new_review.review_id, {'rating': 4})
+        updated_review = self.dao.update_review(new_review.review_id, 
+                                                {'rating': 4})
         self.assertEqual(updated_review.rating, 4)
+
 
     def test_delete_review(self):
         review_data = {
@@ -57,6 +62,7 @@ class TestReviewDAO(unittest.TestCase):
         success = self.dao.delete_review(new_review.review_id)
         self.assertTrue(success)
 
+
     def test_get_review(self):
         review_data = {
             'movie_id': 1,
@@ -69,3 +75,4 @@ class TestReviewDAO(unittest.TestCase):
         fetched_review = self.dao.get_review(new_review.review_id)
         self.assertIsNotNone(fetched_review)
         self.assertEqual(fetched_review.review_id, new_review.review_id)
+        
