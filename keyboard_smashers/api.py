@@ -2,7 +2,6 @@ from fastapi import FastAPI, Query
 from fastapi import HTTPException
 from pathlib import Path
 from keyboard_smashers.controllers.review_controller import ReviewController
-
 from pydantic import BaseModel
 from typing import Optional
 
@@ -13,7 +12,6 @@ app = FastAPI(title="IMDB Reviews API")
 controller = ReviewController()
 
 
-#added
 class ReviewCreate(BaseModel):
     user_id: Optional[str] = "#anonymous"
     movie_id: str
@@ -28,7 +26,6 @@ class ReviewUpdate(BaseModel):
     comment: Optional[str] = None
     review_date: Optional[str] = None
     helpful_votes: Optional[int] = None
-#
 
 
 @app.on_event("startup")
@@ -63,10 +60,9 @@ async def root():
 @app.get("/reviews")
 async def get_reviews(
     limit: int = Query(default=10, ge=1, le=100,
-                     description="Number of reviews to return")
+                       description="Number of reviews to return")
 ):
     reviews = controller.get_all_reviews(limit=limit)
-    
     return {
         "count": len(reviews),
         "reviews": reviews

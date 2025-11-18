@@ -1,11 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
-from typing import List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+
 import logging
 import pandas as pd
-from keyboard_smashers.dao.movie_dao import MovieDAO
-from keyboard_smashers.auth import get_current_admin_user
-
+from fastapi import APIRouter, HTTPException
+from typing import List, Optional
+from pydantic import BaseModel, Field
+from keyboard_smashers.models.review_model import Review
+from keyboard_smashers.models.movie_model import Movie
 logger = logging.getLogger(__name__)
 
 
@@ -25,134 +25,84 @@ class ReviewCreateSchema(BaseModel):
     user_id: str = Field(..., description="User who wrote the review")
     rating: int = Field(..., description="Rating given by the user")
     review_text: Optional[str] = Field("", description="Text of the review")
-    review_date: Optional[str] = Field(None, description="Date of the review (ISO 8601)")
+    review_date: Optional[str] = Field(None,
+                                       description="Date of the review (ISO 8601)")
 
 
 class ReviewUpdateSchema(BaseModel):
     """Schema for updating a review (all fields optional)"""
     rating: Optional[int] = Field(None, description="Rating given by the user")
     review_text: Optional[str] = Field(None, description="Text of the review")
-    review_date: Optional[str] = Field(None, description="Date of the review (ISO 8601)")
+    review_date: Optional[str] = Field(None,
+                                       description="Date of the review (ISO 8601)")
+
 
 
 class ReviewController:
-    def __init__(self):
-        self.df = None
-        self.reviews: List[Review] = []
-        self.movies = {}
-        self.movies_by_id = {}
+    def __init__(self, csv_path: str = "data/reviews.csv"):
+        from keyboard_smashers.dao.review_dao import review_dao
+        self.review_dao = review_dao(csv_path=csv_path)
+        logger.info(f"ReviewController initialized with "
+                    f"{len(self.review_dao.reviews)} reviews")
 
-    def load_dataset(self, file_path: str):
-        print(f"Loading dataset from: {file_path}")
-        self.df = pd.read_csv(file_path)
-        print(f"Dataset loaded: {len(self.df)} total rows.")
+    def _dict_to_schema(self, review_dict: dict) -> ReviewSchema:
+        # Replace NaN with default values and ensure types
+        cleaned = {}
+        for key, value in review_dict.items():
+            if pd.isna(value):
+                if key == 'rating':
+                    cleaned[key] = 0
+                else:
+                    cleaned[key] = ""
+            else:
+                cleaned[key] = value
+        return ReviewSchema(**cleaned)
 
-        self._initialize_movies()
-        self._initialize_reviews()
-        return True
+    def get_all_reviews(self, limit: int = 10) -> List[ReviewSchema]:
+        logger.info(f"Fetching up to {limit} reviews")
+        reviews = list(self.review_dao.reviews.values())[:limit]
+        return [self._dict_to_schema(r) for r in reviews]
 
-    def _initialize_movies(self):
-        print("Initializing movie models...")
-        unique_movies = self.df['movie'].unique()
-        for idx, movie_name in enumerate(unique_movies):
-            movie_id = f"movie_{idx}"
-            movie = Movie(
-                movie_id=movie_id,
-                title=movie_name,
-                genre="",
-                release_year=0,
-                director="",
-                cast=[],
-                description=""
-            )
-            self.movies[movie_name] = movie
-            self.movies_by_id[movie_id] = movie
-        print(f"Initialized {len(self.movies)} unique movies.")
+    def get_review_by_id(self, review_id: str) -> ReviewSchema:
+        logger.info(f"Fetching review: {review_id}")
+        review = self.review_dao.get_review(str(review_id))
+        if not review:
+            logger.error(f"Review not found: {review_id}")
+            raise HTTPException(status_code=404,
+                                detail=f"Review with ID '{review_id}' not found")
+        return self._dict_to_schema(review)
 
-    def _initialize_reviews(self):
-        print("Initializing review models...")
-        for idx, row in self.df.iterrows():
-            movie_title = row['movie']
-            review = Review(
-                review_id=f"review_{idx}",
-                user_id=row.get('User', 'anonymous'),
-                movie_id=self.movies[movie_title].movie_id,
-                movie_title=movie_title,
-                rating=row.get("User's Rating out of 10", 0),
-                comment=row.get('Review', ''),
-                review_date=row.get('Date of Review', ''),
-                helpful_votes=row.get('Usefulness Vote', 0)
-            )
-            self.reviews.append(review)
-            self.movies[movie_title].reviews.append(review)
+    def create_review(self, review_data: ReviewCreateSchema) -> ReviewSchema:
+        logger.info(f"Creating review for movie: {review_data.movie_id}")
+        review_dict = review_data.model_dump()
+        created_review = self.review_dao.create_review(review_dict)
+        logger.info(f"Review created successfully: {created_review['review_id']}")
+        return self._dict_to_schema(created_review)
 
-        print(f"Initialized {len(self.reviews)} total reviews.")
+    def update_review(self, review_id: str,
+                      review_data: ReviewUpdateSchema) -> ReviewSchema:
+        logger.info(f"Updating review: {review_id}")
+        update_dict = review_data.model_dump(exclude_none=True)
+        if not update_dict:
+            raise HTTPException(status_code=400, detail="No fields to update")
+        updated_review = self.review_dao.update_review(str(review_id),
+                                                       update_dict)
+        if not updated_review:
+            logger.error(f"Review not found for update: {review_id}")
+            raise HTTPException(status_code=404,
+                                detail=f"Review with ID '{review_id}' not found")
+        logger.info(f"Review updated successfully: {review_id}")
+        return self._dict_to_schema(updated_review)
 
-    def get_all_reviews(self, limit: int = 10) -> List[dict]:
-        return [self._review_to_dict(r) for r in self.reviews[:limit]]
-
-    def get_review_by_id(self, review_id: str):
-        # Always treat review_id as string
-        review_id = str(review_id)
-        for review in self.reviews:
-            if str(review.review_id) == review_id:
-                return self._review_to_dict(review)
-        return None
-
-    def create_review(self, review_data: dict):
-        # Ensure review_id is always a string
-        new_id = f"review_{len(self.reviews)}"
-        movie_id = str(review_data.get("movie_id"))
-        review = Review(
-            review_id=new_id,
-            user_id=review_data.get("user_id", "anonymous"),
-            movie_id=movie_id,
-            movie_title=review_data.get("movie_title", ""),
-            rating=review_data.get("rating", 0),
-            comment=review_data.get("comment", ""),
-            review_date=review_data.get("review_date", ""),
-            helpful_votes=review_data.get("helpful_votes", 0)
-        )
-        self.reviews.append(review)
-        self.movies_by_id[movie_id].reviews.append(review)
-        return self._review_to_dict(review)
-
-    def update_review(self, review_id: str, update_data: dict):
-        review_id = str(review_id)
-        for review in self.reviews:
-            if str(review.review_id) == review_id:
-                for key, value in update_data.items():
-                    if hasattr(review, key):
-                        setattr(review, key, value)
-                return self._review_to_dict(review)
-        return None
-
-    def delete_review(self, review_id: str):
-        review_id = str(review_id)
-        for i, review in enumerate(self.reviews):
-            if str(review.review_id) == review_id:
-                # Remove from movie's review list
-                movie = self.movies_by_id.get(review.movie_id)
-                if movie and review in movie.reviews:
-                    movie.reviews.remove(review)
-                del self.reviews[i]
-                return True
-        return False
-
-    def _review_to_dict(self, review: Review) -> dict:
-        movie = self.movies_by_id.get(review.movie_id)
-        movie_title = movie.title if movie else "Unknown Movie"
-
-        return {
-            "review_id": review.review_id,
-            "user_id": review.user_id,
-            "movie_id": review.movie_id,
-            "movie_title": movie_title,
-            "rating": review.rating,
-            "comment": review.comment,
-            "helpful_votes": review.helpful_votes,
-
-        }
+    def delete_review(self, review_id: str) -> dict:
+        logger.info(f"Deleting review: {review_id}")
+        success = self.review_dao.delete_review(str(review_id))
+        if not success:
+            logger.error(f"Review not found for deletion: {review_id}")
+            raise HTTPException(status_code=404,
+                                detail=f"Review with ID '{review_id}' not found")
+        logger.info(f"Review deleted successfully: {review_id}")
+        return {"message": f"Review '{review_id}' deleted successfully"}
 
 
 review_controller_instance = ReviewController()

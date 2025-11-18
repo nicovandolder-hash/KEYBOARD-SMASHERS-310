@@ -13,7 +13,7 @@ class TestReviewDAO(unittest.TestCase):
         self.addCleanup(patcher_read_csv.stop)
         self.addCleanup(patcher_to_csv.stop)
         self.dao = review_dao(csv_path='tests/unit/test_reviews.csv')
-        #Start with a clean slate for each test
+        # Start with a clean slate for each test
         self.dao.reviews = {}
 
     def test_create_review(self):
@@ -40,7 +40,7 @@ class TestReviewDAO(unittest.TestCase):
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        updated_review = self.dao.update_review(new_review.review_id, 
+        updated_review = self.dao.update_review(new_review.review_id,
                                                 {'rating': 4})
         self.assertEqual(updated_review.rating, 4)
 
@@ -68,7 +68,7 @@ class TestReviewDAO(unittest.TestCase):
         fetched_review = self.dao.get_review(new_review.review_id)
         self.assertIsNotNone(fetched_review)
         self.assertEqual(fetched_review.review_id, new_review.review_id)
-    
+
     def test_create_load_delete_review(self):
         review_data = {
             'movie_id': 5,

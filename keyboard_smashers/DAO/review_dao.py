@@ -4,12 +4,9 @@ import pandas as pd
 from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime
-from pathlib import Path
-from typing import List, Dict, Optional
-from datetime import datetime
 
 
-class review_dao:
+class ReviewDAO:
     def __init__(self, csv_path: str = 'data/reviews.csv'):
         self.csv_path = csv_path
         self.reviews: Dict[str, dict] = {}
@@ -22,10 +19,8 @@ class review_dao:
             df = pd.read_csv(self.csv_path)
             count = 0
             for _, row in df.iterrows():
-                # Parse review_date as ISO string (leave as string, or parse to datetime if needed)
                 review_date = row['review_date']
                 if pd.notnull(review_date):
-                    # If it's not already a string, convert to ISO
                     try:
                         # Try parsing to datetime and back to ISO
                         dt = pd.to_datetime(review_date)
@@ -46,7 +41,8 @@ class review_dao:
                 count += 1
             logging.info(f"Loaded {count} reviews from {self.csv_path}")
         else:
-            logging.warning(f"No review data found at {self.csv_path}. Please ensure the file exists.")
+            logging.warning(f"No review data found at {self.csv_path}"
+                            ". Please ensure the file exists.")
 
     def save_reviews(self) -> None:
         data = list(self.reviews.values())
@@ -56,7 +52,8 @@ class review_dao:
         logging.info(f"Saved {len(data)} reviews to {self.csv_path}")
 
     def create_review(self, review_data: Dict) -> dict:
-        existing_ids = [int(rid) for rid in self.reviews.keys() if str(rid).isdigit()]
+        existing_ids = [int(rid) for rid in self.reviews.keys()
+                        if str(rid).isdigit()]
         review_id = str(max(existing_ids, default=0) + 1)
         # Always serialize review_date as ISO 8601 string
         review_date = review_data.get('review_date')
@@ -78,7 +75,8 @@ class review_dao:
         }
         self.reviews[review_id] = new_review
         self.save_reviews()
-        logging.info(f"Created review {review_id} for movie {new_review['movie_id']}")
+        logging.info(f"Created review {review_id} for movie "
+                     f"{new_review['movie_id']}")
         return new_review
 
     def get_review(self, review_id: str) -> Optional[dict]:
@@ -90,7 +88,8 @@ class review_dao:
         return review
 
     def get_review_for_movie(self, movie_id: str) -> List[dict]:
-        reviews = [r for r in self.reviews.values() if r['movie_id'] == str(movie_id)]
+        reviews = [r for r in self.reviews.values()
+                   if r['movie_id'] == str(movie_id)]
         logging.info(f"Fetched {len(reviews)} reviews for movie {movie_id}")
         return reviews
 
