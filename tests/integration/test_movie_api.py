@@ -1,0 +1,289 @@
+import pytest
+from fastapi.testclient import TestClient
+from keyboard_smashers.api import app
+from keyboard_smashers.auth import sessions
+from datetime import datetime, timedelta
+import secrets
+import time
+
+
+@pytest.fixture
+def client():
+    """Create a TestClient."""
+    return TestClient(app)
+
+
+@pytest.fixture
+def admin_client(client):
+    """Create a TestClient with admin authentication."""
+    # Create admin user via the API
+    # (requires creating user then setting admin flag manually)
+    from keyboard_smashers.controllers.user_controller import (
+        user_controller_instance
+    )
+    from keyboard_smashers.models.user_model import User
+
+    # Create admin user directly
+    admin_user = User(
+        userid="test_admin",
+        username="Test Admin",
+        email="admin@test.com",
+        is_admin=True
+    )
+    user_controller_instance.users.append(admin_user)
+    user_controller_instance.user_map[admin_user.userid] = admin_user
+    user_controller_instance.email_map[admin_user.email] = admin_user
+
+    # Create admin session
+    session_token = secrets.token_urlsafe(32)
+    sessions[session_token] = {
+        'user_id': 'test_admin',
+        'created_at': datetime.now(),
+        'expires_at': datetime.now() + timedelta(hours=2),
+        'is_admin': True
+    }
+
+    # Set cookie on client
+    client.cookies.set("session_token", session_token)
+
+    yield client
+
+    # Cleanup
+    if session_token in sessions:
+        del sessions[session_token]
+    user_controller_instance.users = [
+        u for u in user_controller_instance.users
+        if u.userid != "test_admin"
+    ]
+    if "test_admin" in user_controller_instance.user_map:
+        del user_controller_instance.user_map["test_admin"]
+    if "admin@test.com" in user_controller_instance.email_map:
+        del user_controller_instance.email_map["admin@test.com"]
+    client.cookies.clear()
+
+
+@pytest.fixture
+def regular_client(client):
+    """Create a TestClient with regular user authentication."""
+    session_token = secrets.token_urlsafe(32)
+    sessions[session_token] = {
+        'user_id': 'test_user',
+        'created_at': datetime.now(),
+        'expires_at': datetime.now() + timedelta(hours=2)
+    }
+
+    # Set cookie on client
+    client.cookies.set("session_token", session_token)
+
+    yield client
+
+    # Cleanup
+    if session_token in sessions:
+        del sessions[session_token]
+    client.cookies.clear()
+
+
+class TestMovieAPIPublicEndpoints:
+    """Test public movie endpoints (no authentication required)."""
+
+    def test_get_all_movies(self, client):
+        """Test getting all movies."""
+        response = client.get("/movies/")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        # Should have movies from setup_movies.py
+        assert len(movies) >= 6
+
+    def test_get_movie_by_id(self, client):
+        """Test getting a specific movie by ID."""
+        # First get all movies to find a valid ID
+        all_movies = client.get("/movies/").json()
+        if all_movies:
+            movie_id = all_movies[0]["movie_id"]
+            response = client.get(f"/movies/{movie_id}")
+            assert response.status_code == 200
+            movie = response.json()
+            assert movie["movie_id"] == movie_id
+
+    def test_get_movie_not_found(self, client):
+        """Test getting a non-existent movie."""
+        response = client.get("/movies/nonexistent_id_12345")
+        assert response.status_code == 404
+        assert "not found" in response.json()["detail"].lower()
+
+    def test_search_movies_by_query(self, client):
+        """Test searching movies by query string."""
+        response = client.get("/movies/search?q=inception")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+
+    def test_search_movies_by_title(self, client):
+        """Test searching movies by title."""
+        response = client.get("/movies/search?q=matrix")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+
+    def test_search_movies_by_genre(self, client):
+        """Test getting movies by genre."""
+        response = client.get("/movies/genre/Sci-Fi")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        if movies:
+            assert all(m["genre"] == "Sci-Fi" for m in movies)
+
+    def test_search_movies_no_results(self, client):
+        """Test search with no matching results."""
+        response = client.get("/movies/search?q=nonexistent_movie_xyz123")
+        assert response.status_code == 200
+        assert response.json() == []
+
+
+class TestMovieAPIProtectedEndpoints:
+    """Test protected movie endpoints (admin authentication required)."""
+
+    def test_create_movie_without_auth(self, client):
+        """Test creating a movie without authentication."""
+        movie_data = {
+            "title": "New Movie",
+            "genre": "Action",
+            "year": 2023,
+            "director": "Test Director"
+        }
+        response = client.post("/movies/", json=movie_data)
+        assert response.status_code == 401
+
+    def test_create_movie_with_admin(self, admin_client):
+        """Test creating a movie with admin authentication."""
+        unique_title = f"Integration Test Movie {int(time.time() * 1000)}"
+        movie_data = {
+            "title": unique_title,
+            "genre": "Action",
+            "year": 2023,
+            "director": "Test Director"
+        }
+        response = admin_client.post("/movies/", json=movie_data)
+        assert response.status_code == 201
+        movie = response.json()
+        assert movie["title"] == unique_title
+        assert movie["genre"] == "Action"
+        assert "movie_id" in movie
+
+    def test_create_movie_validation_error(self, admin_client):
+        """Test creating a movie with invalid data."""
+        movie_data = {
+            "title": "",  # Empty title should fail validation
+            "genre": "Action",
+            "year": 2023
+        }
+        response = admin_client.post("/movies/", json=movie_data)
+        assert response.status_code == 422
+
+    def test_update_movie_without_auth(self, client):
+        """Test updating a movie without authentication."""
+        # Get an existing movie ID
+        all_movies = client.get("/movies/").json()
+        if all_movies:
+            movie_id = all_movies[0]["movie_id"]
+            update_data = {"title": "Updated Movie"}
+            response = client.put(f"/movies/{movie_id}", json=update_data)
+            assert response.status_code == 401
+
+    def test_update_movie_with_admin(self, admin_client):
+        """Test updating a movie with admin authentication."""
+        # Get an existing movie
+        all_movies = admin_client.get("/movies/").json()
+        if all_movies:
+            movie_id = all_movies[0]["movie_id"]
+            original_year = all_movies[0]["year"]
+
+            update_data = {"title": "Updated Title"}
+            response = admin_client.put(
+                f"/movies/{movie_id}", json=update_data
+            )
+            assert response.status_code == 200
+            movie = response.json()
+            assert movie["title"] == "Updated Title"
+            # Unchanged field preserved
+            assert movie["year"] == original_year
+
+    def test_update_movie_not_found(self, admin_client):
+        """Test updating a non-existent movie."""
+        update_data = {"title": "Updated Movie"}
+        response = admin_client.put(
+            "/movies/nonexistent_id_xyz", json=update_data
+        )
+        assert response.status_code == 404
+
+    def test_delete_movie_without_auth(self, client):
+        """Test deleting a movie without authentication."""
+        all_movies = client.get("/movies/").json()
+        if all_movies:
+            movie_id = all_movies[0]["movie_id"]
+            response = client.delete(f"/movies/{movie_id}")
+            assert response.status_code == 401
+
+    def test_delete_movie_not_found(self, admin_client):
+        """Test deleting a non-existent movie."""
+        response = admin_client.delete("/movies/nonexistent_id_abc")
+        assert response.status_code == 404
+
+
+class TestMovieAPIDataPersistence:
+    """Test data persistence across requests."""
+
+    def test_data_persists_across_requests(self, admin_client):
+        """Test that created movies persist across multiple requests."""
+        unique_title = f"Persistence Test {int(time.time() * 1000)}"
+        # Create a movie
+        movie_data = {
+            "title": unique_title,
+            "genre": "Drama",
+            "year": 2023,
+            "director": "Test Director"
+        }
+        create_response = admin_client.post("/movies/", json=movie_data)
+        assert create_response.status_code == 201
+        movie_id = create_response.json()["movie_id"]
+
+        # Verify it exists in subsequent request
+        get_response = admin_client.get(f"/movies/{movie_id}")
+        assert get_response.status_code == 200
+        assert get_response.json()["title"] == unique_title
+
+        # Verify it appears in list
+        list_response = admin_client.get("/movies/")
+        assert list_response.status_code == 200
+        movie_ids = [m["movie_id"] for m in list_response.json()]
+        assert movie_id in movie_ids
+
+
+class TestMovieAPIEdgeCases:
+    """Test edge cases and error handling."""
+
+    def test_create_movie_with_special_characters(self, admin_client):
+        """Test creating a movie with special characters in fields."""
+        unique_title = (
+            f"Special Test {int(time.time() * 1000)}: Sequel - Part 1"
+        )
+        movie_data = {
+            "title": unique_title,
+            "genre": "Sci-Fi/Action",
+            "year": 2023,
+            "director": "O'Neill & Smith"
+        }
+        response = admin_client.post("/movies/", json=movie_data)
+        assert response.status_code == 201
+        movie = response.json()
+        assert movie["title"] == unique_title
+
+    def test_search_case_insensitive(self, client):
+        """Test that search is case-insensitive."""
+        # Use existing movies from setup
+        response = client.get("/movies/search?q=INCEPTION")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)

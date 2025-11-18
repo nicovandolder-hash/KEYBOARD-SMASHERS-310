@@ -173,9 +173,9 @@ class MovieController:
         query_lower = query.lower()
         matching_movies = [
             movie for movie in all_movies
-            if (query_lower in movie['title'].lower() or
-                query_lower in movie['director'].lower() or
-                query_lower in movie['description'].lower())
+            if (query_lower in str(movie.get('title', '')).lower() or
+                query_lower in str(movie.get('director', '')).lower() or
+                query_lower in str(movie.get('description', '')).lower())
         ]
 
         logger.info(f"Found {len(matching_movies)} movies matching query: {query}")
