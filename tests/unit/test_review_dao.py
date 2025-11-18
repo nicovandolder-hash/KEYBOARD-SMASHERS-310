@@ -19,7 +19,6 @@ class TestReviewDAO(unittest.TestCase):
         # Start with a clean slate for each test
         self.dao.reviews = {}
 
-
     def test_create_review(self):
         review_data = {
             'movie_id': 1,
@@ -35,7 +34,6 @@ class TestReviewDAO(unittest.TestCase):
         self.assertEqual(new_review.review_text, review_data['review_text'])
         self.assertEqual(new_review.review_date, review_data['review_date'])
 
-
     def test_update_review(self):
         review_data = {
             'movie_id': 1,
@@ -49,7 +47,6 @@ class TestReviewDAO(unittest.TestCase):
                                                 {'rating': 4})
         self.assertEqual(updated_review.rating, 4)
 
-
     def test_delete_review(self):
         review_data = {
             'movie_id': 1,
@@ -61,7 +58,6 @@ class TestReviewDAO(unittest.TestCase):
         new_review = self.dao.create_review(review_data)
         success = self.dao.delete_review(new_review.review_id)
         self.assertTrue(success)
-
 
     def test_get_review(self):
         review_data = {
@@ -75,4 +71,3 @@ class TestReviewDAO(unittest.TestCase):
         fetched_review = self.dao.get_review(new_review.review_id)
         self.assertIsNotNone(fetched_review)
         self.assertEqual(fetched_review.review_id, new_review.review_id)
-        

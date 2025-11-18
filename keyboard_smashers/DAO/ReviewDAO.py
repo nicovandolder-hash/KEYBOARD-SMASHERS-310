@@ -28,7 +28,6 @@ class ReviewDAO:
         self.reviews: Dict[str, Review] = {}
         self.load_reviews()
 
-
     def load_reviews(self) -> None:
         path = Path(self.csv_path)
         if path.exists():
@@ -51,7 +50,6 @@ class ReviewDAO:
                 "Please ensure the file exists."
             )
 
-
     def save_reviews(self) -> None:
         data = [
             {
@@ -65,12 +63,13 @@ class ReviewDAO:
             for r in self.reviews.values()
         ]
         df = pd.DataFrame(data)
-        Path(self.csv_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(self.csv_path).parent.mkdir(parents=True, 
+                                         exist_ok=True)
         df.to_csv(self.csv_path, index=False)
 
-
     def create_review(self, review_data: Dict) -> Review:
-        existing_ids = [int(rid) for rid in self.reviews.keys() if str(rid).isdigit()]
+        existing_ids = [int(rid) for rid in self.reviews.keys() 
+                        if str(rid).isdigit()]
         review_id = max(existing_ids, default=0) + 1
         new_review = Review(
             review_id,
@@ -84,14 +83,11 @@ class ReviewDAO:
         self.save_reviews()
         return new_review
 
-
     def get_review(self, review_id: str) -> Optional[Review]:
         return self.reviews.get(review_id)
 
-
     def get_review_for_movie(self, movie_id: str) -> List[Review]:
         return [r for r in self.reviews.values() if r.movie_id == movie_id]
-
 
     def update_review(self, review_id: str, data: Dict) -> Optional[Review]:
         review = self.reviews.get(review_id)
@@ -102,7 +98,6 @@ class ReviewDAO:
                 setattr(review, key, value)
         self.save_reviews()
         return review
-
 
     def delete_review(self, review_id: str) -> bool:
         if review_id in self.reviews:

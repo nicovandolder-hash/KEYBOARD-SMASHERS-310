@@ -73,3 +73,19 @@ class ReviewController:
             "comment": review.comment,
             "helpful_votes": review.helpful_votes,
         }
+
+    review_controller_instance = ReviewController()
+
+    router = APIRouter(
+        prefix="/reviews",
+        tags=["reviews"],
+    )
+
+
+    @router.get("/")
+    def get_reviews_endpoint(limit: int = 10):
+        reviews = review_controller_instance.get_all_reviews(limit=limit)
+        return {
+            "count": len(reviews),
+            "reviews": reviews
+        }
