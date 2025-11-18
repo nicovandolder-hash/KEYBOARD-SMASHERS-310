@@ -12,12 +12,21 @@ def temp_csv():
 
     # Create initial test data
     test_data = pd.DataFrame([
-        {'movie_id': '1', 'title': 'Inception', 'genre': 'Sci-Fi', 'director': 'Christopher Nolan',
-            'year': 2010, 'description': 'A thief who steals secrets'},
-        {'movie_id': '2', 'title': 'The Matrix', 'genre': 'Action', 'director': 'Wachowskis',
-            'year': 1999, 'description': 'A computer hacker learns the truth'},
-        {'movie_id': '3', 'title': 'Interstellar', 'genre': 'Sci-Fi', 'director': 'Christopher Nolan',
-            'year': 2014, 'description': 'Explorers travel through a wormhole'}
+        {
+            'movie_id': '1', 'title': 'Inception', 'genre': 'Sci-Fi',
+            'director': 'Christopher Nolan', 'year': 2010,
+            'description': 'A thief who steals secrets'
+        },
+        {
+            'movie_id': '2', 'title': 'The Matrix', 'genre': 'Action',
+            'director': 'Wachowskis', 'year': 1999,
+            'description': 'A computer hacker learns the truth'
+        },
+        {
+            'movie_id': '3', 'title': 'Interstellar', 'genre': 'Sci-Fi',
+            'director': 'Christopher Nolan', 'year': 2014,
+            'description': 'Explorers travel through a wormhole'
+        }
     ])
     test_data.to_csv(csv_path, index=False)
     yield csv_path
@@ -184,7 +193,9 @@ class TestUpdateMovie:
     def test_update_single_field(self, movie_dao):
         original_title = movie_dao.movies['3']['title']
 
-        updated_movie = movie_dao.update_movie('3', {'director': 'Updated Director'})
+        updated_movie = movie_dao.update_movie(
+            '3', {'director': 'Updated Director'}
+        )
 
         assert updated_movie['title'] == original_title
         assert updated_movie['director'] == 'Updated Director'
@@ -226,7 +237,10 @@ class TestDeleteMovie:
         # Check CSV has correct structure even when empty
         df = pd.read_csv(temp_csv)
         assert len(df) == 0
-        assert list(df.columns) == ['movie_id', 'title', 'genre', 'year', 'director', 'description']
+        assert list(df.columns) == [
+            'movie_id', 'title', 'genre', 'year', 'director',
+            'description'
+        ]
 
     def test_delete_returns_none(self, movie_dao):
         result = movie_dao.delete_movie('1')

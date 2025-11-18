@@ -6,8 +6,8 @@ from typing import List, Dict, Any
 class MovieDAO:
     """
     Data Access Object for Movie persistence.
-    Handles all CSV read/write operations and works exclusively with dictionaries.
-    No business logic - just pure data access.
+    Handles all CSV read/write operations and works exclusively with
+    dictionaries. No business logic - just pure data access.
     """
 
     def __init__(self, csv_path: str = "data/movies.csv"):
@@ -42,7 +42,11 @@ class MovieDAO:
         """Save all movies from memory to CSV file."""
         if not self.movies:
             df = pd.DataFrame(
-                columns=['movie_id', 'title', 'genre', 'year', 'director', 'description'])
+                columns=[
+                    'movie_id', 'title', 'genre', 'year',
+                    'director', 'description'
+                ]
+            )
         else:
             movies_data = list(self.movies.values())
             df = pd.DataFrame(movies_data)
@@ -112,7 +116,9 @@ class MovieDAO:
         """
         return [movie.copy() for movie in self.movies.values()]
 
-    def update_movie(self, movie_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    def update_movie(
+        self, movie_id: str, data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Update an existing movie.
 

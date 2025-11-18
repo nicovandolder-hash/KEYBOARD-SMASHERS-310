@@ -41,13 +41,19 @@ async def load_data():
         movie_csv = dataset_dir / "movies.csv"
         if movie_csv.exists():
             logger.info(f"Movies loaded from: {movie_csv}")
-            logger.info(f"Loaded {len(movie_controller_instance.movie_dao.movies)} movies.")
+            logger.info(
+                f"Loaded {len(movie_controller_instance.movie_dao.movies)}"
+                f" movies."
+            )
         else:
             logger.warning(f"Warning: Movie CSV not found at {movie_csv}")
 
         # Load reviews
         csv_files = list(dataset_dir.glob("*.csv"))
-        review_csv_files = [f for f in csv_files if f.name not in ["users.csv", "movies.csv"]]
+        review_csv_files = [
+            f for f in csv_files
+            if f.name not in ["users.csv", "movies.csv"]
+        ]
 
         if not review_csv_files:
             logger.error("No review CSV files found in data directory")
@@ -87,6 +93,9 @@ async def root():
         "message": "IMDB Reviews API",
         "status": "online",
         "total_reviews": len(review_controller_instance.reviews),
-        "total_movies": len(review_controller_instance.movies) + len(movie_controller_instance.movie_dao.movies),
+        "total_movies": (
+            len(review_controller_instance.movies) +
+            len(movie_controller_instance.movie_dao.movies)
+        ),
         "total_users": len(user_controller_instance.users),
     }

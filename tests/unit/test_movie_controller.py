@@ -114,7 +114,9 @@ class TestCreateMovie:
         assert exc_info.value.status_code == 400
         assert 'already exists' in exc_info.value.detail.lower()
 
-    def test_create_duplicate_title_case_insensitive(self, controller_with_data):
+    def test_create_duplicate_title_case_insensitive(
+        self, controller_with_data
+    ):
         movie_data = MovieCreateSchema(title="INCEPTION")
 
         with pytest.raises(HTTPException) as exc_info:
