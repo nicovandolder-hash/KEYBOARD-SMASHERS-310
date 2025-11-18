@@ -173,3 +173,42 @@
 2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created: test_user (ID: u12345, Admin: False)
 2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - add_review:95 - Review ID: r1 added by user: test_user. Total reviews: 1
 2025-11-15 03:11:28 - keyboard_smashers.models.user_model - INFO - add_review:95 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-17 19:03:08 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-17 19:03:08 - keyboard_smashers.api - INFO - load_data:28 - Starting up and loading dataset...
+2025-11-17 19:03:08 - keyboard_smashers.api - INFO - load_data:34 - Loading users from: data\users.csv
+2025-11-17 19:03:08 - keyboard_smashers.api - INFO - load_data:36 - Loaded 0 users.
+2025-11-17 19:03:08 - keyboard_smashers.api - INFO - load_data:43 - Movies loaded from: data\movies.csv
+2025-11-17 19:03:08 - keyboard_smashers.api - INFO - load_data:44 - Loaded 6 movies.
+2025-11-17 19:03:08 - keyboard_smashers.api - INFO - load_data:58 - Loading reviews from: data\imdb_reviews.csv
+2025-11-17 19:03:11 - keyboard_smashers.api - INFO - load_data:60 - Loaded 47063 reviews for 10 movies.
+2025-11-17 19:03:11 - keyboard_smashers.api - INFO - load_data:65 - Application ready.
+2025-11-17 19:03:38 - keyboard_smashers.api - INFO - save_data:75 - Shutting down and saving user data...
+2025-11-17 19:03:38 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:118 - Saving users to CSV at: data\users.csv
+2025-11-17 19:03:38 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:147 - Saved 0 users to data\users.csv
+2025-11-17 19:03:38 - keyboard_smashers.api - INFO - save_data:79 - User data saved successfully.
+2025-11-17 19:03:39 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-17 19:03:39 - keyboard_smashers.api - INFO - load_data:28 - Starting up and loading dataset...
+2025-11-17 19:03:39 - keyboard_smashers.api - INFO - load_data:34 - Loading users from: data\users.csv
+2025-11-17 19:03:39 - keyboard_smashers.api - INFO - load_data:36 - Loaded 0 users.
+2025-11-17 19:03:39 - keyboard_smashers.api - INFO - load_data:43 - Movies loaded from: data\movies.csv
+2025-11-17 19:03:39 - keyboard_smashers.api - INFO - load_data:44 - Loaded 6 movies.
+2025-11-17 19:03:39 - keyboard_smashers.api - INFO - load_data:58 - Loading reviews from: data\imdb_reviews.csv
+2025-11-17 19:03:41 - keyboard_smashers.api - INFO - load_data:60 - Loaded 47063 reviews for 10 movies.
+2025-11-17 19:03:41 - keyboard_smashers.api - INFO - load_data:65 - Application ready.
+2025-11-17 19:05:07 - keyboard_smashers.api - INFO - save_data:75 - Shutting down and saving user data...
+2025-11-17 19:05:07 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:118 - Saving users to CSV at: data\users.csv
+2025-11-17 19:05:07 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:147 - Saved 0 users to data\users.csv
+2025-11-17 19:05:07 - keyboard_smashers.api - INFO - save_data:79 - User data saved successfully.
+2025-11-17 19:05:17 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-17 19:05:17 - keyboard_smashers.api - INFO - load_data:28 - Starting up and loading dataset...
+2025-11-17 19:05:17 - keyboard_smashers.api - INFO - load_data:34 - Loading users from: data\users.csv
+2025-11-17 19:05:17 - keyboard_smashers.api - INFO - load_data:36 - Loaded 0 users.
+2025-11-17 19:05:17 - keyboard_smashers.api - INFO - load_data:43 - Movies loaded from: data\movies.csv
+2025-11-17 19:05:17 - keyboard_smashers.api - INFO - load_data:44 - Loaded 6 movies.
+2025-11-17 19:05:17 - keyboard_smashers.api - INFO - load_data:58 - Loading reviews from: data\imdb_reviews.csv
+2025-11-17 19:05:19 - keyboard_smashers.api - INFO - load_data:60 - Loaded 47063 reviews for 10 movies.
+2025-11-17 19:05:19 - keyboard_smashers.api - INFO - load_data:65 - Application ready.
+2025-11-17 19:05:44 - keyboard_smashers.api - INFO - save_data:75 - Shutting down and saving user data...
+2025-11-17 19:05:44 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:118 - Saving users to CSV at: data\users.csv
+2025-11-17 19:05:44 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:147 - Saved 0 users to data\users.csv
+2025-11-17 19:05:44 - keyboard_smashers.api - INFO - save_data:79 - User data saved successfully.

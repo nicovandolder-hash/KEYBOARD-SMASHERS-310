@@ -6,7 +6,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY keyboard_smashers/ ./keyboard_smashers/
+COPY setup_movies.py .
 COPY data/ ./data/
+
+# Ensure movies.csv exists
+RUN python setup_movies.py
 
 EXPOSE 8000
 

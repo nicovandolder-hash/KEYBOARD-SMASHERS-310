@@ -7,6 +7,9 @@ from keyboard_smashers.controllers.review_controller import (
 from keyboard_smashers.controllers.user_controller import (
      router as user_router, user_controller_instance
 )
+from keyboard_smashers.controllers.movie_controller import (
+     router as movie_router, movie_controller_instance
+)
 import logging
 
 setup_logging()
@@ -16,6 +19,7 @@ app = FastAPI(title="IMDB Reviews API")
 
 app.include_router(review_router)
 app.include_router(user_router)
+app.include_router(movie_router)
 
 
 @app.on_event("startup")
@@ -24,6 +28,7 @@ async def load_data():
         logger.info("Starting up and loading dataset...")
         dataset_dir = Path("data")
 
+        # Load users
         user_csv = dataset_dir / "users.csv"
         if user_csv.exists():
             logger.info(f"Loading users from: {user_csv}")
@@ -32,8 +37,17 @@ async def load_data():
         else:
             logger.warning(f"Warning: User CSV not found at {user_csv}")
 
+        # Load movies
+        movie_csv = dataset_dir / "movies.csv"
+        if movie_csv.exists():
+            logger.info(f"Movies loaded from: {movie_csv}")
+            logger.info(f"Loaded {len(movie_controller_instance.movie_dao.movies)} movies.")
+        else:
+            logger.warning(f"Warning: Movie CSV not found at {movie_csv}")
+
+        # Load reviews
         csv_files = list(dataset_dir.glob("*.csv"))
-        review_csv_files = [f for f in csv_files if f.name != "users.csv"]
+        review_csv_files = [f for f in csv_files if f.name not in ["users.csv", "movies.csv"]]
 
         if not review_csv_files:
             logger.error("No review CSV files found in data directory")
@@ -73,6 +87,6 @@ async def root():
         "message": "IMDB Reviews API",
         "status": "online",
         "total_reviews": len(review_controller_instance.reviews),
-        "total_movies": len(review_controller_instance.movies),
+        "total_movies": len(review_controller_instance.movies) + len(movie_controller_instance.movie_dao.movies),
         "total_users": len(user_controller_instance.users),
     }

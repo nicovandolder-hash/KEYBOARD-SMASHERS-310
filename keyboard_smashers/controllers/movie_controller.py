@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 import logging
+import pandas as pd
 from keyboard_smashers.dao.movie_dao import MovieDAO
 from keyboard_smashers.models.movie_model import Movie
 from keyboard_smashers.auth import get_current_admin_user
@@ -12,15 +13,14 @@ logger = logging.getLogger(__name__)
 
 class MovieSchema(BaseModel):
     """Schema for movie API responses"""
+    model_config = ConfigDict(from_attributes=True)
+    
     movie_id: str = Field(..., description="Unique movie ID")
     title: str = Field(..., description="Movie title")
     genre: str = Field("", description="Movie genre")
     year: int = Field(0, description="Release year")
     director: str = Field("", description="Director name")
     description: str = Field("", description="Movie description")
-
-    class Config:
-        from_attributes = True
 
 
 class MovieCreateSchema(BaseModel):
@@ -47,8 +47,18 @@ class MovieController:
         logger.info(f"MovieController initialized with {len(self.movie_dao.movies)} movies")
 
     def _dict_to_schema(self, movie_dict: dict) -> MovieSchema:
-        """Convert movie dictionary to MovieSchema"""
-        return MovieSchema(**movie_dict)
+        """Convert movie dictionary to MovieSchema, handling NaN values"""
+        # Replace NaN with default values
+        cleaned_dict = {}
+        for key, value in movie_dict.items():
+            if pd.isna(value):
+                if key == 'year':
+                    cleaned_dict[key] = 0
+                else:
+                    cleaned_dict[key] = ""
+            else:
+                cleaned_dict[key] = value
+        return MovieSchema(**cleaned_dict)
 
     def get_all_movies(self) -> List[MovieSchema]:
         """Get all movies"""
