@@ -40,7 +40,8 @@ class TestReviewDAO(unittest.TestCase):
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        updated_review = self.dao.update_review(new_review['review_id'], {'rating': 4})
+        updated_review = self.dao.update_review(
+            new_review['review_id'], {'rating': 4})
         self.assertEqual(updated_review['rating'], 4)
 
     def test_delete_review(self):
