@@ -24,7 +24,7 @@ class ReviewCreateSchema(BaseModel):
     rating: int = Field(..., description="Rating given by the user")
     review_text: Optional[str] = Field("", description="Text of the review")
     review_date: Optional[str] = Field(None,
-                                       description="Date of the " \
+                                       description="Date of the "
                                        "review (ISO 8601)")
 
 
@@ -33,7 +33,7 @@ class ReviewUpdateSchema(BaseModel):
     rating: Optional[int] = Field(None, description="Rating given by the user")
     review_text: Optional[str] = Field(None, description="Text of the review")
     review_date: Optional[str] = Field(None,
-                                       description="Date of the " \
+                                       description="Date of the "
                                        "review (ISO 8601)")
 
 
