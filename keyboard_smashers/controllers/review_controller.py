@@ -4,8 +4,6 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from keyboard_smashers.models.review_model import Review
-from keyboard_smashers.models.movie_model import Movie
 logger = logging.getLogger(__name__)
 
 
@@ -26,7 +24,8 @@ class ReviewCreateSchema(BaseModel):
     rating: int = Field(..., description="Rating given by the user")
     review_text: Optional[str] = Field("", description="Text of the review")
     review_date: Optional[str] = Field(None,
-                                       description="Date of the review (ISO 8601)")
+                                       description="Date of the " \
+                                       "review (ISO 8601)")
 
 
 class ReviewUpdateSchema(BaseModel):
@@ -34,8 +33,8 @@ class ReviewUpdateSchema(BaseModel):
     rating: Optional[int] = Field(None, description="Rating given by the user")
     review_text: Optional[str] = Field(None, description="Text of the review")
     review_date: Optional[str] = Field(None,
-                                       description="Date of the review (ISO 8601)")
-
+                                       description="Date of the " \
+                                       "review (ISO 8601)")
 
 
 class ReviewController:
@@ -69,14 +68,16 @@ class ReviewController:
         if not review:
             logger.error(f"Review not found: {review_id}")
             raise HTTPException(status_code=404,
-                                detail=f"Review with ID '{review_id}' not found")
+                                detail=f"Review with ID '"
+                                f"{review_id}' not found")
         return self._dict_to_schema(review)
 
     def create_review(self, review_data: ReviewCreateSchema) -> ReviewSchema:
         logger.info(f"Creating review for movie: {review_data.movie_id}")
         review_dict = review_data.model_dump()
         created_review = self.review_dao.create_review(review_dict)
-        logger.info(f"Review created successfully: {created_review['review_id']}")
+        logger.info(f"Review created successfully: "
+                    f"{created_review['review_id']}")
         return self._dict_to_schema(created_review)
 
     def update_review(self, review_id: str,
@@ -90,7 +91,8 @@ class ReviewController:
         if not updated_review:
             logger.error(f"Review not found for update: {review_id}")
             raise HTTPException(status_code=404,
-                                detail=f"Review with ID '{review_id}' not found")
+                                detail=f"Review with ID '"
+                                f"{review_id}' not found")
         logger.info(f"Review updated successfully: {review_id}")
         return self._dict_to_schema(updated_review)
 
@@ -100,7 +102,8 @@ class ReviewController:
         if not success:
             logger.error(f"Review not found for deletion: {review_id}")
             raise HTTPException(status_code=404,
-                                detail=f"Review with ID '{review_id}' not found")
+                                detail=f"Review with ID '"
+                                f"{review_id}' not found")
         logger.info(f"Review deleted successfully: {review_id}")
         return {"message": f"Review '{review_id}' deleted successfully"}
 
