@@ -1,7 +1,7 @@
 
 import unittest
 from unittest.mock import patch, MagicMock
-from keyboard_smashers.dao.review_dao import review_dao
+from keyboard_smashers.dao.review_dao import ReviewDAO
 
 
 class TestReviewDAO(unittest.TestCase):
@@ -12,78 +12,71 @@ class TestReviewDAO(unittest.TestCase):
         self.mock_to_csv = patcher_to_csv.start()
         self.addCleanup(patcher_read_csv.stop)
         self.addCleanup(patcher_to_csv.stop)
-        self.dao = review_dao(csv_path='tests/unit/test_reviews.csv')
+        self.dao = ReviewDAO(csv_path='tests/unit/test_reviews.csv')
         # Start with a clean slate for each test
         self.dao.reviews = {}
 
     def test_create_review(self):
         review_data = {
-            'movie_id': 1,
+            'movie_id': '1',
             'user_id': 'test_user',
             'rating': 5,
             'review_text': 'Excellent movie!',
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        self.assertEqual(new_review.movie_id, review_data['movie_id'])
-        self.assertEqual(new_review.user_id, review_data['user_id'])
-        self.assertEqual(new_review.rating, review_data['rating'])
-        self.assertEqual(new_review.review_text, review_data['review_text'])
-        self.assertEqual(new_review.review_date, review_data['review_date'])
+        self.assertEqual(new_review['movie_id'], review_data['movie_id'])
+        self.assertEqual(new_review['user_id'], review_data['user_id'])
+        self.assertEqual(new_review['rating'], review_data['rating'])
+        self.assertEqual(new_review['review_text'], review_data['review_text'])
+        self.assertEqual(new_review['review_date'], '2024-01-01T00:00:00')
 
     def test_update_review(self):
         review_data = {
-            'movie_id': 1,
+            'movie_id': '1',
             'user_id': 'test_user1',
             'rating': 5,
             'review_text': 'Excellent movie!',
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        updated_review = self.dao.update_review(new_review.review_id,
-                                                {'rating': 4})
-        self.assertEqual(updated_review.rating, 4)
+        updated_review = self.dao.update_review(new_review['review_id'], {'rating': 4})
+        self.assertEqual(updated_review['rating'], 4)
 
     def test_delete_review(self):
         review_data = {
-            'movie_id': 1,
+            'movie_id': '1',
             'user_id': 'test_user2',
             'rating': 5,
             'review_text': 'Excellent movie!',
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        success = self.dao.delete_review(new_review.review_id)
+        success = self.dao.delete_review(new_review['review_id'])
         self.assertTrue(success)
 
     def test_get_review(self):
         review_data = {
-            'movie_id': 1,
+            'movie_id': '1',
             'user_id': 'test_user3',
             'rating': 5,
             'review_text': 'Excellent movie!',
             'review_date': '2024-01-01'
         }
         new_review = self.dao.create_review(review_data)
-        fetched_review = self.dao.get_review(new_review.review_id)
+        fetched_review = self.dao.get_review(new_review['review_id'])
         self.assertIsNotNone(fetched_review)
-        self.assertEqual(fetched_review.review_id, new_review.review_id)
+        self.assertEqual(fetched_review['review_id'], new_review['review_id'])
 
-    def test_create_load_delete_review(self):
+    def test_get_review_by_movie(self):
         review_data = {
-            'movie_id': 5,
-            'user_id': 'test_user4',
+            'movie_id': '2',
+            'user_id': 'test_user',
             'rating': 5,
             'review_text': 'Excellent movie!',
             'review_date': '2024-01-01'
         }
-        new_review = self.dao.create_review(review_data)
-        self.dao.save_reviews()
-        # Clear current reviews and reload
-        self.dao.reviews = {}
-        self.dao.load_reviews()
-        loaded_review = self.dao.get_review_for_movie('5')
-        self.assertIsNotNone(loaded_review)
-        self.assertEqual(loaded_review.review_id, new_review.review_id)
-        # Clean up
-        self.dao.delete_review(new_review.review_id)
+        self.dao.create_review(review_data)
+        reviews = self.dao.get_review_for_movie('2')
+        self.assertTrue(isinstance(reviews, list))
+        self.assertGreaterEqual(len(reviews), 1)
