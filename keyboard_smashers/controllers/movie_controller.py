@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class MovieSchema(BaseModel):
-    """Schema for movie API responses"""
     model_config = ConfigDict(from_attributes=True)
 
     movie_id: str = Field(..., description="Unique movie ID")
@@ -22,7 +21,6 @@ class MovieSchema(BaseModel):
 
 
 class MovieCreateSchema(BaseModel):
-    """Schema for creating a new movie"""
     title: str = Field(..., description="Movie title", min_length=1)
     genre: Optional[str] = Field("", description="Movie genre")
     year: Optional[int] = Field(0, description="Release year")
@@ -31,7 +29,6 @@ class MovieCreateSchema(BaseModel):
 
 
 class MovieUpdateSchema(BaseModel):
-    """Schema for updating a movie (all fields optional)"""
     title: Optional[str] = Field(None, description="Movie title", min_length=1)
     genre: Optional[str] = Field(None, description="Movie genre")
     year: Optional[int] = Field(None, description="Release year")
@@ -48,8 +45,6 @@ class MovieController:
         )
 
     def _dict_to_schema(self, movie_dict: dict) -> MovieSchema:
-        """Convert movie dictionary to MovieSchema, handling NaN values"""
-        # Replace NaN with default values
         cleaned_dict = {}
         for key, value in movie_dict.items():
             if pd.isna(value):
@@ -62,13 +57,11 @@ class MovieController:
         return MovieSchema(**cleaned_dict)
 
     def get_all_movies(self) -> List[MovieSchema]:
-        """Get all movies"""
         logger.info("Fetching all movies")
         movies = self.movie_dao.get_all_movies()
         return [self._dict_to_schema(movie) for movie in movies]
 
     def get_movie_by_id(self, movie_id: str) -> MovieSchema:
-        """Get a single movie by ID"""
         logger.info(f"Fetching movie: {movie_id}")
         try:
             movie_dict = self.movie_dao.get_movie(movie_id)
@@ -81,10 +74,7 @@ class MovieController:
             )
 
     def create_movie(self, movie_data: MovieCreateSchema) -> MovieSchema:
-        """Create a new movie (Admin only)"""
         logger.info(f"Creating movie: {movie_data.title}")
-
-        # Validate: Check for duplicate titles
         all_movies = self.movie_dao.get_all_movies()
         if any(
             m['title'].lower() == movie_data.title.lower()
@@ -96,7 +86,6 @@ class MovieController:
                 detail=f"Movie with title '{movie_data.title}' already exists"
             )
 
-        # Convert to dict and create
         movie_dict = movie_data.model_dump()
         created_movie = self.movie_dao.create_movie(movie_dict)
 
@@ -108,10 +97,8 @@ class MovieController:
     def update_movie(
         self, movie_id: str, movie_data: MovieUpdateSchema
     ) -> MovieSchema:
-        """Update an existing movie (Admin only)"""
         logger.info(f"Updating movie: {movie_id}")
 
-        # Check if movie exists
         try:
             self.movie_dao.get_movie(movie_id)
         except KeyError:
@@ -121,7 +108,6 @@ class MovieController:
                 detail=f"Movie with ID '{movie_id}' not found"
             )
 
-        # Validate: Check for duplicate title if title is being updated
         if movie_data.title:
             all_movies = self.movie_dao.get_all_movies()
             if any(
@@ -140,7 +126,6 @@ class MovieController:
                     )
                 )
 
-        # Convert to dict (exclude None values)
         update_dict = movie_data.model_dump(exclude_none=True)
 
         if not update_dict:
@@ -153,7 +138,6 @@ class MovieController:
         return self._dict_to_schema(updated_movie)
 
     def delete_movie(self, movie_id: str) -> dict:
-        """Delete a movie (Admin only)"""
         logger.info(f"Deleting movie: {movie_id}")
         try:
             self.movie_dao.delete_movie(movie_id)
@@ -167,7 +151,6 @@ class MovieController:
             )
 
     def search_movies_by_title(self, title: str) -> List[MovieSchema]:
-        """Search movies by title (partial match, case-insensitive)"""
         logger.info(f"Searching movies by title: {title}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -183,10 +166,6 @@ class MovieController:
         return [self._dict_to_schema(movie) for movie in matching_movies]
 
     def get_movies_by_genre(self, genre: str) -> List[MovieSchema]:
-        """
-        Get all movies of a specific genre
-        (exact match, case-insensitive)
-        """
         logger.info(f"Fetching movies by genre: {genre}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -200,7 +179,6 @@ class MovieController:
         return [self._dict_to_schema(movie) for movie in matching_movies]
 
     def search_movies(self, query: str) -> List[MovieSchema]:
-        """General search across title, director, and description"""
         logger.info(f"Searching movies with query: {query}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -221,7 +199,6 @@ class MovieController:
 # Global instance
 movie_controller_instance = MovieController()
 
-# API Router
 router = APIRouter(
     prefix="/movies",
     tags=["movies"],
@@ -232,25 +209,21 @@ router = APIRouter(
 
 @router.get("/", response_model=List[MovieSchema])
 def get_all_movies():
-    """Get all movies"""
     return movie_controller_instance.get_all_movies()
 
 
 @router.get("/search", response_model=List[MovieSchema])
 def search_movies(q: str):
-    """Search movies by title, director, or description"""
     return movie_controller_instance.search_movies(q)
 
 
 @router.get("/genre/{genre}", response_model=List[MovieSchema])
 def get_movies_by_genre(genre: str):
-    """Get all movies of a specific genre"""
     return movie_controller_instance.get_movies_by_genre(genre)
 
 
 @router.get("/{movie_id}", response_model=MovieSchema)
 def get_movie(movie_id: str):
-    """Get a specific movie by ID"""
     return movie_controller_instance.get_movie_by_id(movie_id)
 
 
@@ -261,7 +234,6 @@ def create_movie(
     movie_data: MovieCreateSchema,
     admin_user_id: str = Depends(get_current_admin_user)
 ):
-    """Create a new movie (Admin only)"""
     return movie_controller_instance.create_movie(movie_data)
 
 
@@ -271,7 +243,6 @@ def update_movie(
     movie_data: MovieUpdateSchema,
     admin_user_id: str = Depends(get_current_admin_user)
 ):
-    """Update a movie (Admin only)"""
     return movie_controller_instance.update_movie(movie_id, movie_data)
 
 
@@ -280,5 +251,4 @@ def delete_movie(
     movie_id: str,
     admin_user_id: str = Depends(get_current_admin_user)
 ):
-    """Delete a movie (Admin only)"""
     return movie_controller_instance.delete_movie(movie_id)
