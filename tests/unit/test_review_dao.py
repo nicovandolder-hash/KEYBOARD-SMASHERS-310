@@ -71,3 +71,22 @@ class TestReviewDAO(unittest.TestCase):
         fetched_review = self.dao.get_review(new_review.review_id)
         self.assertIsNotNone(fetched_review)
         self.assertEqual(fetched_review.review_id, new_review.review_id)
+    
+    def test_create_load_delete_review(self):
+        review_data = {
+            'movie_id': 5,
+            'user_id': 'test_user4',
+            'rating': 5,
+            'review_text': 'Excellent movie!',
+            'review_date': '2024-01-01'
+        }
+        new_review = self.dao.create_review(review_data)
+        self.dao.save_reviews()
+        # Clear current reviews and reload
+        self.dao.reviews = {}
+        self.dao.load_reviews()
+        loaded_review = self.dao.get_review_for_movie('5')
+        self.assertIsNotNone(loaded_review)
+        self.assertEqual(loaded_review.review_id, new_review.review_id)
+        # Clean up
+        self.dao.delete_review(new_review.review_id)

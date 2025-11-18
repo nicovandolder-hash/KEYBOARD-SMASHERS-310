@@ -63,12 +63,12 @@ class ReviewDAO:
             for r in self.reviews.values()
         ]
         df = pd.DataFrame(data)
-        Path(self.csv_path).parent.mkdir(parents=True, 
+        Path(self.csv_path).parent.mkdir(parents=True,
                                          exist_ok=True)
         df.to_csv(self.csv_path, index=False)
 
     def create_review(self, review_data: Dict) -> Review:
-        existing_ids = [int(rid) for rid in self.reviews.keys() 
+        existing_ids = [int(rid) for rid in self.reviews.keys()
                         if str(rid).isdigit()]
         review_id = max(existing_ids, default=0) + 1
         new_review = Review(
@@ -105,4 +105,3 @@ class ReviewDAO:
             self.save_reviews()
             return True
         return False
-    
