@@ -1,10 +1,7 @@
-from ReviewDAO import ReviewDAO
+
 import unittest
 from unittest.mock import patch, MagicMock
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                              '../../keyboard_smashers/DAO')))
+from keyboard_smashers.dao.review_dao import review_dao
 
 
 class TestReviewDAO(unittest.TestCase):
@@ -15,8 +12,8 @@ class TestReviewDAO(unittest.TestCase):
         self.mock_to_csv = patcher_to_csv.start()
         self.addCleanup(patcher_read_csv.stop)
         self.addCleanup(patcher_to_csv.stop)
-        self.dao = ReviewDAO(csv_path='tests/unit/test_reviews.csv')
-        # Start with a clean slate for each test
+        self.dao = review_dao(csv_path='tests/unit/test_reviews.csv')
+        #Start with a clean slate for each test
         self.dao.reviews = {}
 
     def test_create_review(self):

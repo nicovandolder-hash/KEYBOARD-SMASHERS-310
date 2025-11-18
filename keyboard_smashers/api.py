@@ -76,7 +76,7 @@ async def get_reviews(
 # CRUD endpoints for reviews
 @app.get("/reviews/{review_id}")
 async def get_review(review_id: str):
-    review = controller.get_review_by_id(review_id)
+    review = controller.get_review_by_id(str(review_id))
     if not review:
         raise HTTPException(status_code=404, detail="Review not found")
     return review
@@ -96,7 +96,7 @@ async def update_review(review_id: str, review_update: ReviewUpdate):
     update_data = review_update.model_dump(exclude_none=True)
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields to update")
-    updated_review = controller.update_review(review_id, update_data)
+    updated_review = controller.update_review(str(review_id), update_data)
     if not updated_review:
         raise HTTPException(status_code=404, detail="Review not found")
     return {"message": "Review updated successfully", "review": updated_review}
@@ -104,7 +104,7 @@ async def update_review(review_id: str, review_update: ReviewUpdate):
 
 @app.delete("/reviews/{review_id}")
 async def delete_review(review_id: str):
-    success = controller.delete_review(review_id)
+    success = controller.delete_review(str(review_id))
     if not success:
         raise HTTPException(status_code=404, detail="Review not found")
     return {"message": f"Review '{review_id}' deleted successfully"}
