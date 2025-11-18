@@ -1,18 +1,13 @@
-from keyboard_smashers.interfaces.observer_interface import Observer
-
 class ReviewSubject:
     def __init__(self):
-        self._observer = None  
-    
-    def attach(self, observer):
-        """Subscribe the review author as observer"""
-        self._observer = observer
-    
-    def detach(self):
-        """Unsubscribe the observer"""
         self._observer = None
-    
+
+    def attach(self, observer):
+        self._observer = observer
+
+    def detach(self):
+        self._observer = None
+
     def notify(self, event_type, event_data):
-        """Notify the review author of an event"""
         if self._observer:
             self._observer.update(self, event_type, event_data)

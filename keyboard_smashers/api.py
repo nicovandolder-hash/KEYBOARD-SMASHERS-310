@@ -2,10 +2,10 @@ from fastapi import FastAPI, Query
 from fastapi import HTTPException
 from pathlib import Path
 from keyboard_smashers.controllers.review_controller import ReviewController
-#added
+
 from pydantic import BaseModel
 from typing import Optional
-#
+
 
 app = FastAPI(title="IMDB Reviews API")
 
@@ -15,7 +15,7 @@ controller = ReviewController()
 
 #added
 class ReviewCreate(BaseModel):
-    user_id: Optional[str] = "anonymous"
+    user_id: Optional[str] = "#anonymous"
     movie_id: str
     rating: Optional[int] = 0
     comment: Optional[str] = ""
@@ -49,6 +49,7 @@ async def load_data():
         print(f"FATAL ERROR loading dataset: {e}")
         raise
 
+
 @app.get("/")
 async def root():
     return {
@@ -58,9 +59,11 @@ async def root():
         "total_movies": len(controller.movies),
     }
 
+
 @app.get("/reviews")
 async def get_reviews(
-    limit: int = Query(default=10, ge=1, le=100, description="Number of reviews to return")
+    limit: int = Query(default=10, ge=1, le=100,
+                     description="Number of reviews to return")
 ):
     reviews = controller.get_all_reviews(limit=limit)
     
@@ -78,6 +81,7 @@ async def get_review(review_id: str):
         raise HTTPException(status_code=404, detail="Review not found")
     return review
 
+
 @app.post("/reviews", status_code=201)
 async def create_review(review: ReviewCreate):
     try:
@@ -85,6 +89,7 @@ async def create_review(review: ReviewCreate):
         return {"message": "Review created successfully", "review": new_review}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @app.put("/reviews/{review_id}")
 async def update_review(review_id: str, review_update: ReviewUpdate):
@@ -95,6 +100,7 @@ async def update_review(review_id: str, review_update: ReviewUpdate):
     if not updated_review:
         raise HTTPException(status_code=404, detail="Review not found")
     return {"message": "Review updated successfully", "review": updated_review}
+
 
 @app.delete("/reviews/{review_id}")
 async def delete_review(review_id: str):

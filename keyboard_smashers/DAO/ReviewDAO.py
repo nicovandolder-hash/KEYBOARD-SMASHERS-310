@@ -6,13 +6,13 @@ from datetime import datetime
 
 class Review:
     def __init__(
-        self,
-        review_id: int,
-        movie_id: int,
-        user_id: str,
-        rating: int,
-        review_text: str,
-        review_date: datetime
+            self,
+            review_id: int,
+            movie_id: int,
+            user_id: str,
+            rating: int,
+            review_text: str,
+            review_date: datetime
     ):
         self.review_id = review_id
         self.movie_id = movie_id

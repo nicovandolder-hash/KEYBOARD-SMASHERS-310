@@ -1,14 +1,23 @@
 from datetime import datetime
 from keyboard_smashers.models.review_subject_model import ReviewSubject
-from keyboard_smashers.interfaces.observer_interface import Observer
 
 
 class Review(ReviewSubject):
-    def __init__ (self, review_id, user_id, movie_id, rating, comment, review_date
-                  , creation_date=None, helpful_votes=0):
+    def __init__(
+            self,
+            review_id,
+            user_id,
+            movie_id,
+            movie_title,
+            rating,
+            comment,
+            review_date,
+            creation_date=None,
+            helpful_votes=0):
         self.review_id = review_id
         self.user_id = user_id
         self.movie_id = movie_id
+        self.movie_title = movie_title
         self.rating = rating
         self.comment = comment
         self.review_date = review_date
@@ -23,39 +32,45 @@ class Review(ReviewSubject):
             return "User has already voted on this review."
         self.helpful_votes += 1
         self.voted_users.add(user_id)
-        self.notify(event_type="helpful_vote_added", 
-                    event_data={"user_id": user_id, 
-                                "message": f"Your review received a helpful vote from user {user_id}."})
+        self.notify(
+            event_type="helpful_vote_added",
+            event_data={
+                "user_id": user_id,
+                "message": (
+                   "Your review received a helpful vote from user {user_id}."
+                )
+            }
+        )
         return "Helpful vote added."
-    
+
     def remove_by_admin(self, admin_id, reason):
-        """Admin removes review and notifies the author"""
         if self.is_removed:
             return "Review already removed"
-        
+
         self.is_removed = True
-        
+
         self.notify('ADMIN_REMOVAL', {
-            'message': f'Your review was removed by an administrator',
+            'message': 'Your review was removed by an administrator',
+            'message': 'Your review was removed by an administrator',
             'admin_id': admin_id,
             'reason': reason,
             'removed_at': datetime.now()
         })
 
     def set_spotlight(self, status, featured_by=None):
-        """Set spotlight status and notify the author"""
         self.is_spotlighted = status
-        
+
         if status:
             self.notify('SPOTLIGHTED', {
-                'message': f'Congratulations! Your review has been spotlighted!',
+                'message': 'Congratulations! Your review is spotlighted!',
                 'featured_by': featured_by,
                 'spotlighted_at': datetime.now()
             })
         else:
             self.notify('SPOTLIGHT_REMOVED', {
-                'message': f'Your review spotlight status was removed',
+                'message': 'Your review spotlight status was removed',
+                'message': 'Your review spotlight status was removed',
                 'removed_by': featured_by
             })
-        
+
         return f"Review spotlight status set to {status}"

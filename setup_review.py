@@ -10,7 +10,7 @@ if not os.path.exists(file_path):
         'moview_id': [1, 2, 3],
         'user_id': ['u1', 'u2', 'u3'],
         'rating': [5, 4, 3],
-        'review_text': ['Great product!', 
+        'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': [datetime.now().strftime('%Y-%m-%d')] * 3
     }
@@ -20,4 +20,3 @@ if not os.path.exists(file_path):
     print(f"Sample review data created at {file_path}")
 else:
     print(f"Review data already exists at {file_path}")
-    
