@@ -5,15 +5,39 @@ from datetime import datetime
 file_path = 'data/reviews.csv'
 
 if not os.path.exists(file_path):
-    reviews = {
-        'review_id': [1, 2, 3],
-        'moview_id': [1, 2, 3],
-        'user_id': ['u1', 'u2', 'u3'],
-        'rating': [5, 4, 3],
+    reviews = pd.DataFrame({
+        'review_id': '1',
+        'movie_id': '1',
+        'user_id': '1',
+        'rating': '4',
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
-        'review_date': [datetime.now().strftime('%Y-%m-%d')] * 3
-    }
+        'review_date': datetime.now().strftime('%Y-%m-%d')
+    },{
+        'review_id': '2',
+        'movie_id': '1',
+        'user_id': '2',
+        'rating': '4',
+        'review_text': ['Great product!',
+                        'Good value for money.', 'Average quality.'],
+        'review_date': datetime.now().strftime('%Y-%m-%d')
+    },{
+        'review_id': '3',
+        'movie_id': '2',
+        'user_id': '3',
+        'rating': '5',
+        'review_text': ['Great product!',
+                        'Good value for money.', 'Average quality.'],
+        'review_date': datetime.now().strftime('%Y-%m-%d')
+    },{
+        'review_id': '4',
+        'movie_id': '2',
+        'user_id': '4',
+        'rating': '3',
+        'review_text': ['Great product!',
+                        'Good value for money.', 'Average quality.'],
+        'review_date': datetime.now().strftime('%Y-%m-%d')
+    })
     df = pd.DataFrame(reviews)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     df.to_csv(file_path, index=False)

@@ -22,7 +22,6 @@ class ReviewDAO:
                 review_date = row['review_date']
                 if pd.notnull(review_date):
                     try:
-                        # Try parsing to datetime and back to ISO
                         dt = pd.to_datetime(review_date)
                         review_date = dt.isoformat()
                     except Exception:
@@ -55,7 +54,6 @@ class ReviewDAO:
         existing_ids = [int(rid) for rid in self.reviews.keys()
                         if str(rid).isdigit()]
         review_id = str(max(existing_ids, default=0) + 1)
-        # Always serialize review_date as ISO 8601 string
         review_date = review_data.get('review_date')
         if review_date:
             try:
@@ -79,7 +77,7 @@ class ReviewDAO:
                      f"{new_review['movie_id']}")
         return new_review
 
-    def get_review(self, review_id: str) -> Optional[dict]:
+    def get_review_by_id(self, review_id: str) -> Optional[dict]:
         review = self.reviews.get(str(review_id))
         if review:
             logging.info(f"Fetched review {review_id}")
@@ -93,7 +91,7 @@ class ReviewDAO:
         logging.info(f"Fetched {len(reviews)} reviews for movie {movie_id}")
         return reviews
 
-    def update_review(self, review_id: str, data: Dict) -> Optional[dict]:
+    def update_review_by_id(self, review_id: str, data: Dict) -> Optional[dict]:
         review = self.reviews.get(str(review_id))
         if not review:
             logging.warning(f"Review {review_id} not found for update")
@@ -111,7 +109,7 @@ class ReviewDAO:
         logging.info(f"Updated review {review_id}")
         return review
 
-    def delete_review(self, review_id: str) -> bool:
+    def delete_review_by_id(self, review_id: str) -> bool:
         if str(review_id) in self.reviews:
             del self.reviews[str(review_id)]
             self.save_reviews()

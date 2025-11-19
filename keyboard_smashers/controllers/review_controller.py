@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class ReviewSchema(BaseModel):
-    """Schema for review API responses"""
     review_id: str = Field(..., description="Unique review ID")
     movie_id: str = Field(..., description="Movie ID this review is for")
     user_id: str = Field(..., description="User who wrote the review")
@@ -18,7 +17,6 @@ class ReviewSchema(BaseModel):
 
 
 class ReviewCreateSchema(BaseModel):
-    """Schema for creating a new review"""
     movie_id: str = Field(..., description="Movie ID this review is for")
     user_id: str = Field(..., description="User who wrote the review")
     rating: int = Field(..., description="Rating given by the user")
@@ -45,7 +43,6 @@ class ReviewController:
                     f"{len(self.review_dao.reviews)} reviews")
 
     def _dict_to_schema(self, review_dict: dict) -> ReviewSchema:
-        # Replace NaN with default values and ensure types
         cleaned = {}
         for key, value in review_dict.items():
             if pd.isna(value):
@@ -106,6 +103,11 @@ class ReviewController:
                                 f"{review_id}' not found")
         logger.info(f"Review deleted successfully: {review_id}")
         return {"message": f"Review '{review_id}' deleted successfully"}
+    
+    def get_review_for_movie(self, movie_id: str) -> List[ReviewSchema]:
+        logger.info(f"Fetching reviews for movie: {movie_id}")
+        reviews = self.review_dao.get_review_for_movie(str(movie_id))
+        return [self._dict_to_schema(r) for r in reviews]
 
 
 review_controller_instance = ReviewController()
@@ -115,11 +117,32 @@ router = APIRouter(
     tags=["reviews"],
 )
 
-
+# Public endpoints
 @router.get("/")
-def get_reviews_endpoint(limit: int = 10):
+def get_reviews_all_endpoint(limit: int = 10):
     reviews = review_controller_instance.get_all_reviews(limit=limit)
     return {
         "count": len(reviews),
         "reviews": reviews
     }
+
+@router.get("/{review_id}")
+def get_review_by_id_endpoint(review_id: str):
+    return review_controller_instance.get_review_by_id(review_id)
+
+@router.post("/")
+def create_review_endpoint(review_data: ReviewCreateSchema):
+    return review_controller_instance.create_review(review_data)
+
+@router.put("/{review_id}")
+def update_review_endpoint(review_id: str, review_data: ReviewUpdateSchema):
+    return review_controller_instance.update_review(review_id, review_data)
+
+@router.get("/movie/{movie_id}")
+def get_review_for_movie_endpoint(movie_id: str):
+    return review_controller_instance.get_review_for_movie(movie_id)
+
+#Admin Endpoints
+@router.delete("/{review_id}")
+def delete_review_by_id_endpoint(review_id: str):
+    return review_controller_instance.delete_review(review_id)
