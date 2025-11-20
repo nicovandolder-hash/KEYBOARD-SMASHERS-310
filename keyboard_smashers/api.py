@@ -26,7 +26,7 @@ async def load_data():
         if not review_csv.exists():
             logger.error("imdb_reviews.csv file not found in data directory")
             raise FileNotFoundError("imdb_reviews.csv file "
-            "not found in data directory")
+                                    "not found in data directory")
 
         logger.info(f"Loading reviews from: {review_csv}")
         review_controller_instance.review_dao.load_reviews()
