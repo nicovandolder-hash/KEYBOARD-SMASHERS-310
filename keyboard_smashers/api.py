@@ -7,8 +7,8 @@ from keyboard_smashers.controllers.review_controller import (
      router as review_router, review_controller_instance
 )
 from keyboard_smashers.controllers.user_controller import (
-     router as user_router, user_controller_instance  # noqa: F401
-)
+     router as user_router, user_controller_instance
+)  # noqa: F401
 from keyboard_smashers.controllers.movie_controller import (
      router as movie_router, movie_controller_instance
 )  # noqa: F401
