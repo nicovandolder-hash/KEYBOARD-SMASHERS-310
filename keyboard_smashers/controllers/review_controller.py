@@ -32,7 +32,6 @@ class ReviewController:
                 genre="",
                 release_year=0,
                 director="",
-                cast=[],
                 description=""
             )
             self.movies[movie_name] = movie
