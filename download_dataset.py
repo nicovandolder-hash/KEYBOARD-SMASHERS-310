@@ -1,4 +1,4 @@
-import kagglehub # noqa: F401
+import kagglehub  # noqa: F401
 from pathlib import Path
 import pandas as pd
 

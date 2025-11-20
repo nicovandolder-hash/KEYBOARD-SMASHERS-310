@@ -21,7 +21,7 @@ def temp_csv_data():
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': datetime.now().strftime('%Y-%m-%d')
-    },{
+    }, {
         'review_id': '2',
         'movie_id': '1',
         'user_id': '2',
@@ -29,7 +29,7 @@ def temp_csv_data():
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': datetime.now().strftime('%Y-%m-%d')
-    },{
+    }, {
         'review_id': '3',
         'movie_id': '2',
         'user_id': '3',
@@ -37,7 +37,7 @@ def temp_csv_data():
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': datetime.now().strftime('%Y-%m-%d')
-    },{
+    }, {
         'review_id': '4',
         'movie_id': '2',
         'user_id': '4',

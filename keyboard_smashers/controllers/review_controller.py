@@ -103,7 +103,7 @@ class ReviewController:
                                 f"{review_id}' not found")
         logger.info(f"Review deleted successfully: {review_id}")
         return {"message": f"Review '{review_id}' deleted successfully"}
-    
+
     def get_review_for_movie(self, movie_id: str) -> List[ReviewSchema]:
         logger.info(f"Fetching reviews for movie: {movie_id}")
         reviews = self.review_dao.get_review_for_movie(str(movie_id))
@@ -117,6 +117,7 @@ router = APIRouter(
     tags=["reviews"],
 )
 
+
 # Public endpoints
 @router.get("/")
 def get_reviews_all_endpoint(limit: int = 10):
@@ -126,23 +127,28 @@ def get_reviews_all_endpoint(limit: int = 10):
         "reviews": reviews
     }
 
+
 @router.get("/{review_id}")
 def get_review_by_id_endpoint(review_id: str):
     return review_controller_instance.get_review_by_id(review_id)
+
 
 @router.post("/")
 def create_review_endpoint(review_data: ReviewCreateSchema):
     return review_controller_instance.create_review(review_data)
 
+
 @router.put("/{review_id}")
 def update_review_endpoint(review_id: str, review_data: ReviewUpdateSchema):
     return review_controller_instance.update_review(review_id, review_data)
+
 
 @router.get("/movie/{movie_id}")
 def get_review_for_movie_endpoint(movie_id: str):
     return review_controller_instance.get_review_for_movie(movie_id)
 
-#Admin Endpoints
+
+# Admin Endpoints
 @router.delete("/{review_id}")
 def delete_review_by_id_endpoint(review_id: str):
     return review_controller_instance.delete_review(review_id)

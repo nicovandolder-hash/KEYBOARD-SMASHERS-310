@@ -91,7 +91,8 @@ class ReviewDAO:
         logging.info(f"Fetched {len(reviews)} reviews for movie {movie_id}")
         return reviews
 
-    def update_review_by_id(self, review_id: str, data: Dict) -> Optional[dict]:
+    def update_review_by_id(self, review_id: str,
+                            data: Dict) -> Optional[dict]:
         review = self.reviews.get(str(review_id))
         if not review:
             logging.warning(f"Review {review_id} not found for update")

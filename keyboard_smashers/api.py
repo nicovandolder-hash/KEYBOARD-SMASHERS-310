@@ -1,12 +1,13 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Query, HTTPException
+from pydantic import BaseModel
 from pathlib import Path
 from keyboard_smashers.logging_config import setup_logging
 from keyboard_smashers.controllers.review_controller import (
      router as review_router, review_controller_instance
 )
 from keyboard_smashers.controllers.user_controller import (
-     router as user_router, user_controller_instance
+     router as user_router, user_controller_instance  # noqa: F401
 )
 from keyboard_smashers.controllers.movie_controller import (
      router as movie_router, movie_controller_instance
@@ -21,6 +22,7 @@ app = FastAPI(title="IMDB Reviews API")
 app.include_router(review_router)
 app.include_router(user_router)
 app.include_router(movie_router)
+
 
 class ReviewCreate(BaseModel):
     user_id: Optional[str] = "#anonymous"
@@ -100,7 +102,8 @@ async def get_review_by_id(review_id: str):
 @app.post("/reviews", status_code=201)
 async def create_review(review: ReviewCreate):
     try:
-        new_review = review_controller_instance.create_review(review.model_dump())
+        new_review = review_controller_instance.create_review(
+            review.model_dump())
         return {"message": "Review created successfully", "review": new_review}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -111,7 +114,8 @@ async def update_review_by_id(review_id: str, review_update: ReviewUpdate):
     update_data = review_update.model_dump(exclude_none=True)
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields to update")
-    updated_review = review_controller_instance.update_review(str(review_id), update_data)
+    updated_review = review_controller_instance.update_review(
+        str(review_id), update_data)
     if not updated_review:
         raise HTTPException(status_code=404, detail="Review not found")
     return {"message": "Review updated successfully", "review": updated_review}

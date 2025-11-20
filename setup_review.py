@@ -13,7 +13,7 @@ if not os.path.exists(file_path):
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': datetime.now().strftime('%Y-%m-%d')
-    },{
+    }, {
         'review_id': '2',
         'movie_id': '1',
         'user_id': '2',
@@ -21,7 +21,7 @@ if not os.path.exists(file_path):
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': datetime.now().strftime('%Y-%m-%d')
-    },{
+    }, {
         'review_id': '3',
         'movie_id': '2',
         'user_id': '3',
@@ -29,7 +29,7 @@ if not os.path.exists(file_path):
         'review_text': ['Great product!',
                         'Good value for money.', 'Average quality.'],
         'review_date': datetime.now().strftime('%Y-%m-%d')
-    },{
+    }, {
         'review_id': '4',
         'movie_id': '2',
         'user_id': '4',
