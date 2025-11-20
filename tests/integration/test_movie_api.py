@@ -21,18 +21,22 @@ def admin_client(client):
     from keyboard_smashers.controllers.user_controller import (
         user_controller_instance
     )
-    from keyboard_smashers.models.user_model import User
 
     # Create admin user directly
-    admin_user = User(
-        userid="test_admin",
-        username="Test Admin",
-        email="admin@test.com",
-        is_admin=True
-    )
-    user_controller_instance.users.append(admin_user)
-    user_controller_instance.user_map[admin_user.userid] = admin_user
-    user_controller_instance.email_map[admin_user.email] = admin_user
+    admin_user = {
+        'user_id': 'test_admin',
+        'username': 'Test Admin',
+        'email': 'admin@test.com',
+        'password': '',
+        'reputation': 3,
+        'creation_date': datetime.now(),
+        'is_admin': True,
+        'total_reviews': 0
+    }
+    user_controller_instance.user_dao.users[admin_user['user_id']] = admin_user
+    user_controller_instance.user_dao.users[admin_user['user_id']] = admin_user
+    user_controller_instance.user_dao.email_index[admin_user['email']] = (
+        admin_user['user_id'])
 
     # Create admin session
     session_token = secrets.token_urlsafe(32)
@@ -51,14 +55,10 @@ def admin_client(client):
     # Cleanup
     if session_token in sessions:
         del sessions[session_token]
-    user_controller_instance.users = [
-        u for u in user_controller_instance.users
-        if u.userid != "test_admin"
-    ]
-    if "test_admin" in user_controller_instance.user_map:
-        del user_controller_instance.user_map["test_admin"]
-    if "admin@test.com" in user_controller_instance.email_map:
-        del user_controller_instance.email_map["admin@test.com"]
+    if "test_admin" in user_controller_instance.user_dao.users:
+        del user_controller_instance.user_dao.users["test_admin"]
+    if "admin@test.com" in user_controller_instance.user_dao.email_index:
+        del user_controller_instance.user_dao.email_index["admin@test.com"]
     client.cookies.clear()
 
 
