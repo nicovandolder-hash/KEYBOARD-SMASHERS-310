@@ -1,9 +1,11 @@
-
+from fastapi import APIRouter, HTTPException, Depends
+from typing import List, Optional
+from pydantic import BaseModel, Field, ConfigDict
 import logging
 import pandas as pd
-from fastapi import APIRouter, HTTPException
-from typing import List, Optional
-from pydantic import BaseModel, Field
+from keyboard_smashers.dao.review_dao import ReviewDAO
+from keyboard_smashers.auth import get_current_admin_user
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,9 +38,9 @@ class ReviewUpdateSchema(BaseModel):
 
 
 class ReviewController:
-    def __init__(self, csv_path: str = "data/reviews.csv"):
-        from keyboard_smashers.dao.review_dao import review_dao
-        self.review_dao = review_dao(csv_path=csv_path)
+    def __init__(self, csv_path: str = "data/imdb_reviews.csv"):
+        from keyboard_smashers.dao.review_dao import ReviewDAO
+        self.review_dao = ReviewDAO(csv_path=csv_path)
         logger.info(f"ReviewController initialized with "
                     f"{len(self.review_dao.reviews)} reviews")
 
@@ -61,7 +63,7 @@ class ReviewController:
 
     def get_review_by_id(self, review_id: str) -> ReviewSchema:
         logger.info(f"Fetching review: {review_id}")
-        review = self.review_dao.get_review(str(review_id))
+        review = self.review_dao.get_review_by_id(str(review_id))
         if not review:
             logger.error(f"Review not found: {review_id}")
             raise HTTPException(status_code=404,
@@ -77,13 +79,13 @@ class ReviewController:
                     f"{created_review['review_id']}")
         return self._dict_to_schema(created_review)
 
-    def update_review(self, review_id: str,
+    def update_review_by_id(self, review_id: str,
                       review_data: ReviewUpdateSchema) -> ReviewSchema:
         logger.info(f"Updating review: {review_id}")
         update_dict = review_data.model_dump(exclude_none=True)
         if not update_dict:
             raise HTTPException(status_code=400, detail="No fields to update")
-        updated_review = self.review_dao.update_review(str(review_id),
+        updated_review = self.review_dao.update_review_by_id(str(review_id),
                                                        update_dict)
         if not updated_review:
             logger.error(f"Review not found for update: {review_id}")
@@ -93,9 +95,9 @@ class ReviewController:
         logger.info(f"Review updated successfully: {review_id}")
         return self._dict_to_schema(updated_review)
 
-    def delete_review(self, review_id: str) -> dict:
+    def delete_review_by_id(self, review_id: str) -> dict:
         logger.info(f"Deleting review: {review_id}")
-        success = self.review_dao.delete_review(str(review_id))
+        success = self.review_dao.delete_review_by_id(str(review_id))
         if not success:
             logger.error(f"Review not found for deletion: {review_id}")
             raise HTTPException(status_code=404,
@@ -133,6 +135,12 @@ def get_review_by_id_endpoint(review_id: str):
     return review_controller_instance.get_review_by_id(review_id)
 
 
+@router.get("/movie/{movie_id}")
+def get_review_for_movie_endpoint(movie_id: str):
+    return review_controller_instance.get_review_for_movie(movie_id)
+
+
+# User Endpoints
 @router.post("/")
 def create_review_endpoint(review_data: ReviewCreateSchema):
     return review_controller_instance.create_review(review_data)
@@ -140,15 +148,10 @@ def create_review_endpoint(review_data: ReviewCreateSchema):
 
 @router.put("/{review_id}")
 def update_review_endpoint(review_id: str, review_data: ReviewUpdateSchema):
-    return review_controller_instance.update_review(review_id, review_data)
-
-
-@router.get("/movie/{movie_id}")
-def get_review_for_movie_endpoint(movie_id: str):
-    return review_controller_instance.get_review_for_movie(movie_id)
+    return review_controller_instance.update_review_by_id(review_id, review_data)
 
 
 # Admin Endpoints
 @router.delete("/{review_id}")
 def delete_review_by_id_endpoint(review_id: str):
-    return review_controller_instance.delete_review(review_id)
+    return review_controller_instance.delete_review_by_id(review_id)

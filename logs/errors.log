@@ -1,0 +1,11 @@
+2025-11-19 18:53:42 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: 'ReviewController' object has no attribute 'load_dataset'
+2025-11-19 19:00:37 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: ReviewDAO.load_reviews() takes 1 positional argument but 2 were given
+2025-11-19 19:01:30 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: ReviewDAO.load_reviews() takes 1 positional argument but 2 were given
+2025-11-19 19:02:28 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: 'ReviewController' object has no attribute 'reviews'
+2025-11-19 19:02:28 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: 'ReviewController' object has no attribute 'reviews'
+2025-11-19 19:03:14 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: object of type 'method' has no len()
+2025-11-19 19:05:15 - keyboard_smashers.api - ERROR - load_data:67 - ERROR loading dataset: 'ReviewController' object has no attribute 'movies'
+2025-11-19 19:08:21 - keyboard_smashers.api - ERROR - save_data:79 - Error saving user data: name 'user_controller_instance' is not defined
+2025-11-19 19:08:21 - keyboard_smashers.api - ERROR - save_data:79 - Error saving user data: name 'user_controller_instance' is not defined
+2025-11-19 19:16:02 - keyboard_smashers.api - ERROR - save_data:78 - Error saving user data: name 'user_controller_instance' is not defined
+2025-11-19 19:16:02 - keyboard_smashers.api - ERROR - save_data:78 - Error saving user data: name 'user_controller_instance' is not defined

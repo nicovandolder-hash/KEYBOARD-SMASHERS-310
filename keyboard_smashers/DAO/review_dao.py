@@ -1,4 +1,3 @@
-
 import logging
 import pandas as pd
 from pathlib import Path
@@ -7,7 +6,7 @@ from datetime import datetime
 
 
 class ReviewDAO:
-    def __init__(self, csv_path: str = 'data/reviews.csv'):
+    def __init__(self, csv_path: str = 'data/imdb_reviews.csv'):
         self.csv_path = csv_path
         self.reviews: Dict[str, dict] = {}
         logging.info(f"Initializing review_dao with csv_path={csv_path}")
@@ -17,9 +16,30 @@ class ReviewDAO:
         path = Path(self.csv_path)
         if path.exists():
             df = pd.read_csv(self.csv_path)
+
+            # Map columns to expected names
+            column_mapping = {
+                'Date of Review': 'review_date',
+                'User': 'user_id',
+                "User's Rating out of 10": 'rating',
+                'Review': 'review_text',
+                'movie': 'movie_id'
+            }
+            df.rename(columns=column_mapping, inplace=True)
+
             count = 0
+
+            # Ensure 'review_id' column exists or generate unique IDs
+            if 'review_id' not in df.columns:
+                logging.warning("'review_id' column missing. Generating unique IDs.")
+                df['review_id'] = range(1, len(df) + 1)
+
+            # Clean the 'rating' column in bulk
+            df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(0).astype(int)
+
             for _, row in df.iterrows():
-                review_date = row['review_date']
+                # Check if 'review_date' column exists
+                review_date = row['review_date'] if 'review_date' in row else None
                 if pd.notnull(review_date):
                     try:
                         dt = pd.to_datetime(review_date)
@@ -28,11 +48,12 @@ class ReviewDAO:
                         review_date = str(review_date)
                 else:
                     review_date = ""
+
                 review = {
                     'review_id': str(row['review_id']),
                     'movie_id': str(row['movie_id']),
                     'user_id': row['user_id'],
-                    'rating': int(row['rating']),
+                    'rating': row['rating'],
                     'review_text': row['review_text'],
                     'review_date': review_date,
                 }
