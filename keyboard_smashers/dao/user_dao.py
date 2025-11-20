@@ -42,7 +42,10 @@ class UserDAO:
                         'is_admin': row.get('is_admin', 'false').lower() == (
                             'true'
                         ),
-                        'total_reviews': int(row.get('total_reviews', 0))
+                        'total_reviews': int(row.get('total_reviews', 0)),
+                        'total_penalty_count': int(
+                            row.get('total_penalty_count', 0)
+                        )
                     }
 
                     self.users[user_dict['userid']] = user_dict
@@ -78,7 +81,8 @@ class UserDAO:
                     'reputation',
                     'creation_date',
                     'is_admin',
-                    'total_reviews'
+                    'total_reviews',
+                    'total_penalty_count'
                 ]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
@@ -92,7 +96,10 @@ class UserDAO:
                         'reputation': user['reputation'],
                         'creation_date': user['creation_date'].isoformat(),
                         'is_admin': str(user['is_admin']).lower(),
-                        'total_reviews': user['total_reviews']
+                        'total_reviews': user['total_reviews'],
+                        'total_penalty_count': (
+                            user.get('total_penalty_count', 0)
+                        )
                     })
 
             logger.info(f"Saved {len(self.users)} users to {self.csv_path}")
@@ -117,7 +124,8 @@ class UserDAO:
             'reputation': user_data.get('reputation', 3),
             'creation_date': user_data.get('creation_date', datetime.now()),
             'is_admin': user_data.get('is_admin', False),
-            'total_reviews': 0
+            'total_reviews': 0,
+            'total_penalty_count': 0
         }
 
         self.users[user_id] = user_dict
@@ -196,3 +204,16 @@ class UserDAO:
 
         self.users[userid]['total_reviews'] += 1
         self.save_users()
+
+    def increment_penalty_count(self, userid: str) -> None:
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        if 'total_penalty_count' not in self.users[userid]:
+            self.users[userid]['total_penalty_count'] = 0
+
+        self.users[userid]['total_penalty_count'] += 1
+        self.save_users()
+        logger.info(f"Incremented penalty count for user: {userid}"
+                    f"self.users[userid]['total_penalties']"
+                    )

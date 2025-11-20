@@ -1,0 +1,4 @@
+penalty_id,user_id,reason,severity,start_date,end_date,issued_by,created_at
+penalty_001,user_003,Post somewhat follows guidelines,2,2025-11-20T22:10:43.126000+00:00,2025-11-27T22:10:43.126000+00:00,user_001,2025-11-20T22:09:19.980406
+penalty_002,user_007,Post does not follow community guidelines,3,2025-11-20T12:00:00,2025-11-27T12:00:00,user_001,2025-11-20T22:39:52.783055
+penalty_003,user_008,Post does not follow community guidelines,3,2025-11-20T12:00:00,2025-11-27T12:00:00,user_001,2025-11-20T22:40:29.295200
