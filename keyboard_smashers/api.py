@@ -30,10 +30,8 @@ async def load_data():
 
         logger.info(f"Loading reviews from: {review_csv}")
         review_controller_instance.review_dao.load_reviews()
-        logger.info(
-            f"Loaded {len(review_controller_instance.
-                          get_all_reviews())} reviews."
-        )
+        count = len(review_controller_instance.get_all_reviews())
+        logger.info(f"Loaded {count} reviews.")
         logger.info("Application ready.")
 
     except Exception as e:
