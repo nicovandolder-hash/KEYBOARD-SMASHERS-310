@@ -1,3 +1,4 @@
 userid,username,email,password,reputation,creation_date,is_admin,total_reviews
-user_004,test,test@test.com,12345678@Aa,3,2025-11-18T03:23:09.100939,true,0
-user_005,changed,string,12345678@Aa,0,2025-11-18T03:26:32.991837,false,0
+user_001,Nico1,Nico1@stu.ubc.ca,Password1!,5,2025-10-30T02:18:46.241597,true,0
+user_002,Nico2,Nico2@stu.ubc.ca,Password2!,4,2025-10-30T02:19:07.312274,false,0
+user_003,User3,Nico3@stu.ubc.ca,Password3!,3,2025-11-15T16:47:53.332751,false,0
