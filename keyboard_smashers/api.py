@@ -11,7 +11,7 @@ from keyboard_smashers.controllers.user_controller import (
 )
 from keyboard_smashers.controllers.movie_controller import (
      router as movie_router, movie_controller_instance
-)
+)  # noqa: F401
 import logging
 
 setup_logging()
