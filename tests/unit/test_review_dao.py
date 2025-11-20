@@ -1,7 +1,7 @@
 
 from datetime import datetime
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import pandas as pd
 from keyboard_smashers.dao.review_dao import ReviewDAO
 
