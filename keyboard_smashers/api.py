@@ -6,12 +6,12 @@ from keyboard_smashers.logging_config import setup_logging
 from keyboard_smashers.controllers.review_controller import (
      router as review_router, review_controller_instance
 )
-from keyboard_smashers.controllers.user_controller import (
-     router as user_router, user_controller_instance
+from keyboard_smashers.controllers.user_controller import (  # noqa: F401
+     router as user_router, user_controller_instance  # noqa: F401
 )  # noqa: F401
 from keyboard_smashers.controllers.movie_controller import (
      router as movie_router, movie_controller_instance
-)  # noqa: F401
+)
 import logging
 
 setup_logging()
@@ -58,7 +58,7 @@ async def load_data():
         review_controller_instance.load_dataset(str(csv_file))
         logger.info(
             f"Loaded {len(review_controller_instance.reviews)} "
-            f"reviews for {len(review_controller_instance.movies)} movies."
+            f"reviews for {len(movie_controller_instance.movies)} movies."
             )
 
         logger.info("Application ready.")
