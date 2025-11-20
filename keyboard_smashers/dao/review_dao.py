@@ -32,7 +32,7 @@ class ReviewDAO:
             # Ensure 'review_id' column exists
             if 'review_id' not in df.columns:
                 logging.warning("'review_id' column missing. "
-                "Generating unique IDs.")
+                                "Generating unique IDs.")
                 df['review_id'] = range(1, len(df) + 1)
 
             # Clean the 'rating' column in bulk
@@ -41,8 +41,8 @@ class ReviewDAO:
 
             for _, row in df.iterrows():
                 # Check if 'review_date' column exists
-                review_date =row['review_date'] if (
-                    'review_date' in row )else None
+                review_date = row['review_date'] if (
+                    'review_date' in row)else None
                 if pd.notnull(review_date):
                     try:
                         dt = pd.to_datetime(review_date)
