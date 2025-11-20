@@ -1,10 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends  # noqa: F401
 from typing import List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict  # noqa: F401
 import logging
 import pandas as pd
 from keyboard_smashers.dao.review_dao import ReviewDAO
-from keyboard_smashers.auth import get_current_admin_user
+from keyboard_smashers.auth import get_current_admin_user  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,6 @@ class ReviewUpdateSchema(BaseModel):
 
 class ReviewController:
     def __init__(self, csv_path: str = "data/imdb_reviews.csv"):
-        from keyboard_smashers.dao.review_dao import ReviewDAO
         self.review_dao = ReviewDAO(csv_path=csv_path)
         logger.info(f"ReviewController initialized with "
                     f"{len(self.review_dao.reviews)} reviews")
@@ -80,13 +79,13 @@ class ReviewController:
         return self._dict_to_schema(created_review)
 
     def update_review_by_id(self, review_id: str,
-                      review_data: ReviewUpdateSchema) -> ReviewSchema:
+                            review_data: ReviewUpdateSchema) -> ReviewSchema:
         logger.info(f"Updating review: {review_id}")
         update_dict = review_data.model_dump(exclude_none=True)
         if not update_dict:
             raise HTTPException(status_code=400, detail="No fields to update")
         updated_review = self.review_dao.update_review_by_id(str(review_id),
-                                                       update_dict)
+                                                             update_dict)
         if not updated_review:
             logger.error(f"Review not found for update: {review_id}")
             raise HTTPException(status_code=404,
@@ -148,7 +147,8 @@ def create_review_endpoint(review_data: ReviewCreateSchema):
 
 @router.put("/{review_id}")
 def update_review_endpoint(review_id: str, review_data: ReviewUpdateSchema):
-    return review_controller_instance.update_review_by_id(review_id, review_data)
+    return review_controller_instance.update_review_by_id(review_id,
+                                                          review_data)
 
 
 # Admin Endpoints

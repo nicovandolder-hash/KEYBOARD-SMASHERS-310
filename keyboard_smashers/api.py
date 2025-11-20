@@ -25,12 +25,14 @@ async def load_data():
         review_csv = dataset_dir / "imdb_reviews.csv"
         if not review_csv.exists():
             logger.error("imdb_reviews.csv file not found in data directory")
-            raise FileNotFoundError("imdb_reviews.csv file not found in data directory")
+            raise FileNotFoundError("imdb_reviews.csv file "
+            "not found in data directory")
 
         logger.info(f"Loading reviews from: {review_csv}")
         review_controller_instance.review_dao.load_reviews()
         logger.info(
-            f"Loaded {len(review_controller_instance.get_all_reviews())} reviews."
+            f"Loaded {len(review_controller_instance.
+                          get_all_reviews())} reviews."
         )
         logger.info("Application ready.")
 
