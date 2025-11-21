@@ -212,3 +212,1396 @@
 2025-11-17 19:05:44 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:118 - Saving users to CSV at: data\users.csv
 2025-11-17 19:05:44 - keyboard_smashers.controllers.user_controller - INFO - save_users_to_csv:147 - Saved 0 users to data\users.csv
 2025-11-17 19:05:44 - keyboard_smashers.api - INFO - save_data:79 - User data saved successfully.
+2025-11-20 15:46:54 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:46:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:46:56 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:46:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:48:43 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:48:43 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:48:43 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:48:43 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:48:43 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:44 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:44 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:48:44 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:44 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:44 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:48:44 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:48:44 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:48:44 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:48:44 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:48:57 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:48:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:48:57 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:48:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:48:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:58 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:58 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:48:58 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:58 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:48:58 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:48:58 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:48:58 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:48:58 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:48:58 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:52:52 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:52:52 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:52:52 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:52:52 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:52:53 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:52:53 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:53:49 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Integration Test Movie 1763682829511
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 7
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 422 Unprocessable Entity"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: nonexistent_id_xyz
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: nonexistent_id_xyz
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/nonexistent_id_xyz "HTTP/1.1 404 Not Found"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:49 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: nonexistent_id_abc
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: nonexistent_id_abc
+2025-11-20 15:53:49 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/nonexistent_id_abc "HTTP/1.1 404 Not Found"
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Persistence Test 1763682829984
+2025-11-20 15:53:49 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 8
+2025-11-20 15:53:50 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 8
+2025-11-20 15:53:50 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/8 "HTTP/1.1 200 OK"
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:50 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Special Test 1763682830052: Sequel - Part 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 9
+2025-11-20 15:53:50 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:53:50 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:53:50 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:53:50 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:56:56 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:56:56 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Integration Test Movie 1763683016763
+2025-11-20 15:56:56 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 10
+2025-11-20 15:56:56 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 422 Unprocessable Entity"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: nonexistent_id_xyz
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: nonexistent_id_xyz
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/nonexistent_id_xyz "HTTP/1.1 404 Not Found"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: nonexistent_id_abc
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: nonexistent_id_abc
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/nonexistent_id_abc "HTTP/1.1 404 Not Found"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Persistence Test 1763683017196
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 11
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 11
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/11 "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Special Test 1763683017254: Sequel - Part 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 12
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:56:57 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:56:57 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:56:57 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:57:21 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:57:21 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Integration Test Movie 1763683041761
+2025-11-20 15:57:21 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 13
+2025-11-20 15:57:21 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 422 Unprocessable Entity"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: nonexistent_id_xyz
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: nonexistent_id_xyz
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/nonexistent_id_xyz "HTTP/1.1 404 Not Found"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: nonexistent_id_abc
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: nonexistent_id_abc
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/nonexistent_id_abc "HTTP/1.1 404 Not Found"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Persistence Test 1763683042198
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 14
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 14
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/14 "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Special Test 1763683042267: Sequel - Part 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 15
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:57:22 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:57:22 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:57:22 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 15:58:29 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Integration Test Movie 1763683109732
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 16
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 422 Unprocessable Entity"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: nonexistent_id_xyz
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: nonexistent_id_xyz
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/nonexistent_id_xyz "HTTP/1.1 404 Not Found"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: nonexistent_id_abc
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: nonexistent_id_abc
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/nonexistent_id_abc "HTTP/1.1 404 Not Found"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Persistence Test 1763683109906
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 17
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 17
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/17 "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Special Test 1763683109964: Sequel - Part 1
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 18
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 15:58:29 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 15:58:29 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - WARNING - set_password:35 - Password validation failed fortest_user: Too short
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - WARNING - set_password:40 - Password validation failed fortest_user: No digit
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - WARNING - set_password:45 - Password validation failed fortest_user: No special character
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - WARNING - set_password:51 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - WARNING - set_password:57 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - ERROR - set_password:68 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - set_password:64 - Password set successfully for user: test_user
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - __init__:23 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 15:58:30 - keyboard_smashers.models.user_model - INFO - add_review:89 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 15:58:30 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query

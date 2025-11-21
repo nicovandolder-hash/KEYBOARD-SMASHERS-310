@@ -1,7 +1,11 @@
-movie_id,title,genre,director,year
-1,Avengers Endgame,Action,Anthony & Joe Russo,2019
-2,Inception,Sci-Fi,Christopher Nolan,2010
-3,Joker,Thriller,Todd Phillips,2019
-4,Interstellar,Sci-Fi,Christopher Nolan,2014
-5,Parasite,Drama,Bong Joon Ho,2019
-6,The Dark Knight,Action,Christopher Nolan,2008
+movie_id,title,genre,year,director,description
+1,Avengers Endgame,Action/Adventure,2019,Anthony & Joe Russo,The Avengers assemble once more to reverse Thanos' actions and restore balance to the universe.
+2,Forrest Gump,Drama/Romance,1994,Robert Zemeckis,The presidencies of Kennedy and Johnson unfold through the perspective of an Alabama man with an IQ of 75.
+3,John Wick Chapter 3  Parabellum,Action/Thriller,2019,Chad Stahelski,John Wick is on the run after killing a member of the international assassins' guild.
+4,Joker,Crime/Drama,2019,Todd Phillips,In Gotham City mentally troubled comedian Arthur Fleck embarks on a downward spiral of social revolution and bloody crime.
+5,Morbius,Action/Horror,2022,Daniel Espinosa,Biochemist Michael Morbius tries to cure himself of a rare blood disease but inadvertently infects himself with vampirism.
+6,Pulp Fiction,Crime/Thriller,1994,Quentin Tarantino,The lives of two mob hitmen a boxer and a pair of diner bandits intertwine in four tales of violence and redemption.
+7,SpiderMan No Way Home,Action/Adventure,2021,Jon Watts,Spider-Man seeks Doctor Strange's help to restore his secret identity but the spell tears open the multiverse.
+8,The Avengers,Action/Adventure,2012,Joss Whedon,Earth's mightiest heroes must come together to stop Loki and his alien army from enslaving humanity.
+9,The Dark Knight,Action/Crime,2008,Christopher Nolan,Batman raises the stakes in his war on crime with the help of Lt. Gordon and DA Harvey Dent as the Joker wreaks havoc.
+10,Thor Ragnarok,Action/Adventure,2017,Taika Waititi,Thor must escape the alien planet Sakaar in time to save Asgard from Hela and the impending Ragnarok.
