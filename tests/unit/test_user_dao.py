@@ -1,7 +1,6 @@
 import pytest
 import tempfile
 import os
-from datetime import datetime
 from keyboard_smashers.dao.user_dao import UserDAO
 
 
