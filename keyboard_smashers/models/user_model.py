@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class User(Observer):
     def __init__(self, username, email, userid, password=None, reputation=3,
-                 creation_date=None, is_admin=False):
+                 creation_date=None, is_admin=False, total_penalty_count=0):
         self.username = username
         self.email = email
         self.userid = userid
@@ -19,6 +19,8 @@ class User(Observer):
         self.total_reviews = 0
         self.is_admin = is_admin
         self.notifications = []
+        self.total_penalty_count = total_penalty_count,
+        self.penalties = []
 
         logger.info(
             f"User created:"
