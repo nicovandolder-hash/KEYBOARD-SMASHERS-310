@@ -27,13 +27,13 @@ def test_movies_csv():
     from keyboard_smashers.controllers.movie_controller import movie_controller_instance
     original_path = movie_controller_instance.movie_dao.csv_path
     movie_controller_instance.movie_dao.csv_path = temp_path
-    movie_controller_instance.movie_dao.load_movies()
+    movie_controller_instance.movie_dao._load_movies()
     
     yield temp_path
     
     # Cleanup: restore original path and reload original data
     movie_controller_instance.movie_dao.csv_path = original_path
-    movie_controller_instance.movie_dao.load_movies()
+    movie_controller_instance.movie_dao._load_movies()
     
     # Delete temp file
     try:
