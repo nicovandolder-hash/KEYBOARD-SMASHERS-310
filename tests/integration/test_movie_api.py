@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import secrets
 import time
 import tempfile
-import shutil
 from pathlib import Path
 
 
@@ -16,29 +15,29 @@ def test_movies_csv():
     # Create a temporary file
     temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='')
     temp_path = temp_file.name
-    
+
     # Copy the original movies.csv structure with initial test data
     temp_file.write("movie_id,title,genre,year,director,description\n")
     temp_file.write("1,Test Movie 1,Action,2020,Test Director,Test description\n")
     temp_file.write("2,Inception,Sci-Fi,2010,Christopher Nolan,A mind-bending thriller\n")
     temp_file.close()
-    
+
     # Replace the MovieDAO's CSV path with temp file
     from keyboard_smashers.controllers.movie_controller import movie_controller_instance
     original_path = movie_controller_instance.movie_dao.csv_path
     movie_controller_instance.movie_dao.csv_path = temp_path
     movie_controller_instance.movie_dao._load_movies()
-    
+
     yield temp_path
-    
+
     # Cleanup: restore original path and reload original data
     movie_controller_instance.movie_dao.csv_path = original_path
     movie_controller_instance.movie_dao._load_movies()
-    
+
     # Delete temp file
     try:
         Path(temp_path).unlink()
-    except:
+    except Exception:
         pass
 
 
