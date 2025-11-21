@@ -13,6 +13,7 @@ class UserDAO:
         self.csv_path = csv_path
         self.users: Dict[str, Dict[str, Any]] = {}
         self.email_index: Dict[str, str] = {}
+        self.username_index: Dict[str, str] = {}
         self.user_counter = 1
         self.load_users()
 
@@ -47,6 +48,9 @@ class UserDAO:
 
                     self.users[user_dict['userid']] = user_dict
                     self.email_index[user_dict['email'].lower()] = (
+                        user_dict['userid']
+                    )
+                    self.username_index[user_dict['username'].lower()] = (
                         user_dict['userid']
                     )
 
@@ -104,7 +108,12 @@ class UserDAO:
         email_lower = user_data['email'].lower()
         if email_lower in self.email_index:
             raise ValueError(f"Email '{user_data['email']}'"
-                             f"already registered")
+                             f" already registered")
+
+        username_lower = user_data['username'].lower()
+        if username_lower in self.username_index:
+            raise ValueError(f"Username '{user_data['username']}'"
+                             f" already taken")
 
         user_id = f"user_{self.user_counter:03d}"
         self.user_counter += 1
@@ -122,6 +131,7 @@ class UserDAO:
 
         self.users[user_id] = user_dict
         self.email_index[email_lower] = user_id
+        self.username_index[username_lower] = user_id
         self.save_users()
 
         logger.info(f"Created user: {user_id} - {user_data['username']}")
@@ -162,7 +172,19 @@ class UserDAO:
             self.email_index[new_email_lower] = userid
 
         if 'username' in data:
+            new_username_lower = data['username'].lower()
+            if (new_username_lower in self.username_index and
+               self.username_index[new_username_lower] != userid):
+                raise ValueError(f"Username '{data['username']}'"
+                                 f" already taken")
+
+            old_username_lower = user['username'].lower()
+            if old_username_lower in self.username_index:
+                del self.username_index[old_username_lower]
+
             user['username'] = data['username']
+            self.username_index[new_username_lower] = userid
+
         if 'password' in data:
             user['password'] = data['password']
         if 'reputation' in data:
