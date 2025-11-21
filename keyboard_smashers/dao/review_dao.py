@@ -24,6 +24,16 @@ class ReviewDAO:
         logger.info(f"ReviewDAO initialized with {len(self.reviews)} reviews")
 
     def _load_reviews(self) -> None:
+        # Build movie title to ID mapping
+        movie_title_to_id = {}
+        movies_csv_path = 'data/movies.csv'
+        if Path(movies_csv_path).exists():
+            movies_df = pd.read_csv(movies_csv_path)
+            for _, movie_row in movies_df.iterrows():
+                title = str(movie_row.get('title', '')).strip()
+                movie_id = str(movie_row.get('movie_id', ''))
+                movie_title_to_id[title] = movie_id
+        
         # Load original IMDB reviews (read-only)
         if Path(self.imdb_csv_path).exists():
             df = pd.read_csv(self.imdb_csv_path)
@@ -45,9 +55,13 @@ class ReviewDAO:
                 # Truncate review text to 250 chars if needed
                 review_text = str(row.get('Review', ''))[:250] if pd.notna(row.get('Review')) else ''
                 
+                # Map movie title to numeric ID
+                movie_title = str(row.get('movie', '')).strip()
+                movie_id = movie_title_to_id.get(movie_title, movie_title)  # Fallback to title if not found
+                
                 review_dict = {
                     'review_id': review_id,
-                    'movie_id': str(row.get('movie', '')),
+                    'movie_id': movie_id,
                     'user_id': None,  # Legacy IMDB reviews don't have user_id
                     'imdb_username': str(row.get('User', '')) if pd.notna(row.get('User')) else '',
                     'rating': rating,
@@ -156,7 +170,8 @@ class ReviewDAO:
             if user_id and user_id in self.reviews_by_user:
                 # Check if user already reviewed this movie (direct index lookup)
                 for review_id in self.reviews_by_user[user_id]:
-                    if self.reviews[review_id]['movie_id'] == movie_id:
+                    # Only check if review still exists (not deleted)
+                    if review_id in self.reviews and self.reviews[review_id]['movie_id'] == movie_id:
                         raise ValueError(
                             f"User {user_id} already reviewed movie {movie_id}"
                         )

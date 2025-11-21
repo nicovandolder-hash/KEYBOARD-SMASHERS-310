@@ -1,0 +1,12 @@
+operation,review_id,movie_id,user_id,imdb_username,rating,review_text,review_date
+create,review_047063,1,user_001,,5.0,I really like this movie,2025-11-20T16:41:30.952320
+create,review_047064,2,user_001,,5.0,I really like this movie,2025-11-20T16:42:14.305819
+update,review_047063,1,user_001,,4.0,Overrated,2025-11-20T16:41:30.952320
+delete,review_047063,1,user_001,,4.0,Overrated,2025-11-20T16:41:30.952320
+update,review_047064,2,user_001,,1.0,I dont like this movie,2025-11-20T16:42:14.305819
+update,review_047064,2,user_001,,1.0,I dont like this movie,2025-11-20T16:42:14.305819
+delete,review_047064,2,user_001,,1.0,I dont like this movie,2025-11-20T16:42:14.305819
+create,review_047063,2,user_001,,1.0,eeee,2025-11-20T16:52:52.393934
+delete,review_047063,2,user_001,,1.0,eeee,2025-11-20T16:52:52.393934
+create,review_047063,2,user_001,,1.0,eeee,2025-11-20T16:53:28.551862
+create,review_047064,1,user_001,,1.0,test review,2025-11-20T17:40:59.116002

@@ -1,7 +1,11 @@
 movie_id,title,genre,director,year
-1,Avengers Endgame,Action,Anthony & Joe Russo,2019
-2,Inception,Sci-Fi,Christopher Nolan,2010
-3,Joker,Thriller,Todd Phillips,2019
-4,Interstellar,Sci-Fi,Christopher Nolan,2014
-5,Parasite,Drama,Bong Joon Ho,2019
-6,The Dark Knight,Action,Christopher Nolan,2008
+1,Avengers Endgame,,,0
+2,Forrest Gump,,,0
+3,John Wick Chapter 3  Parabellum,,,0
+4,Joker,,,0
+5,Morbius,,,0
+6,Pulp Fiction,,,0
+7,SpiderMan No Way Home,,,0
+8,The Avengers,,,0
+9,The Dark Knight,,,0
+10,Thor Ragnarok,,,0

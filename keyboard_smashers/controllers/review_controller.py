@@ -28,7 +28,16 @@ class ReviewCreateSchema(BaseModel):
 
 class ReviewUpdateSchema(BaseModel):
     rating: Optional[float] = Field(None, description="Rating from 1-5", ge=1, le=5)
-    review_text: Optional[str] = Field(None, description="Review text", max_length=250, min_length=1)
+    review_text: Optional[str] = Field(None, description="Review text", max_length=250)
+
+
+class PaginatedReviewResponse(BaseModel):
+    """Response model for paginated reviews"""
+    reviews: List[ReviewSchema] = Field(..., description="List of reviews for current page")
+    total: int = Field(..., description="Total number of reviews available")
+    skip: int = Field(..., description="Number of reviews skipped")
+    limit: int = Field(..., description="Maximum reviews per page")
+    has_more: bool = Field(..., description="Whether more reviews are available")
 
 
 class ReviewController:
@@ -61,17 +70,51 @@ class ReviewController:
                 detail=f"Review with ID '{review_id}' not found"
             )
 
-    def get_reviews_for_movie(self, movie_id: str) -> List[ReviewSchema]:
-        logger.info(f"Fetching reviews for movie: {movie_id}")
-        reviews = self.review_dao.get_reviews_for_movie(movie_id)
-        logger.info(f"Found {len(reviews)} reviews for movie: {movie_id}")
-        return [self._dict_to_schema(review) for review in reviews]
+    def get_reviews_for_movie(
+        self, 
+        movie_id: str, 
+        skip: int = 0, 
+        limit: int = 10
+    ) -> PaginatedReviewResponse:
+        logger.info(f"Fetching reviews for movie: {movie_id} (skip={skip}, limit={limit})")
+        all_reviews = self.review_dao.get_reviews_for_movie(movie_id)
+        total = len(all_reviews)
+        
+        # Apply pagination
+        paginated_reviews = all_reviews[skip:skip + limit]
+        
+        logger.info(f"Found {total} total reviews, returning {len(paginated_reviews)} for movie: {movie_id}")
+        
+        return PaginatedReviewResponse(
+            reviews=[self._dict_to_schema(review) for review in paginated_reviews],
+            total=total,
+            skip=skip,
+            limit=limit,
+            has_more=(skip + limit) < total
+        )
 
-    def get_reviews_by_user(self, user_id: str) -> List[ReviewSchema]:
-        logger.info(f"Fetching reviews by user: {user_id}")
-        reviews = self.review_dao.get_reviews_by_user(user_id)
-        logger.info(f"Found {len(reviews)} reviews by user: {user_id}")
-        return [self._dict_to_schema(review) for review in reviews]
+    def get_reviews_by_user(
+        self, 
+        user_id: str, 
+        skip: int = 0, 
+        limit: int = 10
+    ) -> PaginatedReviewResponse:
+        logger.info(f"Fetching reviews by user: {user_id} (skip={skip}, limit={limit})")
+        all_reviews = self.review_dao.get_reviews_by_user(user_id)
+        total = len(all_reviews)
+        
+        # Apply pagination
+        paginated_reviews = all_reviews[skip:skip + limit]
+        
+        logger.info(f"Found {total} total reviews, returning {len(paginated_reviews)} by user: {user_id}")
+        
+        return PaginatedReviewResponse(
+            reviews=[self._dict_to_schema(review) for review in paginated_reviews],
+            total=total,
+            skip=skip,
+            limit=limit,
+            has_more=(skip + limit) < total
+        )
 
     def create_review(
         self,
@@ -261,16 +304,38 @@ router = APIRouter(
 
 # PUBLIC ENDPOINTS
 
-@router.get("/movie/{movie_id}", response_model=List[ReviewSchema])
-def get_reviews_for_movie(movie_id: str):
-    """Get all reviews for a specific movie"""
-    return review_controller_instance.get_reviews_for_movie(movie_id)
+@router.get("/movie/{movie_id}", response_model=PaginatedReviewResponse)
+def get_reviews_for_movie(
+    movie_id: str,
+    skip: int = 0,
+    limit: int = 10
+):
+    """
+    Get paginated reviews for a specific movie.
+    
+    - **skip**: Number of reviews to skip (default: 0)
+    - **limit**: Maximum reviews to return (default: 10, max: 100)
+    """
+    # Enforce max limit
+    limit = min(limit, 100)
+    return review_controller_instance.get_reviews_for_movie(movie_id, skip, limit)
 
 
-@router.get("/user/{user_id}", response_model=List[ReviewSchema])
-def get_reviews_by_user(user_id: str):
-    """Get all reviews by a specific user"""
-    return review_controller_instance.get_reviews_by_user(user_id)
+@router.get("/user/{user_id}", response_model=PaginatedReviewResponse)
+def get_reviews_by_user(
+    user_id: str,
+    skip: int = 0,
+    limit: int = 10
+):
+    """
+    Get paginated reviews by a specific user.
+    
+    - **skip**: Number of reviews to skip (default: 0)
+    - **limit**: Maximum reviews to return (default: 10, max: 100)
+    """
+    # Enforce max limit
+    limit = min(limit, 100)
+    return review_controller_instance.get_reviews_by_user(user_id, skip, limit)
 
 
 @router.get("/{review_id}", response_model=ReviewSchema)

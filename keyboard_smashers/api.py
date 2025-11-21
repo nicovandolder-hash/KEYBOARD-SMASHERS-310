@@ -48,25 +48,11 @@ async def load_data():
         else:
             logger.warning(f"Warning: Movie CSV not found at {movie_csv}")
 
-        # Load reviews
-        csv_files = list(dataset_dir.glob("*.csv"))
-        review_csv_files = [
-            f for f in csv_files
-            if f.name not in ["users.csv", "movies.csv"]
-        ]
-
-        if not review_csv_files:
-            logger.error("No review CSV files found in data directory")
-            raise FileNotFoundError(
-                "No review CSV files found in data directory")
-
-        csv_file = review_csv_files[0]
-        logger.info(f"Loading reviews from: {csv_file}")
-        review_controller_instance.load_dataset(str(csv_file))
+        # Reviews are auto-loaded by ReviewDAO on initialization
         logger.info(
-            f"Loaded {len(review_controller_instance.reviews)} "
-            f"reviews for {len(review_controller_instance.movies)} movies."
-            )
+            f"Loaded {len(review_controller_instance.review_dao.reviews)} "
+            f"reviews from ReviewDAO."
+        )
 
         logger.info("Application ready.")
 
@@ -92,10 +78,7 @@ async def root():
     return {
         "message": "IMDB Reviews API",
         "status": "online",
-        "total_reviews": len(review_controller_instance.reviews),
-        "total_movies": (
-            len(review_controller_instance.movies) +
-            len(movie_controller_instance.movie_dao.movies)
-        ),
+        "total_reviews": len(review_controller_instance.review_dao.reviews),
+        "total_movies": len(movie_controller_instance.movie_dao.movies),
         "total_users": len(user_controller_instance.users),
     }
