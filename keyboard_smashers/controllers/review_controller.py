@@ -149,8 +149,9 @@ class ReviewController:
         user_id: str
     ) -> ReviewSchema:
         logger.info(
-            f"Creating review for movie {
-                review_data.movie_id} by user {user_id}")
+            f"Creating review for movie {review_data.movie_id} "
+            f"by user {user_id}"
+        )
 
         # Verify movie exists
         from keyboard_smashers.controllers.movie_controller import (
