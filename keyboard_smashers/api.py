@@ -82,9 +82,9 @@ async def load_data():
         logger.info(f"Loading reviews from: {csv_file}")
         review_controller_instance.load_dataset(str(csv_file))
         logger.info(
-            f"Loaded {len(review_controller_instance.reviews)} "
-            f"reviews for {len(review_controller_instance.movies)} movies."
-            )
+            f"Loaded {len(review_controller_instance.review_dao.reviews)} "
+            f"reviews from ReviewDAO."
+        )
 
         logger.info("Application ready.")
 
@@ -113,11 +113,8 @@ async def root():
     return {
         "message": "IMDB Reviews API",
         "status": "online",
-        "total_reviews": len(review_controller_instance.reviews),
-        "total_movies": (
-            len(review_controller_instance.movies) +
-            len(movie_controller_instance.movie_dao.movies)
-        ),
+        "total_reviews": len(review_controller_instance.review_dao.reviews),
+        "total_movies": len(movie_controller_instance.movie_dao.movies),
         "total_users": len(user_controller_instance.user_dao.users),
         "total_penalties": len(
             penalty_controller_instance.penalty_dao.penalties),
