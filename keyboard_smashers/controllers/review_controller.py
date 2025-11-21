@@ -13,8 +13,10 @@ class ReviewSchema(BaseModel):
 
     review_id: str = Field(..., description="Unique review ID")
     movie_id: str = Field(..., description="Movie ID being reviewed")
-    user_id: Optional[str] = Field(None, description="User ID (null for IMDB reviews)")
-    imdb_username: Optional[str] = Field(None, description="IMDB username for legacy reviews")
+    user_id: Optional[str] = Field(
+        None, description="User ID (null for IMDB reviews)")
+    imdb_username: Optional[str] = Field(
+        None, description="IMDB username for legacy reviews")
     rating: float = Field(..., description="Rating from 1-5", ge=1, le=5)
     review_text: str = Field(..., description="Review text content")
     review_date: str = Field(..., description="Review date")
@@ -23,21 +25,30 @@ class ReviewSchema(BaseModel):
 class ReviewCreateSchema(BaseModel):
     movie_id: str = Field(..., description="Movie ID to review", min_length=1)
     rating: float = Field(..., description="Rating from 1-5", ge=1, le=5)
-    review_text: str = Field(..., description="Review text", max_length=250, min_length=1)
+    review_text: str = Field(...,
+                             description="Review text",
+                             max_length=250,
+                             min_length=1)
 
 
 class ReviewUpdateSchema(BaseModel):
-    rating: Optional[float] = Field(None, description="Rating from 1-5", ge=1, le=5)
-    review_text: Optional[str] = Field(None, description="Review text", max_length=250)
+    rating: Optional[float] = Field(
+        None, description="Rating from 1-5", ge=1, le=5)
+    review_text: Optional[str] = Field(
+        None, description="Review text", max_length=250)
 
 
 class PaginatedReviewResponse(BaseModel):
     """Response model for paginated reviews"""
-    reviews: List[ReviewSchema] = Field(..., description="List of reviews for current page")
-    total: int = Field(..., description="Total number of reviews available")
+    reviews: List[ReviewSchema] = Field(
+        ..., description="List of reviews for current page"
+    )
+    total: int = Field(..., description="Total reviews available")
     skip: int = Field(..., description="Number of reviews skipped")
     limit: int = Field(..., description="Maximum reviews per page")
-    has_more: bool = Field(..., description="Whether more reviews are available")
+    has_more: bool = Field(
+        ..., description="Whether more reviews are available"
+    )
 
 
 class ReviewController:
@@ -71,50 +82,64 @@ class ReviewController:
             )
 
     def get_reviews_for_movie(
-        self, 
-        movie_id: str, 
-        skip: int = 0, 
+        self,
+        movie_id: str,
+        skip: int = 0,
         limit: int = 10
     ) -> PaginatedReviewResponse:
-        logger.info(f"Fetching reviews for movie: {movie_id} (skip={skip}, limit={limit})")
+        logger.info(
+            f"Fetching reviews for movie: {movie_id} "
+            f"(skip={skip}, limit={limit})"
+        )
         all_reviews = self.review_dao.get_reviews_for_movie(movie_id)
         total = len(all_reviews)
-        
+
         # Apply pagination
         paginated_reviews = all_reviews[skip:skip + limit]
-        
-        logger.info(f"Found {total} total reviews, returning {len(paginated_reviews)} for movie: {movie_id}")
-        
+
+        logger.info(
+            f"Found {total} total reviews, returning {
+                len(paginated_reviews)} for movie: {movie_id}")
+
         return PaginatedReviewResponse(
-            reviews=[self._dict_to_schema(review) for review in paginated_reviews],
+            reviews=[
+                self._dict_to_schema(review) for review in paginated_reviews],
             total=total,
             skip=skip,
             limit=limit,
-            has_more=(skip + limit) < total
-        )
+            has_more=(
+                skip +
+                limit) < total)
 
     def get_reviews_by_user(
-        self, 
-        user_id: str, 
-        skip: int = 0, 
+        self,
+        user_id: str,
+        skip: int = 0,
         limit: int = 10
     ) -> PaginatedReviewResponse:
-        logger.info(f"Fetching reviews by user: {user_id} (skip={skip}, limit={limit})")
+        logger.info(
+            f"Fetching reviews by user: {user_id} "
+            f"(skip={skip}, limit={limit})"
+        )
         all_reviews = self.review_dao.get_reviews_by_user(user_id)
         total = len(all_reviews)
-        
+
         # Apply pagination
         paginated_reviews = all_reviews[skip:skip + limit]
-        
-        logger.info(f"Found {total} total reviews, returning {len(paginated_reviews)} by user: {user_id}")
-        
+
+        logger.info(
+            f"Found {total} total reviews, returning {
+                len(paginated_reviews)} by user: {user_id}")
+
         return PaginatedReviewResponse(
-            reviews=[self._dict_to_schema(review) for review in paginated_reviews],
+            reviews=[
+                self._dict_to_schema(review) for review in paginated_reviews],
             total=total,
             skip=skip,
             limit=limit,
-            has_more=(skip + limit) < total
-        )
+            has_more=(
+                skip +
+                limit) < total)
 
     def create_review(
         self,
@@ -122,8 +147,8 @@ class ReviewController:
         user_id: str
     ) -> ReviewSchema:
         logger.info(
-            f"Creating review for movie {review_data.movie_id} by user {user_id}"
-        )
+            f"Creating review for movie {
+                review_data.movie_id} by user {user_id}")
 
         # Verify movie exists
         from keyboard_smashers.controllers.movie_controller import (
@@ -203,7 +228,8 @@ class ReviewController:
             )
 
         try:
-            updated_review = self.review_dao.update_review(review_id, update_dict)
+            updated_review = self.review_dao.update_review(
+                review_id, update_dict)
             logger.info(f"Review updated successfully: {review_id}")
             return self._dict_to_schema(updated_review)
         except KeyError:
@@ -286,7 +312,8 @@ class ReviewController:
             logger.info(f"Review deleted by admin: {review_id}")
             return {"message": f"Review '{review_id}' deleted by admin"}
         except KeyError:
-            logger.error(f"Review not found during admin deletion: {review_id}")
+            logger.error(
+                f"Review not found during admin deletion: {review_id}")
             raise HTTPException(
                 status_code=404,
                 detail=f"Review with ID '{review_id}' not found"
@@ -312,13 +339,14 @@ def get_reviews_for_movie(
 ):
     """
     Get paginated reviews for a specific movie.
-    
+
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
     # Enforce max limit
     limit = min(limit, 100)
-    return review_controller_instance.get_reviews_for_movie(movie_id, skip, limit)
+    return review_controller_instance.get_reviews_for_movie(
+        movie_id, skip, limit)
 
 
 @router.get("/user/{user_id}", response_model=PaginatedReviewResponse)
@@ -329,7 +357,7 @@ def get_reviews_by_user(
 ):
     """
     Get paginated reviews by a specific user.
-    
+
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
@@ -352,7 +380,8 @@ def create_review(
     current_user_id: str = Depends(get_current_user)
 ):
     """Create a new review (requires authentication)"""
-    return review_controller_instance.create_review(review_data, current_user_id)
+    return review_controller_instance.create_review(
+        review_data, current_user_id)
 
 
 @router.put("/{review_id}", response_model=ReviewSchema)
