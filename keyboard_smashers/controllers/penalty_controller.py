@@ -130,10 +130,10 @@ class PenaltyController:
             'user_id': penalty_data.user_id,
             'reason': penalty_data.reason,
             'severity': penalty_data.severity,
-            'start_date': datetime.now().replace(
-                hour=12, minute=0, second=0, microsecond=0),
-            'end_date': (datetime.now() + timedelta(days=7)).replace(
-                hour=12, minute=0, second=0, microsecond=0),
+            'start_date': penalty_data.start_date if (
+                            penalty_data.start_date) else datetime.now(),
+            'end_date': penalty_data.end_date if penalty_data.end_date else (
+                datetime.now() + timedelta(days=7)),
             'issued_by': admin_id
         }
 

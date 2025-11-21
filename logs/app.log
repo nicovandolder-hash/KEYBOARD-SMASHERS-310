@@ -1,0 +1,884 @@
+2025-11-20 19:37:43 - root - INFO - setup_logging:64 - Logging system initialized
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews?limit=5 "HTTP/1.1 307 Temporary Redirect"
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/reviews/?limit=5 "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: nonexistent_id_12345
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: nonexistent_id_12345
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/nonexistent_id_12345 "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: inception
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: inception
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=inception "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: matrix
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: matrix
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=matrix "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Sci-Fi
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/genre/Sci-Fi "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: nonexistent_movie_xyz123
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: nonexistent_movie_xyz123
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=nonexistent_movie_xyz123 "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Integration Test Movie 1763696265249
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 11
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 422 Unprocessable Entity"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/1 "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: nonexistent_id_xyz
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: nonexistent_id_xyz
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/movies/nonexistent_id_xyz "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.auth - WARNING - get_current_user:68 - No session token provided
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/1 "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: nonexistent_id_abc
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: nonexistent_id_abc
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/movies/nonexistent_id_abc "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Persistence Test 1763696265560
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 12
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 12
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/12 "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Special Test 1763696265604: Sequel - Part 1
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 13
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/movies/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: INCEPTION
+2025-11-20 19:37:45 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: INCEPTION
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/movies/search?q=INCEPTION "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpnkg9lzp0\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpejyrtwl9\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpejyrtwl9\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/my-penalties "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpvc5fejnc\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmphlndkq0b\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmphlndkq0b\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmphlndkq0b\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmphlndkq0b\test_users.csv
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/my-penalties "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp3n0nj8cn\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 2 users to C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_user
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_user (Severity: 2)
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp3n0nj8cn\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_user
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 2 users to C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_userself.users[userid]['total_penalties']
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_user
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmpglw80km1\test_users.csv
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/my-penalties?status=active "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpayttamm1\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpmfzj1gkk\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpmfzj1gkk\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpmfzj1gkk\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 2 users to C:\Users\nicov\AppData\Local\Temp\tmpmfzj1gkk\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmpmfzj1gkk\test_users.csv
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/my-penalties?status=inactive "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpyj399jo4\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp664mudtn\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp664mudtn\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp996o3g5l\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpj0vpgr15\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpj0vpgr15\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpj0vpgr15\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 403 Forbidden"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp6ewupxnk\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp4ah1mo38\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp4ah1mo38\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp4ah1mo38\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp4ah1mo38\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 4)
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp6ewupxnk\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp4ah1mo38\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpdqjpmlg1\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpksx4mdi1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpksx4mdi1\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpksx4mdi1\test_users.csv
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 422 Unprocessable Entity"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp0azh6qk3\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpaki5f3xh\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpaki5f3xh\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpaki5f3xh\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user nonexistent_user_xyz
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpaki5f3xh\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - ERROR - create_penalty:123 - User nonexistent_user_xyz not found
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp1ysj0j24\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpjh32d8q4\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpjh32d8q4\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/ "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpy_wv546i\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmppdqg3c58\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmppdqg3c58\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmppdqg3c58\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/ "HTTP/1.1 403 Forbidden"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpchwabmf_\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmphozdb497\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmphozdb497\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmphozdb497\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmph65ofgng\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpcsrbghyq\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpcsrbghyq\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpcsrbghyq\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpcsrbghyq\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 3)
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmph65ofgng\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpcsrbghyq\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpcsrbghyq\test_users.csv
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/?user_id=test_admin "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp4w11xj4i\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp4_kl3jzb\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp4_kl3jzb\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp4_kl3jzb\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/?status=active "HTTP/1.1 200 OK"
+2025-11-20 19:37:45 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmphrg11zqx\test_penalties.csv
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpi3wy1ujl\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpi3wy1ujl\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:45 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpi3wy1ujl\test_users.csv
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:45 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/?status=invalid "HTTP/1.1 400 Bad Request"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpcz4rpwy5\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpvj09514r\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpvj09514r\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp1xb1ydb8\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpo758b88_\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpo758b88_\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpo758b88_\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 403 Forbidden"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpf8r61cx6\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpzno6fadt\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpzno6fadt\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpzno6fadt\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpzno6fadt\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 3)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmpf8r61cx6\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpzno6fadt\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpzno6fadt\test_users.csv
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp8qnzhuqo\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp8ccpmvx2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp8ccpmvx2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp8ccpmvx2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp8ccpmvx2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - ERROR - get_penalty_by_id:163 - Penalty penalty_999 not found
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_999 "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpknavffwv\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpiqg5q9jy\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpiqg5q9jy\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/penalties/penalty_001 "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpllj4_0xq\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp3jlyecms\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp3jlyecms\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp3jlyecms\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/penalties/penalty_001 "HTTP/1.1 403 Forbidden"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp2zki7eup\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp7emar2h2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp7emar2h2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp7emar2h2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp7emar2h2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 2)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp2zki7eup\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp7emar2h2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp7emar2h2\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp2zki7eup\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:227 - Updated penalty: penalty_001
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp15o2a2uz\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp9xfbm3kp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp9xfbm3kp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp9xfbm3kp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_999
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp9xfbm3kp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - ERROR - update_penalty:231 - Penalty penalty_999 not found
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/penalties/penalty_999 "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp5o8xj4k6\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp263unumx\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp263unumx\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/penalties/penalty_001 "HTTP/1.1 401 Unauthorized"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpp46e7hwp\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp0_p4ujss\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp0_p4ujss\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp0_p4ujss\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/penalties/penalty_001 "HTTP/1.1 403 Forbidden"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpcqcr2l5f\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp6ko1gt1y\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp6ko1gt1y\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp6ko1gt1y\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp6ko1gt1y\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 3)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmpcqcr2l5f\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp6ko1gt1y\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:241 - Deleting penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 0 penalties to C:\Users\nicov\AppData\Local\Temp\tmpcqcr2l5f\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - delete_penalty:174 - Deleted penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:245 - Deleted penalty: penalty_001
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp6ko1gt1y\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - ERROR - get_penalty_by_id:163 - Penalty penalty_001 not found
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp13wcjbrs\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpbgljhk95\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpbgljhk95\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpbgljhk95\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:241 - Deleting penalty: penalty_999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - ERROR - delete_penalty:248 - Penalty penalty_999 not found
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/penalties/penalty_999 "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmptakm7vqh\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp8y9zq7wp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp8y9zq7wp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp8y9zq7wp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp8y9zq7wp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 3)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmptakm7vqh\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp8y9zq7wp\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp8y9zq7wp\test_users.csv
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/ "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmprxzf0vgt\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 2)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmprxzf0vgt\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmprxzf0vgt\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:227 - Updated penalty: penalty_001
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmpwg803mu8\test_users.csv
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp2g95s85w\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_admin (Severity: 2)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp2g95s85w\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user test_admin (Severity: 3)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmp2g95s85w\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_002 for user test_admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_adminself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_002 created for user test_admin
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 1 users from C:\Users\nicov\AppData\Local\Temp\tmp6oc9nr7p\test_users.csv
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/?user_id=test_admin "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp6c0o2cle\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 0 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.user_controller - INFO - __init__:65 - UserController initialized with 0 users
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 1 users to C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test User (ID: test_user, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test User
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 2 users to C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin test_admin creating penalty for user test_user
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user test_user (Severity: 2)
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp6c0o2cle\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user test_user
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - save_users:105 - Saved 2 users to C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - increment_penalty_count:217 - Incremented penalty count for user: test_userself.users[userid]['total_penalties']
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user test_user
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: POST http://testserver/penalties/ "HTTP/1.1 201 Created"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/my-penalties "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp6c0o2cle\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:227 - Updated penalty: penalty_001
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: PUT http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:241 - Deleting penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 0 penalties to C:\Users\nicov\AppData\Local\Temp\tmp6c0o2cle\test_penalties.csv
+2025-11-20 19:37:46 - keyboard_smashers.dao.penalty_dao - INFO - delete_penalty:174 - Deleted penalty: penalty_001
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:245 - Deleted penalty: penalty_001
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: DELETE http://testserver/penalties/penalty_001 "HTTP/1.1 200 OK"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:Test Admin (ID: test_admin, Admin: True)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: Test Admin
+2025-11-20 19:37:46 - keyboard_smashers.dao.user_dao - INFO - load_users:65 - Loaded 2 users from C:\Users\nicov\AppData\Local\Temp\tmp_cu1k_t3\test_users.csv
+2025-11-20 19:37:46 - keyboard_smashers.controllers.penalty_controller - ERROR - get_penalty_by_id:163 - Penalty penalty_001 not found
+2025-11-20 19:37:46 - httpx - INFO - _send_single_request:1025 - HTTP Request: GET http://testserver/penalties/penalty_001 "HTTP/1.1 404 Not Found"
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - WARNING - set_password:37 - Password validation failed fortest_user: Too short
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - ERROR - set_password:70 - Error setting password for usertest_user: Password must be at least 8 characters long
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - WARNING - set_password:42 - Password validation failed fortest_user: No digit
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - ERROR - set_password:70 - Error setting password for usertest_user: Password must contain at least one digit.
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - WARNING - set_password:47 - Password validation failed fortest_user: No special character
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - ERROR - set_password:70 - Error setting password for usertest_user: Password must contain at least one special character.
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - WARNING - set_password:53 - Password validation failed fortest_user: No uppercase letter
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - ERROR - set_password:70 - Error setting password for usertest_user: Password must contain at least one uppercase letter.
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - WARNING - set_password:59 - Password validation failed fortest_user: No lowercase letter
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - ERROR - set_password:70 - Error setting password for usertest_user: Password must contain at least one lowercase letter.
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - set_password:66 - Password set successfully for user: test_user
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - __init__:25 - User created:test_user (ID: u12345, Admin: False)
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r1 added by user: test_user. Total reviews: 1
+2025-11-20 19:37:46 - keyboard_smashers.models.user_model - INFO - add_review:91 - Review ID: r2 added by user: test_user. Total reviews: 2
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_all_movies:60 - Fetching all movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movie_by_id:65 - Fetching movie: 999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - ERROR - get_movie_by_id:70 - Movie not found: 999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Test Movie
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Minimal Movie
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:92 - Movie created successfully: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - create_movie:77 - Creating movie: INCEPTION
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - WARNING - create_movie:83 - Duplicate title attempted: INCEPTION
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:137 - Movie updated successfully: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - ERROR - update_movie:105 - Movie not found for update: 999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - WARNING - update_movie:118 - Duplicate title attempted: The Matrix
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - update_movie:100 - Updating movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:144 - Movie deleted successfully: 1
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - delete_movie:141 - Deleting movie: 999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - ERROR - delete_movie:147 - Movie not found for deletion: 999
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inter
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: Inter
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 1 movies matching title: inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 2 movies matching title: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:154 - Searching movies by title: Nonexistent
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies_by_title:163 - Found 0 movies matching title: Nonexistent
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Sci-Fi
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 2 movies in genre: Sci-Fi
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: sci-fi
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: sci-fi
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Horror
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 0 movies in genre: Horror
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:169 - Fetching movies by genre: Action
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - get_movies_by_genre:178 - Found 1 movies in genre: Action
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: Inception
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nolan
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: Nolan
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: wormhole
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 1 movies matching query: wormhole
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: NOLAN
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 2 movies matching query: NOLAN
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - __init__:42 - MovieController initialized with 0 movies
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:182 - Searching movies with query: Nonexistent Query
+2025-11-20 19:37:46 - keyboard_smashers.controllers.movie_controller - INFO - search_movies:193 - Found 0 movies matching query: Nonexistent Query
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin admin_001 creating penalty for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin admin_001 creating penalty for user nonexistent_user
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - ERROR - create_penalty:123 - User nonexistent_user not found
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin admin_001 creating penalty for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - ERROR - create_penalty:152 - Error creating penalty: Database error
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 4)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:113 - Admin admin_001 creating penalty for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - create_penalty:145 - Penalty penalty_001 created for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - ERROR - get_penalty_by_id:163 - Penalty penalty_999 not found
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_002 (Severity: 1)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_002 (Severity: 1)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 4)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:227 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:227 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_999
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - ERROR - update_penalty:231 - Penalty penalty_999 not found
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:207 - Updating penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - update_penalty:227 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:241 - Deleting penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:245 - Deleted penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - __init__:90 - PenaltyController initialized with 0 penalties
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - INFO - delete_penalty:241 - Deleting penalty: penalty_999
+2025-11-20 19:37:47 - keyboard_smashers.controllers.penalty_controller - ERROR - delete_penalty:248 - Penalty penalty_999 not found
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpna0ck1zq.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - WARNING - load_penalties:23 - Penalty CSV file not found at: C:\Users\nicov\AppData\Local\Temp\tmpwdq9xbb8.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpzmc2k5nc.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpz8adq1i3.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmpz8adq1i3.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpp1qwjt6z.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmpp1qwjt6z.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmpp1qwjt6z.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_002 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmp_qn7z_x5.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp_qn7z_x5.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpz73f27rp.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmpz73f27rp.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpql31twb9.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmpql31twb9.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmpql31twb9.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_002 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp53qbye_w.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpuxlxfg8a.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmphssv_x00.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpmg8khirp.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp10vxi6c9.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp_7bcjnrf.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp0yc_qdth.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpvjikrax3.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 3 penalties to C:\Users\nicov\AppData\Local\Temp\tmpvjikrax3.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp2rx27g4t.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 3 penalties to C:\Users\nicov\AppData\Local\Temp\tmp2rx27g4t.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpf0_cg1qy.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 3 penalties to C:\Users\nicov\AppData\Local\Temp\tmpf0_cg1qy.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpxz6ipxa8.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 3 penalties to C:\Users\nicov\AppData\Local\Temp\tmpxz6ipxa8.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp8dfcuw2j.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp80vuruey.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 3 penalties to C:\Users\nicov\AppData\Local\Temp\tmp80vuruey.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - update_penalty:158 - Updated penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp80vuruey.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpgkgwzke3.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmpgkgwzke3.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - delete_penalty:174 - Deleted penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpqfx9cxry.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpe3pex8ao.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmpe3pex8ao.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - delete_penalty:174 - Deleted penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpaiiy0kcc.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmpaiiy0kcc.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - delete_penalty:174 - Deleted penalty: penalty_003
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmpn2y27zly.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 2 penalties to C:\Users\nicov\AppData\Local\Temp\tmpn2y27zly.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - delete_penalty:174 - Deleted penalty: penalty_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 2 penalties from C:\Users\nicov\AppData\Local\Temp\tmpn2y27zly.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - WARNING - load_penalties:23 - Penalty CSV file not found at: C:\Users\nicov\AppData\Local\Temp\tmp1pu4h3uo\subdir\penalties.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - save_penalties:89 - Saved 1 penalties to C:\Users\nicov\AppData\Local\Temp\tmp1pu4h3uo\subdir\penalties.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - create_penalty:118 - Created penalty: penalty_001 for user user_001
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp6jxxcnys.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_001 for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_002 for user user_001 (Severity: 2)
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: penalty_003 for user user_002 (Severity: 5)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 3 penalties from C:\Users\nicov\AppData\Local\Temp\tmp6jxxcnys.csv
+2025-11-20 19:37:47 - keyboard_smashers.models.penalty_model - INFO - __init__:30 - Penalty created: custom_penalty_id for user user_001 (Severity: 3)
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 1 penalties from C:\Users\nicov\AppData\Local\Temp\tmp26xhopva.csv
+2025-11-20 19:37:47 - keyboard_smashers.dao.penalty_dao - INFO - load_penalties:60 - Loaded 0 penalties from C:\Users\nicov\AppData\Local\Temp\tmpqkatc7kd.csv
