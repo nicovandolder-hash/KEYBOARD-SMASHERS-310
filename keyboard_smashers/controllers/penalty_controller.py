@@ -83,6 +83,8 @@ class PenaltyController:
             )
         if PenaltyController.user_dao is None:
             PenaltyController.user_dao = UserDAO(csv_path=user_csv_path)
+        else:
+            PenaltyController.user_dao = UserDAO(csv_path=user_csv_path)
         self.penalty_dao = PenaltyController.penalty_dao
         self.user_dao = PenaltyController.user_dao
         logger.info(
@@ -113,8 +115,9 @@ class PenaltyController:
             f" {penalty_data.user_id}"
         )
 
+        self.user_dao.load_users()
+
         try:
-            self.user_dao.load_users()
             self.user_dao.get_user(penalty_data.user_id)
         except KeyError:
             logger.error(f"User {penalty_data.user_id} not found")

@@ -118,7 +118,7 @@ async def root():
             len(review_controller_instance.movies) +
             len(movie_controller_instance.movie_dao.movies)
         ),
-        "total_users": len(user_controller_instance.users),
+        "total_users": len(user_controller_instance.user_dao.users),
         "total_penalties": len(
             penalty_controller_instance.penalty_dao.penalties),
     }

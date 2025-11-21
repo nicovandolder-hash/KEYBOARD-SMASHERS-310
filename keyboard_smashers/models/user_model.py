@@ -18,7 +18,7 @@ class User(Observer):
         self.reviews = []
         self.total_reviews = 0
         self.is_admin = is_admin
-        self.notifications = [],
+        self.notifications = []
         self.total_penalty_count = total_penalty_count,
         self.penalties = []
 
