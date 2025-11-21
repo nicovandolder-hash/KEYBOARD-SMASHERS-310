@@ -1,0 +1,12 @@
+{
+  "tests/integration/test_penalty_api.py::TestPenaltyAPIPublicEndpoints::test_get_my_penalties_with_existing_penalties": true,
+  "tests/api_test.py::test_root_endpoint": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIProtectedEndpoints::test_create_movie_with_admin": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIProtectedEndpoints::test_create_movie_validation_error": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIProtectedEndpoints::test_update_movie_with_admin": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIProtectedEndpoints::test_update_movie_not_found": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIProtectedEndpoints::test_delete_movie_not_found": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIDataPersistence::test_data_persists_across_requests": true,
+  "tests/integration/test_movie_api.py::TestMovieAPIEdgeCases::test_create_movie_with_special_characters": true,
+  "tests/test_user.py::test_create_user": true
+}
