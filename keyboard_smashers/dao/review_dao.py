@@ -20,6 +20,8 @@ class ReviewDAO:
         self.reviews_by_user: Dict[str, List[str]] = {}
         # Thread safety lock for concurrent operations
         self._lock = Lock()
+        # Cached max review ID (initialized after loading)
+        self._max_review_id = 0
         self._load_reviews()
         logger.info(f"ReviewDAO initialized with {len(self.reviews)} reviews")
 
@@ -111,6 +113,18 @@ class ReviewDAO:
                         'review_date': str(row.get('review_date', ''))
                     }
                     self._add_review_to_indexes(review_id, review_dict)
+
+        # Initialize cached max review ID
+        self._initialize_max_review_id()
+
+    def _initialize_max_review_id(self) -> None:
+        """Initialize the max review ID counter from existing reviews"""
+        existing_ids = [
+            int(rid.replace('review_', ''))
+            for rid in self.reviews.keys()
+            if rid.startswith('review_')
+        ]
+        self._max_review_id = max(existing_ids) if existing_ids else 0
 
     def _add_review_to_indexes(
             self, review_id: str, review_dict: Dict[str, Any]) -> None:
@@ -215,16 +229,9 @@ class ReviewDAO:
                             f"{movie_id}"
                         )
 
-            # Auto-generate review_id
-            existing_ids = [
-                int(rid.replace('review_', ''))
-                for rid in self.reviews.keys()
-                if rid.startswith('review_')
-            ]
-            if existing_ids:
-                review_id = f"review_{str(max(existing_ids) + 1).zfill(6)}"
-            else:
-                review_id = "review_000000"
+            # Auto-generate review_id using cached counter
+            self._max_review_id += 1
+            review_id = f"review_{str(self._max_review_id).zfill(6)}"
 
             new_review = {
                 'review_id': review_id,
