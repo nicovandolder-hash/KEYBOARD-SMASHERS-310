@@ -98,8 +98,9 @@ class ReviewController:
         paginated_reviews = all_reviews[skip:skip + limit]
 
         logger.info(
-            f"Found {total} total reviews, returning {
-                len(paginated_reviews)} for movie: {movie_id}")
+            f"Found {total} total reviews, returning "
+            f"{len(paginated_reviews)} for movie: {movie_id}"
+        )
 
         return PaginatedReviewResponse(
             reviews=[
