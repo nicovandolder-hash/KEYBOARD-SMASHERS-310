@@ -32,8 +32,9 @@ async def load_data():
         user_csv = dataset_dir / "users.csv"
         if user_csv.exists():
             logger.info(f"Loading users from: {user_csv}")
-            user_controller_instance.load_users(str(user_csv))
-            logger.info(f"Loaded {len(user_controller_instance.users)} users.")
+            logger.info(f"Loaded "
+                        f"{len(user_controller_instance.user_dao.users)}"
+                        f"users.")
         else:
             logger.warning(f"Warning: User CSV not found at {user_csv}")
 

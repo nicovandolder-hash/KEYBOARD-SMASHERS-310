@@ -5,34 +5,81 @@ from keyboard_smashers.auth import sessions
 from datetime import datetime, timedelta
 import secrets
 import time
+import tempfile
+from pathlib import Path
+
+
+@pytest.fixture(scope="function")
+def test_movies_csv():
+    """Create a temporary movies CSV file for testing."""
+    # Create a temporary file
+    temp_file = tempfile.NamedTemporaryFile(
+        mode='w', delete=False, suffix='.csv', newline=''
+    )
+    temp_path = temp_file.name
+
+    # Copy the original movies.csv structure with initial test data
+    temp_file.write("movie_id,title,genre,year,director,description\n")
+    temp_file.write(
+        "1,Test Movie 1,Action,2020,Test Director,Test description\n"
+    )
+    temp_file.write(
+        "2,Inception,Sci-Fi,2010,Christopher Nolan,"
+        "A mind-bending thriller\n"
+    )
+    temp_file.close()
+
+    # Replace the MovieDAO's CSV path with temp file
+    from keyboard_smashers.controllers.movie_controller import (
+        movie_controller_instance
+    )
+    original_path = movie_controller_instance.movie_dao.csv_path
+    movie_controller_instance.movie_dao.csv_path = temp_path
+    movie_controller_instance.movie_dao._load_movies()
+
+    yield temp_path
+
+    # Cleanup: restore original path and reload original data
+    movie_controller_instance.movie_dao.csv_path = original_path
+    movie_controller_instance.movie_dao._load_movies()
+
+    # Delete temp file
+    try:
+        Path(temp_path).unlink()
+    except Exception:
+        pass
 
 
 @pytest.fixture
-def client():
-    """Create a TestClient."""
+def client(test_movies_csv):
+    """Create a TestClient with isolated test data."""
     return TestClient(app)
 
 
 @pytest.fixture
-def admin_client(client):
+def admin_client(client, test_movies_csv):
     """Create a TestClient with admin authentication."""
     # Create admin user via the API
     # (requires creating user then setting admin flag manually)
     from keyboard_smashers.controllers.user_controller import (
         user_controller_instance
     )
-    from keyboard_smashers.models.user_model import User
 
     # Create admin user directly
-    admin_user = User(
-        userid="test_admin",
-        username="Test Admin",
-        email="admin@test.com",
-        is_admin=True
-    )
-    user_controller_instance.users.append(admin_user)
-    user_controller_instance.user_map[admin_user.userid] = admin_user
-    user_controller_instance.email_map[admin_user.email] = admin_user
+    admin_user = {
+        'user_id': 'test_admin',
+        'username': 'Test Admin',
+        'email': 'admin@test.com',
+        'password': '',
+        'reputation': 3,
+        'creation_date': datetime.now(),
+        'is_admin': True,
+        'total_reviews': 0
+    }
+    user_controller_instance.user_dao.users[admin_user['user_id']] = admin_user
+    user_controller_instance.user_dao.users[admin_user['user_id']] = admin_user
+    user_controller_instance.user_dao.email_index[admin_user['email']] = (
+        admin_user['user_id'])
 
     # Create admin session
     session_token = secrets.token_urlsafe(32)
@@ -51,19 +98,15 @@ def admin_client(client):
     # Cleanup
     if session_token in sessions:
         del sessions[session_token]
-    user_controller_instance.users = [
-        u for u in user_controller_instance.users
-        if u.userid != "test_admin"
-    ]
-    if "test_admin" in user_controller_instance.user_map:
-        del user_controller_instance.user_map["test_admin"]
-    if "admin@test.com" in user_controller_instance.email_map:
-        del user_controller_instance.email_map["admin@test.com"]
+    if "test_admin" in user_controller_instance.user_dao.users:
+        del user_controller_instance.user_dao.users["test_admin"]
+    if "admin@test.com" in user_controller_instance.user_dao.email_index:
+        del user_controller_instance.user_dao.email_index["admin@test.com"]
     client.cookies.clear()
 
 
 @pytest.fixture
-def regular_client(client):
+def regular_client(client, test_movies_csv):
     """Create a TestClient with regular user authentication."""
     session_token = secrets.token_urlsafe(32)
     sessions[session_token] = {
