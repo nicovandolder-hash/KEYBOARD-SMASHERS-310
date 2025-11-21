@@ -89,7 +89,7 @@ def test_set_password_with_special_char(standard_user):
 
 def test_set_password_no_uppercase(standard_user):
     with pytest.raises(ValueError, match=(
-          "Password must contain at least one uppercase letter.")):
+            "Password must contain at least one uppercase letter.")):
         standard_user.set_password("nouppercase1!")
 
 

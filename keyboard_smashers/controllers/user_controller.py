@@ -23,6 +23,8 @@ class UserAPISchema(BaseModel):
         "Total number of reviews written"))
     is_admin: bool = Field(False, description=(
         "Whether the user is an administrator"))
+    total_penalty_count: int = Field(0, description=(
+        "Total number of penalties issued to the user"))
 
     class Config:
         from_attributes = True
@@ -53,9 +55,13 @@ class LoginSchema(BaseModel):
 
 
 class UserController:
-    def __init__(self, csv_path: str = "data/users.csv"):
 
-        self.user_dao = UserDAO(csv_path=csv_path)
+    user_dao = None
+
+    def __init__(self, csv_path: str = ("data/users.csv")):
+        if UserController.user_dao is None:
+            UserController.user_dao = UserDAO(csv_path=csv_path)
+        self.user_dao = UserController.user_dao
         logger.info(f"UserController initialized with"
                     f" {len(self.user_dao.users)} users")
 
@@ -67,7 +73,8 @@ class UserController:
             password=user_dict['password'],
             reputation=user_dict['reputation'],
             creation_date=user_dict['creation_date'],
-            is_admin=user_dict['is_admin']
+            is_admin=user_dict['is_admin'],
+            total_penalty_count=user_dict.get('total_penalty_count', 0)
         )
 
     def dict_to_schema(self, user_dict: dict) -> UserAPISchema:

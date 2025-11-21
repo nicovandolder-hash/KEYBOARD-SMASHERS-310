@@ -10,6 +10,9 @@ from keyboard_smashers.controllers.user_controller import (
 from keyboard_smashers.controllers.movie_controller import (
      router as movie_router, movie_controller_instance
 )
+from keyboard_smashers.controllers.penalty_controller import (
+    router as penalty_router, penalty_controller_instance
+)
 import logging
 
 setup_logging()
@@ -20,6 +23,7 @@ app = FastAPI(title="IMDB Reviews API")
 app.include_router(review_router)
 app.include_router(user_router)
 app.include_router(movie_router)
+app.include_router(penalty_router)
 
 
 @app.on_event("startup")
@@ -34,7 +38,7 @@ async def load_data():
             logger.info(f"Loading users from: {user_csv}")
             logger.info(f"Loaded "
                         f"{len(user_controller_instance.user_dao.users)}"
-                        f"users.")
+                        f" users.")
         else:
             logger.warning(f"Warning: User CSV not found at {user_csv}")
 
@@ -53,8 +57,21 @@ async def load_data():
         csv_files = list(dataset_dir.glob("*.csv"))
         review_csv_files = [
             f for f in csv_files
-            if f.name not in ["users.csv", "movies.csv"]
+            if f.name not in ["users.csv", "movies.csv", "penalties.csv"]
         ]
+
+        penalty_csv = dataset_dir / "penalties.csv"
+        if penalty_csv.exists():
+            logger.info(f"Loading penalties from: {penalty_csv}")
+            logger.info(
+                f"Loaded "
+                f"{len(penalty_controller_instance.penalty_dao.penalties)} "
+                f" penalties."
+            )
+        else:
+            logger.warning(
+                f"Warning: Penalty CSV not found at {penalty_csv}. "
+            )
 
         if not review_csv_files:
             logger.error("No review CSV files found in data directory")
@@ -81,9 +98,12 @@ async def save_data():
     try:
         logger.info("Shutting down and saving user data...")
         dataset_dir = Path("data")
-        user_csv = dataset_dir / "users.csv"
-        user_controller_instance.save_users_to_csv(str(user_csv))
+        user_controller_instance.user_dao.save_users()
         logger.info("User data saved successfully.")
+
+        penalty_csv = dataset_dir / "penalties.csv"
+        penalty_controller_instance.penalty_dao.save_penalties()
+        logger.info(f"Penalty data saved to {penalty_csv}")
     except Exception as e:
         logger.error(f"Error saving user data: {e}")
 
@@ -99,4 +119,6 @@ async def root():
             len(movie_controller_instance.movie_dao.movies)
         ),
         "total_users": len(user_controller_instance.user_dao.users),
+        "total_penalties": len(
+            penalty_controller_instance.penalty_dao.penalties),
     }
