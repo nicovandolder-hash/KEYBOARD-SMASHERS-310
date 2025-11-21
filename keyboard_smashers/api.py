@@ -81,5 +81,5 @@ async def root():
         "status": "online",
         "total_reviews": len(review_controller_instance.review_dao.reviews),
         "total_movies": len(movie_controller_instance.movie_dao.movies),
-        "total_users": len(user_controller_instance.users),
+        "total_users": len(user_controller_instance.user_dao.users),
     }
