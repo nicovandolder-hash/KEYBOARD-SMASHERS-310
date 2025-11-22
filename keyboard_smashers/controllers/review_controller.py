@@ -2,11 +2,27 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
+from pathlib import Path
 from keyboard_smashers.dao.review_dao import ReviewDAO
 from keyboard_smashers.dao.report_dao import ReportDAO
 from keyboard_smashers.auth import get_current_user, get_current_admin_user
 
 logger = logging.getLogger(__name__)
+
+# Setup admin actions logger
+admin_logger = logging.getLogger('admin_actions')
+admin_logger.setLevel(logging.INFO)
+if not admin_logger.handlers:
+    log_dir = Path('logs')
+    log_dir.mkdir(exist_ok=True)
+    admin_handler = logging.FileHandler('logs/admin_actions.log')
+    admin_handler.setFormatter(
+        logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+    )
+    admin_logger.addHandler(admin_handler)
 
 
 class ReviewSchema(BaseModel):
@@ -313,15 +329,69 @@ class ReviewController:
             )
 
         try:
+            # Delete the review
             self.review_dao.delete_review(review_id)
-            logger.info(f"Review deleted by admin: {review_id}")
-            return {"message": f"Review '{review_id}' deleted by admin"}
+
+            # Cascade delete: remove all reports for this review
+            deleted_reports = self.report_dao.delete_reports_by_review(
+                review_id
+            )
+
+            # Log to admin actions
+            admin_logger.info(
+                f"ADMIN_DELETE_REVIEW - review_id={review_id}, "
+                f"deleted_reports={deleted_reports}"
+            )
+
+            logger.info(
+                f"Review {review_id} deleted by admin. "
+                f"Removed {deleted_reports} associated reports."
+            )
+            return {
+                "message": f"Review '{review_id}' deleted by admin",
+                "deleted_reports": deleted_reports
+            }
         except KeyError:
             logger.error(
                 f"Review not found during admin deletion: {review_id}")
             raise HTTPException(
                 status_code=404,
                 detail=f"Review with ID '{review_id}' not found"
+            )
+
+    def admin_delete_report(self, report_id: str) -> dict:
+        """Admin can delete a specific report"""
+        logger.info(f"Admin deleting report: {report_id}")
+
+        # Check if report exists
+        report = self.report_dao.get_report(report_id)
+        if not report:
+            logger.error(f"Report not found for admin deletion: {report_id}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Report with ID '{report_id}' not found"
+            )
+
+        # Delete the report
+        success = self.report_dao.delete_report(report_id)
+
+        if success:
+            # Log to admin actions
+            admin_logger.info(
+                f"ADMIN_DELETE_REPORT - report_id={report_id}, "
+                f"review_id={report['review_id']}"
+            )
+
+            logger.info(f"Report {report_id} deleted by admin")
+            return {
+                "message": f"Report '{report_id}' deleted by admin",
+                "review_id": report['review_id']
+            }
+        else:
+            logger.error(f"Failed to delete report: {report_id}")
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to delete report"
             )
 
 
@@ -464,3 +534,12 @@ def admin_delete_review(
 ):
     """Admin delete any review for moderation (requires admin privileges)"""
     return review_controller_instance.admin_delete_review(review_id)
+
+
+@router.delete("/reports/{report_id}/admin")
+def admin_delete_report(
+    report_id: str,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """Admin delete a specific report (requires admin privileges)"""
+    return review_controller_instance.admin_delete_report(report_id)

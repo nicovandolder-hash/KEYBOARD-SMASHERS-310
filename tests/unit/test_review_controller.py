@@ -25,8 +25,15 @@ def mock_review_dao():
 
 
 @pytest.fixture
-def controller(mock_review_dao):
-    """Create ReviewController with mocked DAO."""
+def mock_report_dao():
+    """Mock ReportDAO for testing controller logic."""
+    dao = Mock()
+    return dao
+
+
+@pytest.fixture
+def controller(mock_review_dao, mock_report_dao):
+    """Create ReviewController with mocked DAOs."""
     with patch(
         'keyboard_smashers.controllers.review_controller.ReviewDAO'
     ) as mock_dao_class:
@@ -36,6 +43,7 @@ def controller(mock_review_dao):
             new_reviews_csv_path="test_new.csv"
         )
         controller.review_dao = mock_review_dao
+        controller.report_dao = mock_report_dao
         return controller
 
 
@@ -427,6 +435,86 @@ class TestReviewControllerDeleteOperations:
         assert exc_info.value.status_code == 403
         assert 'IMDB' in str(exc_info.value.detail)
         mock_review_dao.delete_review.assert_not_called()
+
+    def test_admin_delete_review_cascades_reports(
+        self, controller, mock_review_dao, mock_report_dao, sample_review
+    ):
+        """Test that deleting a review also deletes associated reports."""
+        mock_review_dao.get_review.return_value = sample_review
+        mock_review_dao.delete_review.return_value = None
+        mock_report_dao.delete_reports_by_review.return_value = 3
+
+        result = controller.admin_delete_review('rev_001')
+
+        # Verify review was deleted
+        mock_review_dao.delete_review.assert_called_once_with('rev_001')
+        # Verify reports were cascade deleted
+        mock_report_dao.delete_reports_by_review.assert_called_once_with(
+            'rev_001'
+        )
+        # Verify response includes deleted reports count
+        assert result['deleted_reports'] == 3
+        assert 'admin' in result['message']
+
+
+class TestReviewControllerAdminReportDeletion:
+    """Test admin report deletion operations."""
+
+    def test_admin_delete_report_success(
+        self, controller, mock_report_dao
+    ):
+        """Test successful report deletion by admin."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.delete_report.return_value = True
+
+        result = controller.admin_delete_report('report_000001')
+
+        mock_report_dao.get_report.assert_called_once_with('report_000001')
+        mock_report_dao.delete_report.assert_called_once_with('report_000001')
+        assert result['message'] == "Report 'report_000001' deleted by admin"
+        assert result['review_id'] == 'rev_001'
+
+    def test_admin_delete_report_not_found(
+        self, controller, mock_report_dao
+    ):
+        """Test deleting a non-existent report."""
+        mock_report_dao.get_report.return_value = None
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.admin_delete_report('report_999999')
+
+        assert exc_info.value.status_code == 404
+        assert 'not found' in str(exc_info.value.detail).lower()
+        mock_report_dao.delete_report.assert_not_called()
+
+    def test_admin_delete_report_failure(
+        self, controller, mock_report_dao
+    ):
+        """Test when report deletion fails."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.delete_report.return_value = False
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.admin_delete_report('report_000001')
+
+        assert exc_info.value.status_code == 500
+        assert 'failed' in str(exc_info.value.detail).lower()
 
 
 class TestReviewControllerHelpers:
