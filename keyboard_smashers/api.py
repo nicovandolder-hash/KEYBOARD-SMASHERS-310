@@ -80,7 +80,6 @@ async def load_data():
 
         csv_file = review_csv_files[0]
         logger.info(f"Loading reviews from: {csv_file}")
-        review_controller_instance.load_dataset(str(csv_file))
         logger.info(
             f"Loaded {len(review_controller_instance.review_dao.reviews)} "
             f"reviews from ReviewDAO."
