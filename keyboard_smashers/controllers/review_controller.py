@@ -397,15 +397,24 @@ class ReviewController:
     def get_reported_reviews_for_admin(
         self,
         skip: int = 0,
-        limit: int = 50
+        limit: int = 50,
+        admin_viewed: Optional[bool] = None
     ) -> dict:
         """Get paginated list of reported reviews with review details"""
         logger.info(
-            f"Admin fetching reported reviews (skip={skip}, limit={limit})"
+            f"Admin fetching reported reviews (skip={skip}, limit={limit}, "
+            f"admin_viewed={admin_viewed})"
         )
 
         # Get all reports
         all_reports = self.report_dao.get_all_reports()
+
+        # Filter by admin_viewed status if specified
+        if admin_viewed is not None:
+            all_reports = [
+                r for r in all_reports
+                if r.get('admin_viewed', False) == admin_viewed
+            ]
 
         # Sort by timestamp (newest first)
         all_reports.sort(
@@ -456,6 +465,42 @@ class ReviewController:
             'limit': limit,
             'has_more': (skip + limit) < total
         }
+
+    def mark_report_as_viewed(self, report_id: str) -> dict:
+        """Mark a report as viewed by admin"""
+        logger.info(f"Admin marking report as viewed: {report_id}")
+
+        # Check if report exists
+        report = self.report_dao.get_report(report_id)
+        if not report:
+            logger.error(f"Report not found: {report_id}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Report with ID '{report_id}' not found"
+            )
+
+        # Mark as viewed
+        success = self.report_dao.mark_as_viewed(report_id)
+
+        if success:
+            # Log to admin actions
+            admin_logger.info(
+                f"ADMIN_VIEW_REPORT - report_id={report_id}, "
+                f"review_id={report['review_id']}"
+            )
+
+            logger.info(f"Report {report_id} marked as viewed by admin")
+            return {
+                "message": f"Report '{report_id}' marked as viewed",
+                "report_id": report_id,
+                "admin_viewed": True
+            }
+        else:
+            logger.error(f"Failed to mark report as viewed: {report_id}")
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to update report"
+            )
 
     def admin_delete_report(self, report_id: str) -> dict:
         """Admin can delete a specific report"""
@@ -632,13 +677,31 @@ def report_review(
 def admin_get_reported_reviews(
     skip: int = 0,
     limit: int = 50,
+    admin_viewed: Optional[bool] = None,
     admin_user_id: str = Depends(get_current_admin_user)
 ):
-    """Get paginated list of all reported reviews (admin only)"""
+    """Get paginated list of reported reviews (admin only)
+
+    Args:
+        skip: Number of reports to skip (pagination)
+        limit: Maximum reports per page
+        admin_viewed: Filter by viewed status
+            (None=all, False=unviewed, True=viewed)
+    """
     return review_controller_instance.get_reported_reviews_for_admin(
         skip=skip,
-        limit=limit
+        limit=limit,
+        admin_viewed=admin_viewed
     )
+
+
+@router.patch("/reports/{report_id}/admin/view")
+def admin_mark_report_viewed(
+    report_id: str,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """Mark a report as viewed by admin (admin only)"""
+    return review_controller_instance.mark_report_as_viewed(report_id)
 
 
 @router.delete("/{review_id}/admin")

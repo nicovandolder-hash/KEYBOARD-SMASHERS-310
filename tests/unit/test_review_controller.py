@@ -740,6 +740,166 @@ class TestReviewControllerReportedReviewsRetrieval:
         assert report['reviewer_user_id'] is None
         assert report['imdb_username'] == 'john_doe'
 
+    def test_get_reported_reviews_filter_unviewed(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test filtering for only unviewed reports."""
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'spam',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 3, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000002',
+                'review_id': 'rev_002',
+                'reporting_user_id': 'user_002',
+                'reason': 'offensive',
+                'admin_viewed': True,
+                'timestamp': datetime(2024, 1, 2, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000003',
+                'review_id': 'rev_003',
+                'reporting_user_id': 'user_003',
+                'reason': 'inappropriate',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 1, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        def get_review_mock(review_id):
+            return {
+                'review_id': review_id,
+                'movie_id': 'movie_001',
+                'user_id': 'user_001',
+                'rating': 3.0,
+                'review_text': 'Review',
+                'imdb_username': None
+            }
+        mock_review_dao.get_review.side_effect = get_review_mock
+
+        # Filter for unviewed only
+        result = controller.get_reported_reviews_for_admin(
+            skip=0, limit=50, admin_viewed=False
+        )
+
+        assert result['total'] == 2
+        assert len(result['reports']) == 2
+        assert result['reports'][0]['report_id'] == 'report_000001'
+        assert result['reports'][1]['report_id'] == 'report_000003'
+        assert all(not r['admin_viewed'] for r in result['reports'])
+
+    def test_get_reported_reviews_filter_viewed(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test filtering for only viewed reports."""
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'spam',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 3, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000002',
+                'review_id': 'rev_002',
+                'reporting_user_id': 'user_002',
+                'reason': 'offensive',
+                'admin_viewed': True,
+                'timestamp': datetime(2024, 1, 2, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        def get_review_mock(review_id):
+            return {
+                'review_id': review_id,
+                'movie_id': 'movie_001',
+                'user_id': 'user_001',
+                'rating': 3.0,
+                'review_text': 'Review',
+                'imdb_username': None
+            }
+        mock_review_dao.get_review.side_effect = get_review_mock
+
+        # Filter for viewed only
+        result = controller.get_reported_reviews_for_admin(
+            skip=0, limit=50, admin_viewed=True
+        )
+
+        assert result['total'] == 1
+        assert len(result['reports']) == 1
+        assert result['reports'][0]['report_id'] == 'report_000002'
+        assert result['reports'][0]['admin_viewed'] is True
+
+
+class TestReviewControllerMarkReportViewed:
+    """Test marking reports as viewed by admin."""
+
+    def test_mark_report_as_viewed_success(
+        self, controller, mock_report_dao
+    ):
+        """Test successfully marking report as viewed."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.mark_as_viewed.return_value = True
+
+        result = controller.mark_report_as_viewed('report_000001')
+
+        mock_report_dao.get_report.assert_called_once_with('report_000001')
+        mock_report_dao.mark_as_viewed.assert_called_once_with('report_000001')
+        assert result['report_id'] == 'report_000001'
+        assert result['admin_viewed'] is True
+        assert 'marked as viewed' in result['message']
+
+    def test_mark_report_as_viewed_not_found(
+        self, controller, mock_report_dao
+    ):
+        """Test marking non-existent report as viewed."""
+        mock_report_dao.get_report.return_value = None
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.mark_report_as_viewed('report_999999')
+
+        assert exc_info.value.status_code == 404
+        assert 'not found' in str(exc_info.value.detail).lower()
+        mock_report_dao.mark_as_viewed.assert_not_called()
+
+    def test_mark_report_as_viewed_failure(
+        self, controller, mock_report_dao
+    ):
+        """Test when marking report as viewed fails."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.mark_as_viewed.return_value = False
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.mark_report_as_viewed('report_000001')
+
+        assert exc_info.value.status_code == 500
+        assert 'failed' in str(exc_info.value.detail).lower()
+
 
 class TestReviewControllerHelpers:
     """Test helper methods and edge cases."""
