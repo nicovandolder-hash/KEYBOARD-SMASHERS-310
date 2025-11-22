@@ -457,6 +457,66 @@ class TestReviewControllerDeleteOperations:
         assert 'admin' in result['message']
 
 
+class TestReviewControllerAdminReportDeletion:
+    """Test admin report deletion operations."""
+
+    def test_admin_delete_report_success(
+        self, controller, mock_report_dao
+    ):
+        """Test successful report deletion by admin."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.delete_report.return_value = True
+
+        result = controller.admin_delete_report('report_000001')
+
+        mock_report_dao.get_report.assert_called_once_with('report_000001')
+        mock_report_dao.delete_report.assert_called_once_with('report_000001')
+        assert result['message'] == "Report 'report_000001' deleted by admin"
+        assert result['review_id'] == 'rev_001'
+
+    def test_admin_delete_report_not_found(
+        self, controller, mock_report_dao
+    ):
+        """Test deleting a non-existent report."""
+        mock_report_dao.get_report.return_value = None
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.admin_delete_report('report_999999')
+
+        assert exc_info.value.status_code == 404
+        assert 'not found' in str(exc_info.value.detail).lower()
+        mock_report_dao.delete_report.assert_not_called()
+
+    def test_admin_delete_report_failure(
+        self, controller, mock_report_dao
+    ):
+        """Test when report deletion fails."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.delete_report.return_value = False
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.admin_delete_report('report_000001')
+
+        assert exc_info.value.status_code == 500
+        assert 'failed' in str(exc_info.value.detail).lower()
+
+
 class TestReviewControllerHelpers:
     """Test helper methods and edge cases."""
 

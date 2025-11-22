@@ -226,3 +226,36 @@ class ReportDAO:
         self.save_reports()
         logger.info(f"Report {report_id} marked as viewed")
         return True
+
+    def delete_report(self, report_id: str) -> bool:
+        """Delete a specific report by ID"""
+        if report_id not in self.reports:
+            logger.warning(f"Report {report_id} not found")
+            return False
+
+        report = self.reports[report_id]
+        review_id = report['review_id']
+        user_id = report['reporting_user_id']
+
+        # Remove from review index
+        if review_id in self.reports_by_review:
+            if report_id in self.reports_by_review[review_id]:
+                self.reports_by_review[review_id].remove(report_id)
+            # Clean up empty lists
+            if not self.reports_by_review[review_id]:
+                del self.reports_by_review[review_id]
+
+        # Remove from user index
+        if user_id in self.reports_by_user:
+            if report_id in self.reports_by_user[user_id]:
+                self.reports_by_user[user_id].remove(report_id)
+            # Clean up empty lists
+            if not self.reports_by_user[user_id]:
+                del self.reports_by_user[user_id]
+
+        # Remove from reports dict
+        del self.reports[report_id]
+
+        self.save_reports()
+        logger.info(f"Deleted report {report_id}")
+        return True

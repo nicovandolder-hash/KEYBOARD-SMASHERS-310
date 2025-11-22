@@ -359,6 +359,41 @@ class ReviewController:
                 detail=f"Review with ID '{review_id}' not found"
             )
 
+    def admin_delete_report(self, report_id: str) -> dict:
+        """Admin can delete a specific report"""
+        logger.info(f"Admin deleting report: {report_id}")
+
+        # Check if report exists
+        report = self.report_dao.get_report(report_id)
+        if not report:
+            logger.error(f"Report not found for admin deletion: {report_id}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Report with ID '{report_id}' not found"
+            )
+
+        # Delete the report
+        success = self.report_dao.delete_report(report_id)
+
+        if success:
+            # Log to admin actions
+            admin_logger.info(
+                f"ADMIN_DELETE_REPORT - report_id={report_id}, "
+                f"review_id={report['review_id']}"
+            )
+
+            logger.info(f"Report {report_id} deleted by admin")
+            return {
+                "message": f"Report '{report_id}' deleted by admin",
+                "review_id": report['review_id']
+            }
+        else:
+            logger.error(f"Failed to delete report: {report_id}")
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to delete report"
+            )
+
 
 # Global instance
 review_controller_instance = ReviewController()
@@ -490,6 +525,7 @@ def report_review(
     }
 
 
+
 # ADMIN-ONLY ENDPOINTS
 
 @router.delete("/{review_id}/admin")
@@ -499,3 +535,13 @@ def admin_delete_review(
 ):
     """Admin delete any review for moderation (requires admin privileges)"""
     return review_controller_instance.admin_delete_review(review_id)
+
+
+@router.delete("/reports/{report_id}/admin")
+def admin_delete_report(
+    report_id: str,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """Admin delete a specific report (requires admin privileges)"""
+    return review_controller_instance.admin_delete_report(report_id)
+
