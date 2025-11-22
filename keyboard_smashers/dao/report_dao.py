@@ -33,6 +33,10 @@ class ReportDAO:
                         'report_id': row['report_id'],
                         'review_id': row['review_id'],
                         'reporting_user_id': row['reporting_user_id'],
+                        'reason': row.get('reason', ''),
+                        'admin_viewed': row.get(
+                            'admin_viewed', 'False'
+                        ) == 'True',
                         'timestamp': datetime.fromisoformat(row['timestamp'])
                     }
 
@@ -80,6 +84,8 @@ class ReportDAO:
                     'report_id',
                     'review_id',
                     'reporting_user_id',
+                    'reason',
+                    'admin_viewed',
                     'timestamp'
                 ]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -90,6 +96,8 @@ class ReportDAO:
                         'report_id': report['report_id'],
                         'review_id': report['review_id'],
                         'reporting_user_id': report['reporting_user_id'],
+                        'reason': report.get('reason', ''),
+                        'admin_viewed': report.get('admin_viewed', False),
                         'timestamp': report['timestamp'].isoformat()
                     })
 
@@ -103,7 +111,8 @@ class ReportDAO:
     def create_report(
         self,
         review_id: str,
-        reporting_user_id: str
+        reporting_user_id: str,
+        reason: str = ""
     ) -> Dict[str, Any]:
         """Create a new report for a review"""
         report_id = f"report_{str(self.report_counter).zfill(6)}"
@@ -113,6 +122,8 @@ class ReportDAO:
             'report_id': report_id,
             'review_id': review_id,
             'reporting_user_id': reporting_user_id,
+            'reason': reason,
+            'admin_viewed': False,
             'timestamp': datetime.now()
         }
 
@@ -204,3 +215,14 @@ class ReportDAO:
             )
 
         return count
+
+    def mark_as_viewed(self, report_id: str) -> bool:
+        """Mark a report as viewed by an admin"""
+        if report_id not in self.reports:
+            logger.warning(f"Report {report_id} not found")
+            return False
+
+        self.reports[report_id]['admin_viewed'] = True
+        self.save_reports()
+        logger.info(f"Report {report_id} marked as viewed")
+        return True

@@ -413,6 +413,7 @@ def delete_review(
 @router.post("/{review_id}/report", status_code=201)
 def report_review(
     review_id: str,
+    reason: str = "",
     current_user_id: str = Depends(get_current_user)
 ):
     """Report a review for moderation (requires authentication)"""
@@ -443,7 +444,8 @@ def report_review(
     # Create the report
     report = review_controller_instance.report_dao.create_report(
         review_id=review_id,
-        reporting_user_id=current_user_id
+        reporting_user_id=current_user_id,
+        reason=reason
     )
 
     logger.info(f"Report created: {report['report_id']}")

@@ -43,7 +43,10 @@ def test_data_files():
     reports_file = tempfile.NamedTemporaryFile(
         mode='w', delete=False, suffix='.csv', newline=''
     )
-    reports_file.write("report_id,review_id,reporting_user_id,timestamp\n")
+    reports_file.write(
+        "report_id,review_id,reporting_user_id,reason,"
+        "admin_viewed,timestamp\n"
+    )
     reports_file.close()
 
     # Patch the DAOs to use temp files
