@@ -2,11 +2,27 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
+from pathlib import Path
 from keyboard_smashers.dao.review_dao import ReviewDAO
 from keyboard_smashers.dao.report_dao import ReportDAO
 from keyboard_smashers.auth import get_current_user, get_current_admin_user
 
 logger = logging.getLogger(__name__)
+
+# Setup admin actions logger
+admin_logger = logging.getLogger('admin_actions')
+admin_logger.setLevel(logging.INFO)
+if not admin_logger.handlers:
+    log_dir = Path('logs')
+    log_dir.mkdir(exist_ok=True)
+    admin_handler = logging.FileHandler('logs/admin_actions.log')
+    admin_handler.setFormatter(
+        logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+    )
+    admin_logger.addHandler(admin_handler)
 
 
 class ReviewSchema(BaseModel):
@@ -313,9 +329,28 @@ class ReviewController:
             )
 
         try:
+            # Delete the review
             self.review_dao.delete_review(review_id)
-            logger.info(f"Review deleted by admin: {review_id}")
-            return {"message": f"Review '{review_id}' deleted by admin"}
+
+            # Cascade delete: remove all reports for this review
+            deleted_reports = self.report_dao.delete_reports_by_review(
+                review_id
+            )
+
+            # Log to admin actions
+            admin_logger.info(
+                f"ADMIN_DELETE_REVIEW - review_id={review_id}, "
+                f"deleted_reports={deleted_reports}"
+            )
+
+            logger.info(
+                f"Review {review_id} deleted by admin. "
+                f"Removed {deleted_reports} associated reports."
+            )
+            return {
+                "message": f"Review '{review_id}' deleted by admin",
+                "deleted_reports": deleted_reports
+            }
         except KeyError:
             logger.error(
                 f"Review not found during admin deletion: {review_id}")

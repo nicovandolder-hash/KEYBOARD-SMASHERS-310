@@ -25,8 +25,15 @@ def mock_review_dao():
 
 
 @pytest.fixture
-def controller(mock_review_dao):
-    """Create ReviewController with mocked DAO."""
+def mock_report_dao():
+    """Mock ReportDAO for testing controller logic."""
+    dao = Mock()
+    return dao
+
+
+@pytest.fixture
+def controller(mock_review_dao, mock_report_dao):
+    """Create ReviewController with mocked DAOs."""
     with patch(
         'keyboard_smashers.controllers.review_controller.ReviewDAO'
     ) as mock_dao_class:
@@ -36,6 +43,7 @@ def controller(mock_review_dao):
             new_reviews_csv_path="test_new.csv"
         )
         controller.review_dao = mock_review_dao
+        controller.report_dao = mock_report_dao
         return controller
 
 
@@ -427,6 +435,26 @@ class TestReviewControllerDeleteOperations:
         assert exc_info.value.status_code == 403
         assert 'IMDB' in str(exc_info.value.detail)
         mock_review_dao.delete_review.assert_not_called()
+
+    def test_admin_delete_review_cascades_reports(
+        self, controller, mock_review_dao, mock_report_dao, sample_review
+    ):
+        """Test that deleting a review also deletes associated reports."""
+        mock_review_dao.get_review.return_value = sample_review
+        mock_review_dao.delete_review.return_value = None
+        mock_report_dao.delete_reports_by_review.return_value = 3
+
+        result = controller.admin_delete_review('rev_001')
+
+        # Verify review was deleted
+        mock_review_dao.delete_review.assert_called_once_with('rev_001')
+        # Verify reports were cascade deleted
+        mock_report_dao.delete_reports_by_review.assert_called_once_with(
+            'rev_001'
+        )
+        # Verify response includes deleted reports count
+        assert result['deleted_reports'] == 3
+        assert 'admin' in result['message']
 
 
 class TestReviewControllerHelpers:
