@@ -3,6 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
 from keyboard_smashers.dao.review_dao import ReviewDAO
+from keyboard_smashers.dao.report_dao import ReportDAO
 from keyboard_smashers.auth import get_current_user, get_current_admin_user
 
 logger = logging.getLogger(__name__)
@@ -61,6 +62,7 @@ class ReviewController:
             imdb_csv_path=imdb_csv_path,
             new_reviews_csv_path=new_reviews_csv_path
         )
+        self.report_dao = ReportDAO()
         logger.info(
             f"ReviewController initialized with "
             f"{len(self.review_dao.reviews)} reviews"
@@ -406,6 +408,51 @@ def delete_review(
 ):
     """Delete your own review (requires authentication)"""
     return review_controller_instance.delete_review(review_id, current_user_id)
+
+
+@router.post("/{review_id}/report", status_code=201)
+def report_review(
+    review_id: str,
+    reason: str = "",
+    current_user_id: str = Depends(get_current_user)
+):
+    """Report a review for moderation (requires authentication)"""
+    logger.info(f"User {current_user_id} reporting review {review_id}")
+
+    # Check if review exists
+    try:
+        review_controller_instance.review_dao.get_review(review_id)
+    except KeyError:
+        logger.error(f"Review not found: {review_id}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Review with ID '{review_id}' not found"
+        )
+
+    # Check if user already reported this review
+    if review_controller_instance.report_dao.has_user_reported_review(
+        review_id, current_user_id
+    ):
+        logger.warning(
+            f"User {current_user_id} already reported review {review_id}"
+        )
+        raise HTTPException(
+            status_code=400,
+            detail="You have already reported this review"
+        )
+
+    # Create the report
+    report = review_controller_instance.report_dao.create_report(
+        review_id=review_id,
+        reporting_user_id=current_user_id,
+        reason=reason
+    )
+
+    logger.info(f"Report created: {report['report_id']}")
+    return {
+        "message": "Review reported successfully",
+        "report_id": report['report_id']
+    }
 
 
 # ADMIN-ONLY ENDPOINTS

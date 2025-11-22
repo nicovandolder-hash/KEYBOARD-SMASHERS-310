@@ -1,9 +1,1 @@
 userid,username,email,password,reputation,creation_date,is_admin,total_reviews,total_penalty_count
-user_001,Nico1,Nico1@stu.ubc.ca,Password1!,5,2025-10-30T02:18:46.241597,true,0,0
-user_002,Nico2,Nico2@stu.ubc.ca,Password2!,4,2025-10-30T02:19:07.312274,false,0,0
-user_003,User3,Nico3@stu.ubc.ca,Password3!,3,2025-11-15T16:47:53.332751,false,0,1
-user_004,Nico4,Nico4@stu.ubc.ca,Password4!,3,2025-11-20T22:08:14.230745,false,0,0
-user_005,Nico5,Nico5@stu.ubc.ca,Password5!,3,2025-11-20T22:27:04.100511,false,0,0
-user_006,Nico6,Nico6@stu.ubc.ca,Password6!,3,2025-11-20T22:30:27.215245,false,0,0
-user_007,Nico7,Nico7@stu.ubc.ca,Password7!,3,2025-11-20T22:34:31.770709,false,0,0
-user_008,Nico8,Nico8@stu.ubc.ca,Password8!,3,2025-11-20T22:40:20.611470,false,0,0
