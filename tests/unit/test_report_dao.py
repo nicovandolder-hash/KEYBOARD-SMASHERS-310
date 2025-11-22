@@ -165,7 +165,7 @@ class TestReportDAO:
         assert success is True
         assert len(report_dao.get_all_reports()) == 2
         assert report_dao.get_report("report_000001") is None
-        
+
         # Verify indexes are updated
         assert len(report_dao.get_reports_by_review("review_001")) == 1
         assert len(report_dao.get_reports_by_user("user_001")) == 0
@@ -178,11 +178,10 @@ class TestReportDAO:
     def test_delete_report_cleans_up_empty_indexes(self, report_dao):
         """Test that deleting reports cleans up empty index lists."""
         report_dao.create_report("review_001", "user_001")
-        
+
         # Delete the only report for this review/user
         report_dao.delete_report("report_000001")
-        
+
         # Verify empty lists are removed from indexes
         assert "review_001" not in report_dao.reports_by_review
         assert "user_001" not in report_dao.reports_by_user
-

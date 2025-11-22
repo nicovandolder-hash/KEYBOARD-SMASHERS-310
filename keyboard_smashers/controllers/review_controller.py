@@ -525,7 +525,6 @@ def report_review(
     }
 
 
-
 # ADMIN-ONLY ENDPOINTS
 
 @router.delete("/{review_id}/admin")
@@ -544,4 +543,3 @@ def admin_delete_report(
 ):
     """Admin delete a specific report (requires admin privileges)"""
     return review_controller_instance.admin_delete_report(report_id)
-
