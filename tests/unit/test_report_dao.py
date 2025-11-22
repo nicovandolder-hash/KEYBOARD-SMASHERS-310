@@ -109,11 +109,17 @@ class TestReportDAO:
 
     def test_has_user_reported_review(self, report_dao):
         """Test checking if user has already reported a review."""
-        assert not report_dao.has_user_reported_review("review_001", "user_001")
+        assert not report_dao.has_user_reported_review(
+            "review_001", "user_001"
+        )
 
         report_dao.create_report("review_001", "user_001")
-        assert report_dao.has_user_reported_review("review_001", "user_001")
-        assert not report_dao.has_user_reported_review("review_001", "user_002")
+        assert report_dao.has_user_reported_review(
+            "review_001", "user_001"
+        )
+        assert not report_dao.has_user_reported_review(
+            "review_001", "user_002"
+        )
 
     def test_delete_reports_by_review(self, report_dao):
         """Test cascade deletion of reports when review is deleted."""

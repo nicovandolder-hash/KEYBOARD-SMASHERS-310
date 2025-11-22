@@ -417,7 +417,7 @@ def report_review(
 ):
     """Report a review for moderation (requires authentication)"""
     logger.info(f"User {current_user_id} reporting review {review_id}")
-    
+
     # Check if review exists
     try:
         review_controller_instance.review_dao.get_review(review_id)
@@ -427,7 +427,7 @@ def report_review(
             status_code=404,
             detail=f"Review with ID '{review_id}' not found"
         )
-    
+
     # Check if user already reported this review
     if review_controller_instance.report_dao.has_user_reported_review(
         review_id, current_user_id
@@ -439,13 +439,13 @@ def report_review(
             status_code=400,
             detail="You have already reported this review"
         )
-    
+
     # Create the report
     report = review_controller_instance.report_dao.create_report(
         review_id=review_id,
         reporting_user_id=current_user_id
     )
-    
+
     logger.info(f"Report created: {report['report_id']}")
     return {
         "message": "Review reported successfully",
