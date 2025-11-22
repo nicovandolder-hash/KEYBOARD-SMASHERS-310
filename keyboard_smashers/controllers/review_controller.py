@@ -68,6 +68,41 @@ class PaginatedReviewResponse(BaseModel):
     )
 
 
+class ReportedReviewSchema(BaseModel):
+    """Schema combining report and review data"""
+    report_id: str = Field(..., description="Report ID")
+    review_id: str = Field(..., description="Reported review ID")
+    reporting_user_id: str = Field(..., description="User who reported")
+    reason: str = Field(..., description="Reason for report")
+    admin_viewed: bool = Field(
+        ..., description="Whether admin has viewed this report"
+    )
+    timestamp: str = Field(..., description="When report was created")
+    # Review details
+    review_text: str = Field(..., description="Review content")
+    rating: float = Field(..., description="Review rating")
+    movie_id: str = Field(..., description="Movie being reviewed")
+    reviewer_user_id: Optional[str] = Field(
+        None, description="User who wrote review (null for IMDB)"
+    )
+    imdb_username: Optional[str] = Field(
+        None, description="IMDB username if legacy review"
+    )
+
+
+class PaginatedReportedReviewsResponse(BaseModel):
+    """Response model for paginated reported reviews"""
+    reports: List[ReportedReviewSchema] = Field(
+        ..., description="List of reported reviews"
+    )
+    total: int = Field(..., description="Total reported reviews")
+    skip: int = Field(..., description="Number of reports skipped")
+    limit: int = Field(..., description="Maximum reports per page")
+    has_more: bool = Field(
+        ..., description="Whether more reports are available"
+    )
+
+
 class ReviewController:
     def __init__(
         self,
@@ -359,6 +394,114 @@ class ReviewController:
                 detail=f"Review with ID '{review_id}' not found"
             )
 
+    def get_reported_reviews_for_admin(
+        self,
+        skip: int = 0,
+        limit: int = 50,
+        admin_viewed: Optional[bool] = None
+    ) -> dict:
+        """Get paginated list of reported reviews with review details"""
+        logger.info(
+            f"Admin fetching reported reviews (skip={skip}, limit={limit}, "
+            f"admin_viewed={admin_viewed})"
+        )
+
+        # Get all reports
+        all_reports = self.report_dao.get_all_reports()
+
+        # Filter by admin_viewed status if specified
+        if admin_viewed is not None:
+            all_reports = [
+                r for r in all_reports
+                if r.get('admin_viewed', False) == admin_viewed
+            ]
+
+        # Sort by timestamp (newest first)
+        all_reports.sort(
+            key=lambda r: r['timestamp'],
+            reverse=True
+        )
+
+        total = len(all_reports)
+
+        # Apply pagination
+        paginated_reports = all_reports[skip:skip + limit]
+
+        # Enrich reports with review details
+        enriched_reports = []
+        for report in paginated_reports:
+            try:
+                review = self.review_dao.get_review(report['review_id'])
+                enriched_reports.append({
+                    'report_id': report['report_id'],
+                    'review_id': report['review_id'],
+                    'reporting_user_id': report['reporting_user_id'],
+                    'reason': report.get('reason', ''),
+                    'admin_viewed': report.get('admin_viewed', False),
+                    'timestamp': report['timestamp'].isoformat(),
+                    'review_text': review.get('review_text', ''),
+                    'rating': review.get('rating', 0),
+                    'movie_id': review.get('movie_id', ''),
+                    'reviewer_user_id': review.get('user_id'),
+                    'imdb_username': review.get('imdb_username')
+                })
+            except KeyError:
+                # Review was deleted, skip this report
+                logger.warning(
+                    f"Review {report['review_id']} not found for "
+                    f"report {report['report_id']}"
+                )
+                continue
+
+        logger.info(
+            f"Returning {len(enriched_reports)} reported reviews "
+            f"out of {total} total"
+        )
+
+        return {
+            'reports': enriched_reports,
+            'total': total,
+            'skip': skip,
+            'limit': limit,
+            'has_more': (skip + limit) < total
+        }
+
+    def mark_report_as_viewed(self, report_id: str) -> dict:
+        """Mark a report as viewed by admin"""
+        logger.info(f"Admin marking report as viewed: {report_id}")
+
+        # Check if report exists
+        report = self.report_dao.get_report(report_id)
+        if not report:
+            logger.error(f"Report not found: {report_id}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Report with ID '{report_id}' not found"
+            )
+
+        # Mark as viewed
+        success = self.report_dao.mark_as_viewed(report_id)
+
+        if success:
+            # Log to admin actions
+            admin_logger.info(
+                f"ADMIN_VIEW_REPORT - report_id={report_id}, "
+                f"review_id={report['review_id']}"
+            )
+
+            logger.info(f"Report {report_id} marked as viewed by admin")
+            return {
+                "message": f"Report '{report_id}' marked as viewed",
+                "report_id": report_id,
+                "admin_viewed": True
+            }
+        else:
+            logger.error(f"Failed to mark report as viewed: {report_id}")
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to update report"
+            )
+
     def admin_delete_report(self, report_id: str) -> dict:
         """Admin can delete a specific report"""
         logger.info(f"Admin deleting report: {report_id}")
@@ -526,6 +669,40 @@ def report_review(
 
 
 # ADMIN-ONLY ENDPOINTS
+
+@router.get(
+    "/reports/admin",
+    response_model=PaginatedReportedReviewsResponse
+)
+def admin_get_reported_reviews(
+    skip: int = 0,
+    limit: int = 50,
+    admin_viewed: Optional[bool] = None,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """Get paginated list of reported reviews (admin only)
+
+    Args:
+        skip: Number of reports to skip (pagination)
+        limit: Maximum reports per page
+        admin_viewed: Filter by viewed status
+            (None=all, False=unviewed, True=viewed)
+    """
+    return review_controller_instance.get_reported_reviews_for_admin(
+        skip=skip,
+        limit=limit,
+        admin_viewed=admin_viewed
+    )
+
+
+@router.patch("/reports/{report_id}/admin/view")
+def admin_mark_report_viewed(
+    report_id: str,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """Mark a report as viewed by admin (admin only)"""
+    return review_controller_instance.mark_report_as_viewed(report_id)
+
 
 @router.delete("/{review_id}/admin")
 def admin_delete_review(

@@ -517,6 +517,390 @@ class TestReviewControllerAdminReportDeletion:
         assert 'failed' in str(exc_info.value.detail).lower()
 
 
+class TestReviewControllerReportedReviewsRetrieval:
+    """Test admin retrieval of reported reviews."""
+
+    def test_get_reported_reviews_success(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test successful retrieval of reported reviews with pagination."""
+        # Mock reports
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'spam',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 3, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000002',
+                'review_id': 'rev_002',
+                'reporting_user_id': 'user_002',
+                'reason': 'offensive',
+                'admin_viewed': True,
+                'timestamp': datetime(2024, 1, 2, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000003',
+                'review_id': 'rev_003',
+                'reporting_user_id': 'user_003',
+                'reason': 'inappropriate',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 1, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        # Mock reviews
+        mock_reviews = {
+            'rev_001': {
+                'review_id': 'rev_001',
+                'movie_id': 'movie_001',
+                'user_id': 'user_123',
+                'rating': 4.5,
+                'review_text': 'Great movie!',
+                'imdb_username': None
+            },
+            'rev_002': {
+                'review_id': 'rev_002',
+                'movie_id': 'movie_002',
+                'user_id': 'user_456',
+                'rating': 2.0,
+                'review_text': 'Not good',
+                'imdb_username': None
+            },
+            'rev_003': {
+                'review_id': 'rev_003',
+                'movie_id': 'movie_003',
+                'user_id': None,
+                'rating': 5.0,
+                'review_text': 'Amazing!',
+                'imdb_username': 'imdb_user'
+            }
+        }
+        mock_review_dao.get_review.side_effect = lambda rid: mock_reviews[rid]
+
+        result = controller.get_reported_reviews_for_admin(skip=0, limit=50)
+
+        assert result['total'] == 3
+        assert len(result['reports']) == 3
+        assert result['skip'] == 0
+        assert result['limit'] == 50
+        assert result['has_more'] is False
+
+        # Verify sorted by timestamp (newest first)
+        assert result['reports'][0]['report_id'] == 'report_000001'
+        assert result['reports'][1]['report_id'] == 'report_000002'
+        assert result['reports'][2]['report_id'] == 'report_000003'
+
+        # Verify report data
+        first_report = result['reports'][0]
+        assert first_report['review_id'] == 'rev_001'
+        assert first_report['reason'] == 'spam'
+        assert first_report['admin_viewed'] is False
+
+        # Verify review data is included
+        assert first_report['review_text'] == 'Great movie!'
+        assert first_report['rating'] == 4.5
+        assert first_report['movie_id'] == 'movie_001'
+        assert first_report['reviewer_user_id'] == 'user_123'
+
+    def test_get_reported_reviews_pagination(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test pagination with skip and limit."""
+        # Create 10 mock reports
+        mock_reports = []
+        for i in range(10):
+            mock_reports.append({
+                'report_id': f'report_{str(i).zfill(6)}',
+                'review_id': f'rev_{str(i).zfill(3)}',
+                'reporting_user_id': f'user_{str(i).zfill(3)}',
+                'reason': 'test',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, i + 1, 10, 0, 0)
+            })
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        # Mock review lookup
+        def get_review_mock(review_id):
+            return {
+                'review_id': review_id,
+                'movie_id': 'movie_001',
+                'user_id': 'user_001',
+                'rating': 3.0,
+                'review_text': 'Review text',
+                'imdb_username': None
+            }
+        mock_review_dao.get_review.side_effect = get_review_mock
+
+        # Test first page
+        result = controller.get_reported_reviews_for_admin(skip=0, limit=5)
+        assert result['total'] == 10
+        assert len(result['reports']) == 5
+        assert result['has_more'] is True
+        assert result['reports'][0]['report_id'] == 'report_000009'
+
+        # Test second page
+        result = controller.get_reported_reviews_for_admin(skip=5, limit=5)
+        assert result['total'] == 10
+        assert len(result['reports']) == 5
+        assert result['has_more'] is False
+        assert result['reports'][0]['report_id'] == 'report_000004'
+
+    def test_get_reported_reviews_empty(
+        self, controller, mock_report_dao
+    ):
+        """Test when there are no reported reviews."""
+        mock_report_dao.get_all_reports.return_value = []
+
+        result = controller.get_reported_reviews_for_admin(skip=0, limit=50)
+
+        assert result['total'] == 0
+        assert len(result['reports']) == 0
+        assert result['has_more'] is False
+
+    def test_get_reported_reviews_with_deleted_review(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test handling of reports for deleted reviews."""
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'spam',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 2, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000002',
+                'review_id': 'rev_deleted',
+                'reporting_user_id': 'user_002',
+                'reason': 'offensive',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 1, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        # First review exists, second is deleted
+        def get_review_mock(review_id):
+            if review_id == 'rev_001':
+                return {
+                    'review_id': 'rev_001',
+                    'movie_id': 'movie_001',
+                    'user_id': 'user_001',
+                    'rating': 3.0,
+                    'review_text': 'Review',
+                    'imdb_username': None
+                }
+            raise KeyError(f"Review {review_id} not found")
+
+        mock_review_dao.get_review.side_effect = get_review_mock
+
+        result = controller.get_reported_reviews_for_admin(skip=0, limit=50)
+
+        # Should skip deleted review
+        assert result['total'] == 2  # Total reports still 2
+        assert len(result['reports']) == 1  # But only 1 returned
+        assert result['reports'][0]['report_id'] == 'report_000001'
+
+    def test_get_reported_reviews_includes_imdb_reviews(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test that IMDB reviews are properly included."""
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'imdb_rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'inappropriate',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 1, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        mock_review_dao.get_review.return_value = {
+            'review_id': 'imdb_rev_001',
+            'movie_id': 'movie_001',
+            'user_id': None,  # IMDB review
+            'rating': 4.0,
+            'review_text': 'IMDB review text',
+            'imdb_username': 'john_doe'
+        }
+
+        result = controller.get_reported_reviews_for_admin(skip=0, limit=50)
+
+        assert len(result['reports']) == 1
+        report = result['reports'][0]
+        assert report['reviewer_user_id'] is None
+        assert report['imdb_username'] == 'john_doe'
+
+    def test_get_reported_reviews_filter_unviewed(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test filtering for only unviewed reports."""
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'spam',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 3, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000002',
+                'review_id': 'rev_002',
+                'reporting_user_id': 'user_002',
+                'reason': 'offensive',
+                'admin_viewed': True,
+                'timestamp': datetime(2024, 1, 2, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000003',
+                'review_id': 'rev_003',
+                'reporting_user_id': 'user_003',
+                'reason': 'inappropriate',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 1, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        def get_review_mock(review_id):
+            return {
+                'review_id': review_id,
+                'movie_id': 'movie_001',
+                'user_id': 'user_001',
+                'rating': 3.0,
+                'review_text': 'Review',
+                'imdb_username': None
+            }
+        mock_review_dao.get_review.side_effect = get_review_mock
+
+        # Filter for unviewed only
+        result = controller.get_reported_reviews_for_admin(
+            skip=0, limit=50, admin_viewed=False
+        )
+
+        assert result['total'] == 2
+        assert len(result['reports']) == 2
+        assert result['reports'][0]['report_id'] == 'report_000001'
+        assert result['reports'][1]['report_id'] == 'report_000003'
+        assert all(not r['admin_viewed'] for r in result['reports'])
+
+    def test_get_reported_reviews_filter_viewed(
+        self, controller, mock_report_dao, mock_review_dao
+    ):
+        """Test filtering for only viewed reports."""
+        mock_reports = [
+            {
+                'report_id': 'report_000001',
+                'review_id': 'rev_001',
+                'reporting_user_id': 'user_001',
+                'reason': 'spam',
+                'admin_viewed': False,
+                'timestamp': datetime(2024, 1, 3, 10, 0, 0)
+            },
+            {
+                'report_id': 'report_000002',
+                'review_id': 'rev_002',
+                'reporting_user_id': 'user_002',
+                'reason': 'offensive',
+                'admin_viewed': True,
+                'timestamp': datetime(2024, 1, 2, 10, 0, 0)
+            }
+        ]
+        mock_report_dao.get_all_reports.return_value = mock_reports
+
+        def get_review_mock(review_id):
+            return {
+                'review_id': review_id,
+                'movie_id': 'movie_001',
+                'user_id': 'user_001',
+                'rating': 3.0,
+                'review_text': 'Review',
+                'imdb_username': None
+            }
+        mock_review_dao.get_review.side_effect = get_review_mock
+
+        # Filter for viewed only
+        result = controller.get_reported_reviews_for_admin(
+            skip=0, limit=50, admin_viewed=True
+        )
+
+        assert result['total'] == 1
+        assert len(result['reports']) == 1
+        assert result['reports'][0]['report_id'] == 'report_000002'
+        assert result['reports'][0]['admin_viewed'] is True
+
+
+class TestReviewControllerMarkReportViewed:
+    """Test marking reports as viewed by admin."""
+
+    def test_mark_report_as_viewed_success(
+        self, controller, mock_report_dao
+    ):
+        """Test successfully marking report as viewed."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.mark_as_viewed.return_value = True
+
+        result = controller.mark_report_as_viewed('report_000001')
+
+        mock_report_dao.get_report.assert_called_once_with('report_000001')
+        mock_report_dao.mark_as_viewed.assert_called_once_with('report_000001')
+        assert result['report_id'] == 'report_000001'
+        assert result['admin_viewed'] is True
+        assert 'marked as viewed' in result['message']
+
+    def test_mark_report_as_viewed_not_found(
+        self, controller, mock_report_dao
+    ):
+        """Test marking non-existent report as viewed."""
+        mock_report_dao.get_report.return_value = None
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.mark_report_as_viewed('report_999999')
+
+        assert exc_info.value.status_code == 404
+        assert 'not found' in str(exc_info.value.detail).lower()
+        mock_report_dao.mark_as_viewed.assert_not_called()
+
+    def test_mark_report_as_viewed_failure(
+        self, controller, mock_report_dao
+    ):
+        """Test when marking report as viewed fails."""
+        mock_report = {
+            'report_id': 'report_000001',
+            'review_id': 'rev_001',
+            'reporting_user_id': 'user_001',
+            'reason': 'spam',
+            'admin_viewed': False,
+            'timestamp': '2024-01-01T10:00:00'
+        }
+        mock_report_dao.get_report.return_value = mock_report
+        mock_report_dao.mark_as_viewed.return_value = False
+
+        with pytest.raises(HTTPException) as exc_info:
+            controller.mark_report_as_viewed('report_000001')
+
+        assert exc_info.value.status_code == 500
+        assert 'failed' in str(exc_info.value.detail).lower()
+
+
 class TestReviewControllerHelpers:
     """Test helper methods and edge cases."""
 
