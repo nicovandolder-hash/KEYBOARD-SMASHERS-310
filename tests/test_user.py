@@ -57,12 +57,12 @@ def test_set_password_length_short(standard_user):
 
 def test_set_password_length_long(standard_user):
     standard_user.set_password("VeryLongPassword123!")
-    assert standard_user.password == "VeryLongPassword123!"
+    assert standard_user.check_password("VeryLongPassword123!") is True
 
 
 def test_set_password_length_exact(standard_user):
     standard_user.set_password("Exact8.!")
-    assert standard_user.password == "Exact8.!"
+    assert standard_user.check_password("Exact8.!") is True
 
 
 def test_set_password_no_digit(standard_user):
@@ -73,7 +73,7 @@ def test_set_password_no_digit(standard_user):
 
 def test_set_password_with_digit(standard_user):
     standard_user.set_password("Passw0rd!")
-    assert standard_user.password == "Passw0rd!"
+    assert standard_user.check_password("Passw0rd!") is True
 
 
 def test_set_password_no_special_char(standard_user):
@@ -84,7 +84,7 @@ def test_set_password_no_special_char(standard_user):
 
 def test_set_password_with_special_char(standard_user):
     standard_user.set_password("Special@123")
-    assert standard_user.password == "Special@123"
+    assert standard_user.check_password("Special@123") is True
 
 
 def test_set_password_no_uppercase(standard_user):
@@ -95,7 +95,7 @@ def test_set_password_no_uppercase(standard_user):
 
 def test_set_password_with_uppercase(standard_user):
     standard_user.set_password("WithUppercase1!")
-    assert standard_user.password == "WithUppercase1!"
+    assert standard_user.check_password("WithUppercase1!") is True
 
 
 def test_set_password_no_lowercase(standard_user):
@@ -106,7 +106,7 @@ def test_set_password_no_lowercase(standard_user):
 
 def test_set_password_with_lowercase(standard_user):
     standard_user.set_password("WithLowercase1!")
-    assert standard_user.password == "WithLowercase1!"
+    assert standard_user.check_password("WithLowercase1!") is True
 
 
 def test_set_and_check_password(standard_user):
