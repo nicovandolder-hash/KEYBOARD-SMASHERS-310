@@ -87,7 +87,8 @@ class User(Observer):
         if '$' in self.password:
             try:
                 salt, stored_hash = self.password.split('$')
-                input_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+                input_hash = hashlib.sha256(
+                    (password + salt).encode()).hexdigest()
                 is_correct = input_hash == stored_hash
             except ValueError:
                 is_correct = False
