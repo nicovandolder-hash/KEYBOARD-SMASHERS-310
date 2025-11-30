@@ -24,11 +24,11 @@ class Penalty:
         self.severity = self._validate_severity(severity)
 
         self.start_date = (
-            start_date.replace(tzinfo=None) if start_date.tzinfo 
+            start_date.replace(tzinfo=None) if start_date.tzinfo
             else start_date
         )
         self.end_date = (
-            end_date.replace(tzinfo=None) if end_date and end_date.tzinfo 
+            end_date.replace(tzinfo=None) if end_date and end_date.tzinfo
             else end_date
         )
 
