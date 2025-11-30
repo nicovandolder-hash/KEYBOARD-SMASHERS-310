@@ -22,6 +22,16 @@ class Penalty:
         self.user_id = user_id
         self.reason = reason
         self.severity = self._validate_severity(severity)
+
+        self.start_date = (
+            start_date.replace(tzinfo=None) if start_date.tzinfo 
+            else start_date
+        )
+        self.end_date = (
+            end_date.replace(tzinfo=None) if end_date and end_date.tzinfo 
+            else end_date
+        )
+
         self.start_date = start_date
         self.end_date = end_date
         self.issued_by = issued_by

@@ -29,7 +29,7 @@ class SessionManager:
         if not session_token or session_token not in sessions:
             return None
 
-        session = sessions[session_token]
+        session = sessions[session_token]  
 
         if datetime.now() > session['expires_at']:
             logger.warning(f"Expired session attempt: {session_token[:8]}...")

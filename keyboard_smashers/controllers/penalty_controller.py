@@ -284,8 +284,8 @@ def get_my_penalties(
 
 @router.post("/", response_model=PenaltyAPISchema, status_code=201)
 def create_penalty(
-    penalty_data: CreatePenaltySchema,
-    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+    penalty_data: CreatePenaltySchema,     
+    session_token: Optional[str] = Cookie(default=None, alias="session_token") 
 ):
 
     from keyboard_smashers.auth import SessionManager

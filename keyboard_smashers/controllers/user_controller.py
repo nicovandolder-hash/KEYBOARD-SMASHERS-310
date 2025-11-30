@@ -146,22 +146,16 @@ class UserController:
                 detail=f"User with ID '{user_id}' not found"
             )
 
-        logger.debug("Updating user fields")
-
         update_dict = {}
         try:
             if user_data.username is not None:
-                logger.debug(
-                    f"Updating username from: {user_id.username}"
-                    f"  --> {user_data.username}")
+
                 update_dict['username'] = user_data.username
             if user_data.email is not None:
-                logger.debug(
-                    f"Updating email to: {user_data.email}"
-                )
+
                 update_dict['email'] = user_data.email
             if user_data.password is not None:
-                logger.debug(f"Updating password for user: {user_id.username}")
+
                 temp_user = User(
                     userid="temp",
                     username="temp",
@@ -170,14 +164,9 @@ class UserController:
                 temp_user.set_password(user_data.password)
                 update_dict['password'] = temp_user.password
             if user_data.reputation is not None:
-                logger.debug(
-                    f"Updating reputation from: {user_id.reputation}"
-                    f" --> {user_data.reputation}")
                 update_dict['reputation'] = user_data.reputation
             if user_data.is_admin is not None:
-                logger.debug(
-                    f"Updating is_admin from: {user_id.is_admin}"
-                    f" --> {user_data.is_admin}")
+
                 update_dict['is_admin'] = user_data.is_admin
 
             if not update_dict:
