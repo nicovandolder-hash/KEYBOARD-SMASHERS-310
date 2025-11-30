@@ -97,7 +97,7 @@ class PenaltyDAO:
         penalty_id = f"penalty_{self.penalty_counter:03d}"
         self.penalty_counter += 1
 
-        penalty = Penalty(  
+        penalty = Penalty(
             penalty_id=penalty_id,
             user_id=penalty_data['user_id'],
             reason=penalty_data['reason'],
@@ -160,7 +160,7 @@ class PenaltyDAO:
             penalty.end_date = data['end_date']
             end_date = data['end_date']
             penalty.end_date = (
-              end_date.replace(tzinfo=None) if end_date and end_date.tzinfo 
+              end_date.replace(tzinfo=None) if end_date and end_date.tzinfo
               else end_date
             )
 
