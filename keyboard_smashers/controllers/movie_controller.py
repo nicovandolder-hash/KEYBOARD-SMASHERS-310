@@ -169,11 +169,17 @@ class MovieController:
         logger.info(f"Fetching movies by genre: {genre}")
         all_movies = self.movie_dao.get_all_movies()
 
-        genre_lower = genre.lower()
-        matching_movies = [
-            movie for movie in all_movies
-            if movie['genre'].lower() == genre_lower
-        ]
+        genre_lower = genre.lower().strip()
+        matching_movies = []
+        
+        for movie in all_movies:
+            current_genres = [
+                g.strip().lower() 
+                for g in movie['genre'].replace(',', '/').split('/')
+            ]
+            
+            if genre_lower in current_genres:
+                matching_movies.append(movie)
 
         logger.info(f"Found {len(matching_movies)} movies in genre: {genre}")
         return [self._dict_to_schema(movie) for movie in matching_movies]

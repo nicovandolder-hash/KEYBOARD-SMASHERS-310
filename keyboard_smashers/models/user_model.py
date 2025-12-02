@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 
 class User(Observer):
     def __init__(self, username, email, userid, password=None, reputation=3,
-                 creation_date=None, is_admin=False, total_penalty_count=0):
+                 creation_date=None, is_admin=False, total_penalty_count=0,
+                 is_suspended=False):
         self.username = username
         self.email = email
         self.userid = userid
@@ -20,6 +21,7 @@ class User(Observer):
         self.reviews = []
         self.total_reviews = 0
         self.is_admin = is_admin
+        self.is_suspended = is_suspended
         self.notifications = []
         self.total_penalty_count = total_penalty_count,
         self.penalties = []

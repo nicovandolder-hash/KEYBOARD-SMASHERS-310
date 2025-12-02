@@ -185,9 +185,55 @@ class UserController:
     def delete_user_by_id(self, user_id: str) -> dict:
         logger.info(f"Attempting to delete user: {user_id}")
         try:
+            # Cascade delete: Remove all user data before deleting user
+            
+            # 1. Delete user's reviews
+            from keyboard_smashers.controllers.review_controller import (
+                review_controller_instance
+            )
+            try:
+                user_reviews = review_controller_instance.review_dao.get_reviews_by_user(user_id)
+                for review in user_reviews:
+                    review_controller_instance.review_dao.delete_review(review['review_id'])
+                logger.info(f"Deleted {len(user_reviews)} reviews for user {user_id}")
+            except Exception as e:
+                logger.warning(f"Error deleting reviews for user {user_id}: {e}")
+            
+            # 2. Delete user's penalties
+            from keyboard_smashers.controllers.penalty_controller import (
+                penalty_controller_instance
+            )
+            try:
+                user_penalties = penalty_controller_instance.penalty_dao.get_penalties_by_user(user_id)
+                for penalty in user_penalties:
+                    penalty_controller_instance.penalty_dao.delete_penalty(penalty.penalty_id)
+                logger.info(f"Deleted {len(user_penalties)} penalties for user {user_id}")
+            except Exception as e:
+                logger.warning(f"Error deleting penalties for user {user_id}: {e}")
+            
+            # 3. Delete user's reports
+            from keyboard_smashers.dao.report_dao import ReportDAO
+            try:
+                report_dao = ReportDAO()
+                user_reports = report_dao.get_reports_by_user(user_id)
+                for report in user_reports:
+                    report_dao.delete_report(report['report_id'])
+                logger.info(f"Deleted {len(user_reports)} reports by user {user_id}")
+            except Exception as e:
+                logger.warning(f"Error deleting reports for user {user_id}: {e}")
+            
+            # 4. Invalidate user's sessions
+            from keyboard_smashers.auth import SessionManager
+            try:
+                SessionManager.invalidate_user_sessions(user_id)
+                logger.info(f"Invalidated sessions for user {user_id}")
+            except Exception as e:
+                logger.warning(f"Error invalidating sessions for user {user_id}: {e}")
+            
+            # 5. Finally, delete the user
             self.user_dao.delete_user(user_id)
             logger.info(f"Deleted user: {user_id}")
-            return {"message": f"User '{user_id}' deleted successfully"}
+            return {"message": f"User '{user_id}' and all associated data deleted successfully"}
         except KeyError:
             logger.error(f"User with ID '{user_id}' not found for deletion")
             raise HTTPException(
@@ -250,6 +296,13 @@ def login(login_data: LoginSchema, response: Response):
         raise HTTPException(
             status_code=401,
             detail="Invalid email or password")
+    
+    # Check if user is suspended
+    if user.is_suspended:
+        raise HTTPException(
+            status_code=403,
+            detail="Account is suspended. Please contact an administrator.")
+    
     session_token = SessionManager.create_session(user.userid)
 
     response.set_cookie(
@@ -424,3 +477,70 @@ def delete_user(
             detail="Admin privileges required")
 
     return user_controller_instance.delete_user_by_id(user_id)
+
+
+@router.post("/{user_id}/suspend")
+def suspend_user(
+    user_id: str,
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Admin endpoint to suspend a user account.
+    Suspended users cannot log in or create reviews.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    user = user_controller_instance.get_user_model_by_id(current_user_id)
+    if not user or not user.is_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin privileges required")
+
+    try:
+        user_controller_instance.user_dao.suspend_user(user_id)
+        return {"message": f"User {user_id} has been suspended"}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/reactivate")
+def reactivate_user(
+    user_id: str,
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Admin endpoint to reactivate a suspended user account.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    user = user_controller_instance.get_user_model_by_id(current_user_id)
+    if not user or not user.is_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin privileges required")
+
+    try:
+        user_controller_instance.user_dao.reactivate_user(user_id)
+        return {"message": f"User {user_id} has been reactivated"}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))

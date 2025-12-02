@@ -598,6 +598,17 @@ def create_review(
     current_user_id: str = Depends(get_current_user)
 ):
     """Create a new review (requires authentication)"""
+    # Check if user is suspended
+    from keyboard_smashers.controllers.user_controller import (
+        user_controller_instance
+    )
+    user = user_controller_instance.get_user_model_by_id(current_user_id)
+    if user.is_suspended:
+        raise HTTPException(
+            status_code=403,
+            detail="Cannot create review. Account is suspended."
+        )
+    
     return review_controller_instance.create_review(
         review_data, current_user_id)
 

@@ -43,6 +43,9 @@ class UserDAO:
                         'is_admin': row.get('is_admin', 'false').lower() == (
                             'true'
                         ),
+                        'is_suspended': row.get('is_suspended', 'false').lower() == (
+                            'true'
+                        ),
                         'total_reviews': int(row.get('total_reviews', 0)),
                         'total_penalty_count': int(
                             row.get('total_penalty_count', 0)
@@ -85,6 +88,7 @@ class UserDAO:
                     'reputation',
                     'creation_date',
                     'is_admin',
+                    'is_suspended',
                     'total_reviews',
                     'total_penalty_count'
                 ]
@@ -100,6 +104,7 @@ class UserDAO:
                         'reputation': user['reputation'],
                         'creation_date': user['creation_date'].isoformat(),
                         'is_admin': str(user['is_admin']).lower(),
+                        'is_suspended': str(user.get('is_suspended', False)).lower(),
                         'total_reviews': user['total_reviews'],
                         'total_penalty_count': (
                             user.get('total_penalty_count', 0)
@@ -133,6 +138,7 @@ class UserDAO:
             'reputation': user_data.get('reputation', 3),
             'creation_date': user_data.get('creation_date', datetime.now()),
             'is_admin': user_data.get('is_admin', False),
+            'is_suspended': user_data.get('is_suspended', False),
             'total_reviews': 0,
             'total_penalty_count': 0
         }
@@ -239,3 +245,21 @@ class UserDAO:
         logger.info(f"Incremented penalty count for user: {userid}"
                     f"self.users[userid]['total_penalties']"
                     )
+
+    def suspend_user(self, userid: str) -> None:
+        """Suspend a user account."""
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        self.users[userid]['is_suspended'] = True
+        self.save_users()
+        logger.info(f"Suspended user: {userid}")
+
+    def reactivate_user(self, userid: str) -> None:
+        """Reactivate a suspended user account."""
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        self.users[userid]['is_suspended'] = False
+        self.save_users()
+        logger.info(f"Reactivated user: {userid}")
