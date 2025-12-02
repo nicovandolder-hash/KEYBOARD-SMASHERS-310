@@ -243,9 +243,14 @@ class MovieController:
     def search_movies(
         self,
         query: str,
-        sort_by: Optional[str] = None
+        sort_by: Optional[str] = None,
+        genre: Optional[str] = None,
+        year: Optional[int] = None
     ) -> List[MovieSchema]:
-        logger.info(f"Searching movies with query: {query}, sort: {sort_by}")
+        logger.info(
+            f"Searching movies: query={query}, sort={sort_by}, "
+            f"genre={genre}, year={year}"
+        )
         all_movies = self.movie_dao.get_all_movies()
 
         query_lower = query.lower()
@@ -255,6 +260,21 @@ class MovieController:
                 query_lower in str(movie.get('director', '')).lower() or
                 query_lower in str(movie.get('description', '')).lower())
         ]
+
+        # Apply genre filter
+        if genre:
+            genre_lower = genre.lower()
+            matching_movies = [
+                m for m in matching_movies
+                if genre_lower in str(m.get('genre', '')).lower()
+            ]
+
+        # Apply year filter
+        if year:
+            matching_movies = [
+                m for m in matching_movies
+                if m.get('year') == year
+            ]
 
         # Apply sorting if requested
         if sort_by:
@@ -291,8 +311,15 @@ def get_all_movies(skip: int = 0, limit: int = 20):
 
 
 @router.get("/search", response_model=List[MovieSchema])
-def search_movies(q: str, sort_by: Optional[str] = None):
-    return movie_controller_instance.search_movies(q, sort_by=sort_by)
+def search_movies(
+    q: str,
+    sort_by: Optional[str] = None,
+    genre: Optional[str] = None,
+    year: Optional[int] = None
+):
+    return movie_controller_instance.search_movies(
+        q, sort_by=sort_by, genre=genre, year=year
+    )
 
 
 @router.get("/genre/{genre}", response_model=List[MovieSchema])
