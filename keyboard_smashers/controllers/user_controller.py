@@ -187,31 +187,43 @@ class UserController:
         logger.info(f"Attempting to delete user: {user_id}")
         try:
             # Cascade delete: Remove all user data before deleting user
-            
+
             # 1. Delete user's reviews
             from keyboard_smashers.controllers.review_controller import (
                 review_controller_instance
             )
             try:
-                user_reviews = review_controller_instance.review_dao.get_reviews_by_user(user_id)
+                reviews = review_controller_instance.review_dao
+                user_reviews = reviews.get_reviews_by_user(user_id)
                 for review in user_reviews:
-                    review_controller_instance.review_dao.delete_review(review['review_id'])
-                logger.info(f"Deleted {len(user_reviews)} reviews for user {user_id}")
+                    reviews.delete_review(review['review_id'])
+                logger.info(
+                    f"Deleted {len(user_reviews)} reviews "
+                    f"for user {user_id}"
+                )
             except Exception as e:
-                logger.warning(f"Error deleting reviews for user {user_id}: {e}")
-            
+                logger.warning(
+                    f"Error deleting reviews for user {user_id}: {e}"
+                )
+
             # 2. Delete user's penalties
             from keyboard_smashers.controllers.penalty_controller import (
                 penalty_controller_instance
             )
             try:
-                user_penalties = penalty_controller_instance.penalty_dao.get_penalties_by_user(user_id)
+                penalties = penalty_controller_instance.penalty_dao
+                user_penalties = penalties.get_penalties_by_user(user_id)
                 for penalty in user_penalties:
-                    penalty_controller_instance.penalty_dao.delete_penalty(penalty.penalty_id)
-                logger.info(f"Deleted {len(user_penalties)} penalties for user {user_id}")
+                    penalties.delete_penalty(penalty.penalty_id)
+                logger.info(
+                    f"Deleted {len(user_penalties)} penalties "
+                    f"for user {user_id}"
+                )
             except Exception as e:
-                logger.warning(f"Error deleting penalties for user {user_id}: {e}")
-            
+                logger.warning(
+                    f"Error deleting penalties for user {user_id}: {e}"
+                )
+
             # 3. Delete user's reports
             from keyboard_smashers.dao.report_dao import ReportDAO
             try:
@@ -219,22 +231,34 @@ class UserController:
                 user_reports = report_dao.get_reports_by_user(user_id)
                 for report in user_reports:
                     report_dao.delete_report(report['report_id'])
-                logger.info(f"Deleted {len(user_reports)} reports by user {user_id}")
+                logger.info(
+                    f"Deleted {len(user_reports)} reports "
+                    f"by user {user_id}"
+                )
             except Exception as e:
-                logger.warning(f"Error deleting reports for user {user_id}: {e}")
-            
+                logger.warning(
+                    f"Error deleting reports for user {user_id}: {e}"
+                )
+
             # 4. Invalidate user's sessions
             from keyboard_smashers.auth import SessionManager
             try:
                 SessionManager.invalidate_user_sessions(user_id)
                 logger.info(f"Invalidated sessions for user {user_id}")
             except Exception as e:
-                logger.warning(f"Error invalidating sessions for user {user_id}: {e}")
-            
+                logger.warning(
+                    f"Error invalidating sessions for user {user_id}: {e}"
+                )
+
             # 5. Finally, delete the user
             self.user_dao.delete_user(user_id)
             logger.info(f"Deleted user: {user_id}")
-            return {"message": f"User '{user_id}' and all associated data deleted successfully"}
+            return {
+                "message": (
+                    f"User '{user_id}' and all associated data "
+                    f"deleted successfully"
+                )
+            }
         except KeyError:
             logger.error(f"User with ID '{user_id}' not found for deletion")
             raise HTTPException(
@@ -297,13 +321,17 @@ def login(login_data: LoginSchema, response: Response):
         raise HTTPException(
             status_code=401,
             detail="Invalid email or password")
-    
+
     # Check if user is suspended
     if user.is_suspended:
         raise HTTPException(
             status_code=403,
-            detail="Account is suspended. Please contact an administrator.")
-    
+            detail=(
+                "Account is suspended. "
+                "Please contact an administrator."
+            )
+        )
+
     session_token = SessionManager.create_session(user.userid)
 
     response.set_cookie(

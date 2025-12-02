@@ -171,13 +171,13 @@ class MovieController:
 
         genre_lower = genre.lower().strip()
         matching_movies = []
-        
+
         for movie in all_movies:
             current_genres = [
-                g.strip().lower() 
+                g.strip().lower()
                 for g in movie['genre'].replace(',', '/').split('/')
             ]
-            
+
             if genre_lower in current_genres:
                 matching_movies.append(movie)
 

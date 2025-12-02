@@ -608,7 +608,7 @@ def create_review(
             status_code=403,
             detail="Cannot create review. Account is suspended."
         )
-    
+
     return review_controller_instance.create_review(
         review_data, current_user_id)
 
