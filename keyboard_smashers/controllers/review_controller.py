@@ -122,6 +122,51 @@ class ReviewController:
     def _dict_to_schema(self, review_dict: dict) -> ReviewSchema:
         return ReviewSchema(**review_dict)
 
+    def _filter_suspended_user_reviews(
+        self,
+        reviews: List[dict],
+        user_dao=None
+    ) -> List[dict]:
+        """
+        Filter out reviews from suspended users.
+        IMDB reviews (user_id is None) are always included.
+        
+        Args:
+            reviews: List of review dictionaries
+            user_dao: Optional UserDAO instance for testing
+        """
+        if user_dao is None:
+            from keyboard_smashers.controllers.user_controller import (
+                user_controller_instance
+            )
+            user_dao = user_controller_instance.user_dao
+        
+        filtered_reviews = []
+        for review in reviews:
+            user_id = review.get('user_id')
+            
+            # Include IMDB reviews (no user_id)
+            if user_id is None:
+                filtered_reviews.append(review)
+                continue
+            
+            # Check if user is suspended
+            try:
+                user_dict = user_dao.get_user(user_id)
+                if not user_dict.get('is_suspended', False):
+                    filtered_reviews.append(review)
+                else:
+                    logger.debug(
+                        f"Filtered review {review.get('review_id')} "
+                        f"from suspended user {user_id}"
+                    )
+            except (KeyError, ValueError, AttributeError):
+                # User doesn't exist - include review anyway
+                # (unit tests may not have user setup)
+                filtered_reviews.append(review)
+        
+        return filtered_reviews
+
     def get_review_by_id(self, review_id: str) -> ReviewSchema:
         logger.info(f"Fetching review: {review_id}")
         try:
@@ -138,20 +183,26 @@ class ReviewController:
         self,
         movie_id: str,
         skip: int = 0,
-        limit: int = 10
+        limit: int = 10,
+        include_suspended: bool = False
     ) -> PaginatedReviewResponse:
         logger.info(
             f"Fetching reviews for movie: {movie_id} "
-            f"(skip={skip}, limit={limit})"
+            f"(skip={skip}, limit={limit}, include_suspended={include_suspended})"
         )
         all_reviews = self.review_dao.get_reviews_for_movie(movie_id)
+        
+        # Filter suspended users' reviews unless explicitly included
+        if not include_suspended:
+            all_reviews = self._filter_suspended_user_reviews(all_reviews)
+        
         total = len(all_reviews)
 
         # Apply pagination
         paginated_reviews = all_reviews[skip:skip + limit]
 
         logger.info(
-            f"Found {total} total reviews, returning "
+            f"Found {total} total reviews (after filtering), returning "
             f"{len(paginated_reviews)} for movie: {movie_id}"
         )
 
@@ -169,20 +220,26 @@ class ReviewController:
         self,
         user_id: str,
         skip: int = 0,
-        limit: int = 10
+        limit: int = 10,
+        include_suspended: bool = False
     ) -> PaginatedReviewResponse:
         logger.info(
             f"Fetching reviews by user: {user_id} "
-            f"(skip={skip}, limit={limit})"
+            f"(skip={skip}, limit={limit}, include_suspended={include_suspended})"
         )
         all_reviews = self.review_dao.get_reviews_by_user(user_id)
+        
+        # Filter if user is suspended (unless explicitly included)
+        if not include_suspended:
+            all_reviews = self._filter_suspended_user_reviews(all_reviews)
+        
         total = len(all_reviews)
 
         # Apply pagination
         paginated_reviews = all_reviews[skip:skip + limit]
 
         logger.info(
-            f"Found {total} total reviews, returning "
+            f"Found {total} total reviews (after filtering), returning "
             f"{len(paginated_reviews)} by user: {user_id}"
         )
 

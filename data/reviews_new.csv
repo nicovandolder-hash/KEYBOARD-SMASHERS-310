@@ -10,3 +10,56 @@ create,review_047063,2,user_001,,1.0,eeee,2025-11-20T16:52:52.393934
 delete,review_047063,2,user_001,,1.0,eeee,2025-11-20T16:52:52.393934
 create,review_047063,2,user_001,,1.0,eeee,2025-11-20T16:53:28.551862
 create,review_047064,1,user_001,,1.0,test review,2025-11-20T17:40:59.116002
+create,review_047065,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T00:05:52.166984
+create,review_047066,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T00:05:52.171176
+create,review_047067,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T00:05:52.197501
+create,review_047068,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:05:52.225743
+create,review_047069,movie_001,user_002,,3.0,Review from user,2025-12-02T00:05:52.453825
+create,review_047070,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T00:06:38.102978
+create,review_047071,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T00:06:38.106466
+create,review_047072,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T00:06:38.131759
+create,review_047073,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:06:38.158090
+create,review_047074,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T00:06:38.162500
+create,review_047075,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T00:06:38.165487
+create,review_047076,movie_001,user_002,,3.0,Review from user,2025-12-02T00:06:38.394055
+create,review_047077,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:07:10.381038
+create,review_047078,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T00:07:10.386269
+create,review_047079,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T00:07:10.388677
+create,review_047080,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T00:07:10.390025
+create,review_047081,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T00:07:10.391346
+create,review_047085,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T00:07:31.114931
+create,review_047086,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T00:07:31.117528
+create,review_047087,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T00:07:31.142507
+create,review_047088,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:07:31.167183
+create,review_047089,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T00:07:31.171445
+create,review_047090,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T00:07:31.173961
+create,review_047091,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T00:07:31.175847
+create,review_047092,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T00:07:31.177293
+create,review_047093,movie_001,user_002,,3.0,Review from user,2025-12-02T00:07:31.195825
+create,review_047096,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T00:07:47.752423
+create,review_047097,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T00:07:47.755157
+create,review_047098,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T00:07:47.779937
+create,review_047099,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:07:47.802251
+create,review_047100,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T00:07:47.806307
+create,review_047101,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T00:07:47.808780
+create,review_047102,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T00:07:47.810149
+create,review_047103,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T00:07:47.811582
+create,review_047104,movie_001,user_002,,3.0,Review from user,2025-12-02T00:07:47.834458
+create,review_047108,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T00:08:47.173402
+create,review_047109,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T00:08:47.176427
+create,review_047110,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T00:08:47.202969
+create,review_047111,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:08:47.227413
+create,review_047112,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T00:08:47.232353
+create,review_047113,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T00:08:47.235388
+create,review_047114,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T00:08:47.236887
+create,review_047115,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T00:08:47.238368
+create,review_047116,movie_001,user_002,,3.0,Review from user,2025-12-02T00:08:47.257353
+create,review_047120,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T00:09:33.334445
+create,review_047121,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T00:09:33.337045
+create,review_047122,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T00:09:33.360515
+create,review_047123,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T00:09:33.384393
+create,review_047124,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T00:09:33.388936
+create,review_047125,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T00:09:33.391783
+create,review_047126,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T00:09:33.393195
+create,review_047127,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T00:09:33.394484
+create,review_047128,movie_001,user_002,,3.0,Review from user,2025-12-02T00:09:33.414696

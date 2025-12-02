@@ -79,6 +79,10 @@ def test_data_files():
     review_controller_instance.review_dao.new_reviews_csv_path = (
         reviews_file.name
     )
+    review_controller_instance.review_dao.reviews.clear()
+    review_controller_instance.review_dao.reviews_by_movie.clear()
+    review_controller_instance.review_dao.reviews_by_user.clear()
+    
     review_controller_instance.report_dao.csv_path = reports_file.name
     review_controller_instance.report_dao.load_reports()
 
