@@ -213,3 +213,12 @@ create,review_047297,movie_001,user_003,,1.0,Review 1 from suspended user,2025-1
 create,review_047298,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T03:46:21.250612
 create,review_047299,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T03:46:21.251892
 create,review_047300,movie_001,user_002,,3.0,Review from user,2025-12-02T03:46:21.274306
+create,review_047304,movie_001,user_002,,5.0,Great movie from regular user!,2025-12-02T04:13:46.466928
+create,review_047305,movie_001,user_003,,1.0,Bad movie from suspended user!,2025-12-02T04:13:46.469767
+create,review_047306,movie_001,user_002,,1.0,Review from suspended user,2025-12-02T04:13:46.492620
+create,review_047307,movie_001,user_002,,5.0,Review 1 from regular user,2025-12-02T04:13:46.518277
+create,review_047308,movie_002,user_002,,4.0,Review 2 from regular user,2025-12-02T04:13:46.522692
+create,review_047309,movie_001,user_003,,1.0,Review 1 from suspended user,2025-12-02T04:13:46.525601
+create,review_047310,movie_003,user_003,,1.0,Review 2 from suspended user,2025-12-02T04:13:46.527071
+create,review_047311,movie_004,user_003,,1.0,Review 3 from suspended user,2025-12-02T04:13:46.528660
+create,review_047312,movie_001,user_002,,3.0,Review from user,2025-12-02T04:13:46.548882

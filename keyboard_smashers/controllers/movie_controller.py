@@ -242,7 +242,7 @@ class MovieController:
 
     def search_movies(
         self,
-        query: str,
+        query: Optional[str] = None,
         sort_by: Optional[str] = None,
         genre: Optional[str] = None,
         year: Optional[int] = None
@@ -253,13 +253,17 @@ class MovieController:
         )
         all_movies = self.movie_dao.get_all_movies()
 
-        query_lower = query.lower()
-        matching_movies = [
-            movie for movie in all_movies
-            if (query_lower in str(movie.get('title', '')).lower() or
-                query_lower in str(movie.get('director', '')).lower() or
-                query_lower in str(movie.get('description', '')).lower())
-        ]
+        # Start with all movies if no query provided
+        if query:
+            query_lower = query.lower()
+            matching_movies = [
+                movie for movie in all_movies
+                if (query_lower in str(movie.get('title', '')).lower() or
+                    query_lower in str(movie.get('director', '')).lower() or
+                    query_lower in str(movie.get('description', '')).lower())
+            ]
+        else:
+            matching_movies = all_movies
 
         # Apply genre filter
         if genre:
@@ -312,7 +316,7 @@ def get_all_movies(skip: int = 0, limit: int = 20):
 
 @router.get("/search", response_model=List[MovieSchema])
 def search_movies(
-    q: str,
+    q: Optional[str] = None,
     sort_by: Optional[str] = None,
     genre: Optional[str] = None,
     year: Optional[int] = None

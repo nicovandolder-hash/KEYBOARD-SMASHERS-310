@@ -201,6 +201,75 @@ class TestMovieAPIPublicEndpoints:
         assert response.status_code == 200
         assert response.json() == []
 
+    def test_search_movies_sort_by_year(self, client):
+        """Test sorting search results by year (descending)."""
+        response = client.get("/movies/search?sort_by=year")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        if len(movies) >= 2:
+            # Verify descending year order
+            years = [m["year"] for m in movies]
+            assert years == sorted(years, reverse=True)
+
+    def test_search_movies_sort_by_title(self, client):
+        """Test sorting search results by title (ascending)."""
+        response = client.get("/movies/search?sort_by=title")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        if len(movies) >= 2:
+            # Verify ascending alphabetical order
+            titles = [m["title"].lower() for m in movies]
+            assert titles == sorted(titles)
+
+    def test_search_movies_filter_by_genre(self, client):
+        """Test filtering movies by genre."""
+        response = client.get("/movies/search?genre=Sci-Fi")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        # Verify all results contain "Sci-Fi" in genre (partial match)
+        for movie in movies:
+            assert "sci-fi" in movie["genre"].lower()
+
+    def test_search_movies_filter_by_year(self, client):
+        """Test filtering movies by year."""
+        response = client.get("/movies/search?year=2010")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        # Verify all results have year 2010 (exact match)
+        for movie in movies:
+            assert movie["year"] == 2010
+
+    def test_search_movies_combined_filters(self, client):
+        """Test combining query, genre, year, and sort."""
+        response = client.get(
+            "/movies/search?q=test&genre=Action&year=2020&sort_by=title"
+        )
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        # Verify all filters applied
+        for movie in movies:
+            assert "action" in movie["genre"].lower()
+            assert movie["year"] == 2020
+        # Verify sorted by title
+        if len(movies) >= 2:
+            titles = [m["title"].lower() for m in movies]
+            assert titles == sorted(titles)
+
+    def test_search_movies_genre_partial_match(self, client):
+        """Test that genre filter uses partial matching."""
+        response = client.get("/movies/search?genre=Sci")
+        assert response.status_code == 200
+        movies = response.json()
+        assert isinstance(movies, list)
+        # Should match "Sci-Fi" and similar
+        for movie in movies:
+            assert "sci" in movie["genre"].lower()
+
     def test_pagination_with_limit(self, client):
         """Test pagination with custom limit."""
         response = client.get("/movies/?skip=0&limit=1")
