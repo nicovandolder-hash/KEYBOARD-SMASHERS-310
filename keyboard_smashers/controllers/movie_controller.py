@@ -40,6 +40,13 @@ class MovieUpdateSchema(BaseModel):
     description: Optional[str] = Field(None, description="Movie description")
 
 
+class PaginatedMoviesResponse(BaseModel):
+    movies: List[MovieSchema] = Field(..., description="List of movies")
+    total: int = Field(..., description="Total number of movies")
+    page: int = Field(..., description="Current page number")
+    page_size: int = Field(..., description="Number of items per page")
+
+
 class MovieController:
     def __init__(self, csv_path: str = "data/movies.csv"):
         self.movie_dao = MovieDAO(csv_path=csv_path)
@@ -88,10 +95,27 @@ class MovieController:
 
         return MovieSchema(**cleaned_dict)
 
-    def get_all_movies(self) -> List[MovieSchema]:
-        logger.info("Fetching all movies")
-        movies = self.movie_dao.get_all_movies()
-        return [self._dict_to_schema(movie) for movie in movies]
+    def get_all_movies(
+        self, skip: int = 0, limit: int = 20
+    ) -> PaginatedMoviesResponse:
+        logger.info(f"Fetching movies with skip={skip}, limit={limit}")
+        all_movies = self.movie_dao.get_all_movies()
+        total = len(all_movies)
+
+        # Apply pagination
+        paginated_movies = all_movies[skip:skip + limit]
+        movie_schemas = [
+            self._dict_to_schema(movie) for movie in paginated_movies
+        ]
+
+        page = (skip // limit) + 1 if limit > 0 else 1
+
+        return PaginatedMoviesResponse(
+            movies=movie_schemas,
+            total=total,
+            page=page,
+            page_size=limit
+        )
 
     def get_movie_by_id(self, movie_id: str) -> MovieSchema:
         logger.info(f"Fetching movie: {movie_id}")
@@ -245,9 +269,9 @@ router = APIRouter(
 
 # PUBLIC ENDPOINTS
 
-@router.get("/", response_model=List[MovieSchema])
-def get_all_movies():
-    return movie_controller_instance.get_all_movies()
+@router.get("/", response_model=PaginatedMoviesResponse)
+def get_all_movies(skip: int = 0, limit: int = 20):
+    return movie_controller_instance.get_all_movies(skip=skip, limit=limit)
 
 
 @router.get("/search", response_model=List[MovieSchema])
