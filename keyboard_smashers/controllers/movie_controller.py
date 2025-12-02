@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 import logging
 import pandas as pd
 from keyboard_smashers.dao.movie_dao import MovieDAO
+from keyboard_smashers.dao.review_dao import ReviewDAO
 from keyboard_smashers.auth import get_current_admin_user
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,9 @@ class MovieSchema(BaseModel):
     year: int = Field(0, description="Release year")
     director: str = Field("", description="Director name")
     description: str = Field("", description="Movie description")
+    average_rating: Optional[float] = Field(
+        None, description="Community average rating (1-5)"
+    )
 
 
 class MovieCreateSchema(BaseModel):
@@ -39,12 +43,34 @@ class MovieUpdateSchema(BaseModel):
 class MovieController:
     def __init__(self, csv_path: str = "data/movies.csv"):
         self.movie_dao = MovieDAO(csv_path=csv_path)
+        self.review_dao = ReviewDAO()
         logger.info(
             f"MovieController initialized with "
             f"{len(self.movie_dao.movies)} movies"
         )
 
-    def _dict_to_schema(self, movie_dict: dict) -> MovieSchema:
+    def _calculate_average_rating(self, movie_id: str) -> Optional[float]:
+        """
+        Calculate average rating for a movie from all reviews.
+        Returns None if no reviews exist.
+        """
+        try:
+            reviews = self.review_dao.get_reviews_for_movie(movie_id)
+            if not reviews:
+                return None
+
+            total_rating = sum(review['rating'] for review in reviews)
+            avg_rating = total_rating / len(reviews)
+            return round(avg_rating, 2)
+        except Exception as e:
+            logger.warning(
+                f"Error calculating average rating for {movie_id}: {e}"
+            )
+            return None
+
+    def _dict_to_schema(
+        self, movie_dict: dict, include_rating: bool = False
+    ) -> MovieSchema:
         cleaned_dict = {}
         for key, value in movie_dict.items():
             if pd.isna(value):
@@ -54,6 +80,12 @@ class MovieController:
                     cleaned_dict[key] = ""
             else:
                 cleaned_dict[key] = value
+
+        if include_rating:
+            cleaned_dict['average_rating'] = self._calculate_average_rating(
+                movie_dict['movie_id']
+            )
+
         return MovieSchema(**cleaned_dict)
 
     def get_all_movies(self) -> List[MovieSchema]:
@@ -65,7 +97,7 @@ class MovieController:
         logger.info(f"Fetching movie: {movie_id}")
         try:
             movie_dict = self.movie_dao.get_movie(movie_id)
-            return self._dict_to_schema(movie_dict)
+            return self._dict_to_schema(movie_dict, include_rating=True)
         except KeyError:
             logger.error(f"Movie not found: {movie_id}")
             raise HTTPException(

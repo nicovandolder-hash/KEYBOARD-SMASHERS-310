@@ -33,19 +33,30 @@ def test_movies_csv():
     from keyboard_smashers.controllers.movie_controller import (
         movie_controller_instance
     )
+    from keyboard_smashers.dao.review_dao import ReviewDAO
+
     original_path = movie_controller_instance.movie_dao.csv_path
     movie_controller_instance.movie_dao.csv_path = temp_path
     movie_controller_instance.movie_dao._load_movies()
 
+    # Replace ReviewDAO with fresh instance for isolated testing
+    original_review_dao = movie_controller_instance.review_dao
+    movie_controller_instance.review_dao = ReviewDAO(
+        imdb_csv_path="data/imdb_reviews.csv",
+        new_reviews_csv_path=temp_path.replace('.csv', '_reviews.csv')
+    )
+
     yield temp_path
 
-    # Cleanup: restore original path and reload original data
+    # Cleanup: restore original instances
     movie_controller_instance.movie_dao.csv_path = original_path
     movie_controller_instance.movie_dao._load_movies()
+    movie_controller_instance.review_dao = original_review_dao
 
-    # Delete temp file
+    # Delete temp files
     try:
         Path(temp_path).unlink()
+        Path(temp_path.replace('.csv', '_reviews.csv')).unlink()
     except Exception:
         pass
 
@@ -330,3 +341,160 @@ class TestMovieAPIEdgeCases:
         assert response.status_code == 200
         movies = response.json()
         assert isinstance(movies, list)
+
+
+class TestMovieAverageRating:
+    """Test movie detail page with average rating calculation."""
+
+    def test_movie_detail_includes_average_rating(self, client):
+        """Test that getting a movie by ID includes average_rating field."""
+        # Get all movies to find a valid ID
+        all_movies = client.get("/movies/").json()
+        if all_movies:
+            movie_id = all_movies[0]["movie_id"]
+            response = client.get(f"/movies/{movie_id}")
+            assert response.status_code == 200
+            movie = response.json()
+            assert "average_rating" in movie
+            # Can be None if no reviews exist
+            assert movie["average_rating"] is None or isinstance(
+                movie["average_rating"], (int, float)
+            )
+
+    def test_average_rating_with_no_reviews(self, client):
+        """Test that average_rating is None when no reviews exist."""
+        from keyboard_smashers.controllers.movie_controller import (
+            movie_controller_instance
+        )
+
+        new_movie = {
+            'title': 'No Reviews Movie',
+            'genre': 'Drama',
+            'year': 2024,
+            'director': 'Test Director',
+            'description': 'Test description'
+        }
+        created = movie_controller_instance.movie_dao.create_movie(new_movie)
+        movie_id = created['movie_id']
+
+        response = client.get(f"/movies/{movie_id}")
+        assert response.status_code == 200
+        movie = response.json()
+        assert movie["average_rating"] is None
+
+    def test_average_rating_with_reviews(self, client):
+        """Test average rating calculation with multiple reviews."""
+        from keyboard_smashers.controllers.movie_controller import (
+            movie_controller_instance
+        )
+
+        new_movie = {
+            'title': 'Test Rating Movie',
+            'genre': 'Comedy',
+            'year': 2024,
+            'director': 'Test Director',
+            'description': 'Test description'
+        }
+        created = movie_controller_instance.movie_dao.create_movie(new_movie)
+        movie_id = created['movie_id']
+
+        review_dao = movie_controller_instance.review_dao
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user1',
+            'rating': 5,
+            'review_text': 'Great movie!'
+        })
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user2',
+            'rating': 3,
+            'review_text': 'It was okay'
+        })
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user3',
+            'rating': 4,
+            'review_text': 'Pretty good'
+        })
+
+        response = client.get(f"/movies/{movie_id}")
+        assert response.status_code == 200
+        movie = response.json()
+
+        # Average should be (5 + 3 + 4) / 3 = 4.0
+        assert movie["average_rating"] == 4.0
+
+    def test_average_rating_rounds_correctly(self, client):
+        """Test that average rating is rounded to 2 decimal places."""
+        from keyboard_smashers.controllers.movie_controller import (
+            movie_controller_instance
+        )
+
+        new_movie = {
+            'title': 'Test Rounding Movie',
+            'genre': 'Thriller',
+            'year': 2024,
+            'director': 'Test Director',
+            'description': 'Test description'
+        }
+        created = movie_controller_instance.movie_dao.create_movie(new_movie)
+        movie_id = created['movie_id']
+
+        review_dao = movie_controller_instance.review_dao
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user1',
+            'rating': 5,
+            'review_text': 'Excellent!'
+        })
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user2',
+            'rating': 4,
+            'review_text': 'Good'
+        })
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user3',
+            'rating': 3,
+            'review_text': 'Average'
+        })
+
+        response = client.get(f"/movies/{movie_id}")
+        assert response.status_code == 200
+        movie = response.json()
+
+        # Average should be (5 + 4 + 3) / 3 = 4.0
+        assert movie["average_rating"] == 4.0
+
+    def test_average_rating_with_single_review(self, client):
+        """Test average rating with only one review."""
+        from keyboard_smashers.controllers.movie_controller import (
+            movie_controller_instance
+        )
+
+        new_movie = {
+            'title': 'Single Review Movie',
+            'genre': 'Horror',
+            'year': 2024,
+            'director': 'Test Director',
+            'description': 'Test description'
+        }
+        created = movie_controller_instance.movie_dao.create_movie(new_movie)
+        movie_id = created['movie_id']
+
+        review_dao = movie_controller_instance.review_dao
+        review_dao.create_review({
+            'movie_id': movie_id,
+            'user_id': 'user1',
+            'rating': 3.5,
+            'review_text': 'Decent'
+        })
+
+        response = client.get(f"/movies/{movie_id}")
+        assert response.status_code == 200
+        movie = response.json()
+
+        # Average should equal the single rating
+        assert movie["average_rating"] == 3.5
