@@ -74,7 +74,8 @@ class UserController:
             reputation=user_dict['reputation'],
             creation_date=user_dict['creation_date'],
             is_admin=user_dict['is_admin'],
-            total_penalty_count=user_dict.get('total_penalty_count', 0)
+            total_penalty_count=user_dict.get('total_penalty_count', 0),
+            is_suspended=user_dict.get('is_suspended', False)
         )
 
     def dict_to_schema(self, user_dict: dict) -> UserAPISchema:
