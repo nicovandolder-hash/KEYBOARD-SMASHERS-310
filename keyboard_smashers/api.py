@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from keyboard_smashers.logging_config import setup_logging
 from keyboard_smashers.controllers.review_controller import (
      router as review_router, review_controller_instance
@@ -14,6 +18,7 @@ from keyboard_smashers.controllers.penalty_controller import (
     router as penalty_router, penalty_controller_instance
 )
 import logging
+
 
 setup_logging()
 logger = logging.getLogger(__name__)
