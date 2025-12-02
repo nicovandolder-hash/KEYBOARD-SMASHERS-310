@@ -141,18 +141,24 @@ class TestMovieAPIPublicEndpoints:
     """Test public movie endpoints (no authentication required)."""
 
     def test_get_all_movies(self, client):
-        """Test getting all movies."""
+        """Test getting all movies with pagination."""
         response = client.get("/movies/")
         assert response.status_code == 200
-        movies = response.json()
-        assert isinstance(movies, list)
-        # Should have movies from setup_movies.py
-        assert len(movies) >= 6
+        data = response.json()
+        assert "movies" in data
+        assert "total" in data
+        assert "page" in data
+        assert "page_size" in data
+        assert isinstance(data["movies"], list)
+        # Should have movies from test fixture
+        assert data["total"] >= 2
+        assert data["page"] == 1
+        assert data["page_size"] == 20
 
     def test_get_movie_by_id(self, client):
         """Test getting a specific movie by ID."""
         # First get all movies to find a valid ID
-        all_movies = client.get("/movies/").json()
+        all_movies = client.get("/movies/").json()["movies"]
         if all_movies:
             movie_id = all_movies[0]["movie_id"]
             response = client.get(f"/movies/{movie_id}")
@@ -194,6 +200,44 @@ class TestMovieAPIPublicEndpoints:
         response = client.get("/movies/search?q=nonexistent_movie_xyz123")
         assert response.status_code == 200
         assert response.json() == []
+
+    def test_pagination_with_limit(self, client):
+        """Test pagination with custom limit."""
+        response = client.get("/movies/?skip=0&limit=1")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["movies"]) == 1
+        assert data["page_size"] == 1
+        assert data["total"] >= 2
+
+    def test_pagination_with_skip(self, client):
+        """Test pagination with skip parameter."""
+        # Get first page
+        response1 = client.get("/movies/?skip=0&limit=1")
+        first_movie = response1.json()["movies"][0]
+
+        # Get second page
+        response2 = client.get("/movies/?skip=1&limit=1")
+        second_movie = response2.json()["movies"][0]
+
+        # Should be different movies
+        assert first_movie["movie_id"] != second_movie["movie_id"]
+
+    def test_pagination_page_number(self, client):
+        """Test page number calculation."""
+        response = client.get("/movies/?skip=20&limit=20")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["page"] == 2
+
+    def test_pagination_total_count(self, client):
+        """Test total count is accurate."""
+        response = client.get("/movies/")
+        data = response.json()
+        # Total should be greater than 0
+        assert data["total"] > 0
+        # Movies returned should not exceed total
+        assert len(data["movies"]) <= data["total"]
 
 
 class TestMovieAPIProtectedEndpoints:
@@ -239,7 +283,7 @@ class TestMovieAPIProtectedEndpoints:
     def test_update_movie_without_auth(self, client):
         """Test updating a movie without authentication."""
         # Get an existing movie ID
-        all_movies = client.get("/movies/").json()
+        all_movies = client.get("/movies/").json()["movies"]
         if all_movies:
             movie_id = all_movies[0]["movie_id"]
             update_data = {"title": "Updated Movie"}
@@ -249,7 +293,7 @@ class TestMovieAPIProtectedEndpoints:
     def test_update_movie_with_admin(self, admin_client):
         """Test updating a movie with admin authentication."""
         # Get an existing movie
-        all_movies = admin_client.get("/movies/").json()
+        all_movies = admin_client.get("/movies/").json()["movies"]
         if all_movies:
             movie_id = all_movies[0]["movie_id"]
             original_year = all_movies[0]["year"]
@@ -274,7 +318,7 @@ class TestMovieAPIProtectedEndpoints:
 
     def test_delete_movie_without_auth(self, client):
         """Test deleting a movie without authentication."""
-        all_movies = client.get("/movies/").json()
+        all_movies = client.get("/movies/").json()["movies"]
         if all_movies:
             movie_id = all_movies[0]["movie_id"]
             response = client.delete(f"/movies/{movie_id}")
@@ -311,7 +355,7 @@ class TestMovieAPIDataPersistence:
         # Verify it appears in list
         list_response = admin_client.get("/movies/")
         assert list_response.status_code == 200
-        movie_ids = [m["movie_id"] for m in list_response.json()]
+        movie_ids = [m["movie_id"] for m in list_response.json()["movies"]]
         assert movie_id in movie_ids
 
 
@@ -349,7 +393,7 @@ class TestMovieAverageRating:
     def test_movie_detail_includes_average_rating(self, client):
         """Test that getting a movie by ID includes average_rating field."""
         # Get all movies to find a valid ID
-        all_movies = client.get("/movies/").json()
+        all_movies = client.get("/movies/").json()["movies"]
         if all_movies:
             movie_id = all_movies[0]["movie_id"]
             response = client.get(f"/movies/{movie_id}")
