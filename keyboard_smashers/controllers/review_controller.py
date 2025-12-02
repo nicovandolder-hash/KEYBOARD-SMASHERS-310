@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
 from pathlib import Path
-from keyboard_smashers.dao.review_dao import ReviewDAO
+from keyboard_smashers.dao.review_dao import review_dao_instance
 from keyboard_smashers.dao.report_dao import ReportDAO
 from keyboard_smashers.auth import get_current_user, get_current_admin_user
 
@@ -109,10 +109,7 @@ class ReviewController:
         imdb_csv_path: str = "data/imdb_reviews.csv",
         new_reviews_csv_path: str = "data/reviews_new.csv"
     ):
-        self.review_dao = ReviewDAO(
-            imdb_csv_path=imdb_csv_path,
-            new_reviews_csv_path=new_reviews_csv_path
-        )
+        self.review_dao = review_dao_instance
         self.report_dao = ReportDAO()
         logger.info(
             f"ReviewController initialized with "

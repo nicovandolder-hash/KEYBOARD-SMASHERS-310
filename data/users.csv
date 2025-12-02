@@ -1,3 +1,3 @@
 userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites
-user_001,admin_user,admin@test.com,597bcf5df6cc7d26e5461328b70660b1$906369ef036abede52c601dd4a04bf3680eef3daca706b198366e47e5736f0a8,3,2025-12-02T02:14:38.831870,true,false,0,0,
-user_002,reviewer,reviewer@test.com,9bcf7607b74021f5021aecf00e3a1d78$e924d6d12999376bbaaa8a6fc5cd26c0d53cc41120c786708c6166e3b26ffa76,3,2025-12-02T02:14:38.838885,false,true,0,0,
+user_001,admin_user,admin@test.com,9c8ebbb474e04f199467486c8c4ce98e$f2def85fcbc497b02f8d60cf686af63fb943f0e8b6f49f77e9a5934816955598,3,2025-12-02T02:57:28.470277,true,false,0,0,
+user_002,reviewer,reviewer@test.com,768c0a927d3535b40c2ca3d48bbe0e03$9c3c346eb955fba46aac3345200df4642cbdb8375d1bff6e97007a1242f41340,3,2025-12-02T02:57:28.478973,false,true,0,0,

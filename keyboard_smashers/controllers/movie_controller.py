@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 import logging
 import pandas as pd
 from keyboard_smashers.dao.movie_dao import MovieDAO
-from keyboard_smashers.dao.review_dao import ReviewDAO
+from keyboard_smashers.dao.review_dao import review_dao_instance
 from keyboard_smashers.auth import get_current_admin_user
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class MovieUpdateSchema(BaseModel):
 class MovieController:
     def __init__(self, csv_path: str = "data/movies.csv"):
         self.movie_dao = MovieDAO(csv_path=csv_path)
-        self.review_dao = ReviewDAO()
+        self.review_dao = review_dao_instance
         logger.info(
             f"MovieController initialized with "
             f"{len(self.movie_dao.movies)} movies"
