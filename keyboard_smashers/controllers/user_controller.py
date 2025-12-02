@@ -25,6 +25,8 @@ class UserAPISchema(BaseModel):
         "Whether the user is an administrator"))
     total_penalty_count: int = Field(0, description=(
         "Total number of penalties issued to the user"))
+    favorites: List[str] = Field(default_factory=list, description=(
+        "List of favorite movie IDs"))
 
     class Config:
         from_attributes = True
@@ -79,6 +81,21 @@ class UserController:
         )
 
     def dict_to_schema(self, user_dict: dict) -> UserAPISchema:
+        from keyboard_smashers.controllers.movie_controller import (
+            movie_controller_instance
+        )
+
+        # Filter out deleted movies from favorites
+        if 'favorites' in user_dict and user_dict['favorites']:
+            valid_favorites = []
+            for movie_id in user_dict['favorites']:
+                try:
+                    movie_controller_instance.movie_dao.get_movie(movie_id)
+                    valid_favorites.append(movie_id)
+                except KeyError:
+                    pass
+            user_dict['favorites'] = valid_favorites
+
         return UserAPISchema(**user_dict)
 
     def authenticate_user(self, email: str, password: str):
@@ -566,5 +583,60 @@ def reactivate_user(
     try:
         user_controller_instance.user_dao.reactivate_user(user_id)
         return {"message": f"User {user_id} has been reactivated"}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/favorites/{movie_id}")
+def toggle_favorite(
+    user_id: str,
+    movie_id: str,
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Toggle a movie in/out of user's favorites list.
+    Returns whether the movie was added (true) or removed (false).
+    """
+    from keyboard_smashers.auth import SessionManager
+    from keyboard_smashers.controllers.movie_controller import (
+        movie_controller_instance
+    )
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    if current_user_id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Can only modify your own favorites")
+
+    try:
+        movie_controller_instance.movie_dao.get_movie(movie_id)
+    except KeyError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Movie with ID '{movie_id}' not found")
+
+    try:
+        added = user_controller_instance.user_dao.toggle_favorite(
+            user_id, movie_id
+        )
+        action = "added to" if added else "removed from"
+        return {
+            "message": f"Movie {movie_id} {action} favorites",
+            "added": added,
+            "favorites": (
+                user_controller_instance.user_dao.get_user(user_id)[
+                    'favorites'
+                ]
+            )
+        }
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))

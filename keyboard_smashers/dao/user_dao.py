@@ -33,6 +33,15 @@ class UserDAO:
                         else datetime.now()
                     )
 
+                    favorites_str = row.get('favorites', '')
+                    favorites = (
+                        [
+                            f.strip()
+                            for f in favorites_str.split(',') if f.strip()
+                        ]
+                        if favorites_str else []
+                    )
+
                     user_dict = {
                         'userid': row['userid'],
                         'username': row['username'],
@@ -51,7 +60,8 @@ class UserDAO:
                         'total_reviews': int(row.get('total_reviews', 0)),
                         'total_penalty_count': int(
                             row.get('total_penalty_count', 0)
-                        )
+                        ),
+                        'favorites': favorites
                     }
 
                     self.users[user_dict['userid']] = user_dict
@@ -92,12 +102,16 @@ class UserDAO:
                     'is_admin',
                     'is_suspended',
                     'total_reviews',
-                    'total_penalty_count'
+                    'total_penalty_count',
+                    'favorites'
                 ]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
 
                 for user in self.users.values():
+                    favorites_str = (
+                        ','.join(user.get('favorites', []))
+                    )
                     writer.writerow({
                         'userid': user['userid'],
                         'username': user['username'],
@@ -114,7 +128,8 @@ class UserDAO:
                         'total_reviews': user['total_reviews'],
                         'total_penalty_count': (
                             user.get('total_penalty_count', 0)
-                        )
+                        ),
+                        'favorites': favorites_str
                     })
 
             logger.info(f"Saved {len(self.users)} users to {self.csv_path}")
@@ -146,7 +161,8 @@ class UserDAO:
             'is_admin': user_data.get('is_admin', False),
             'is_suspended': user_data.get('is_suspended', False),
             'total_reviews': 0,
-            'total_penalty_count': 0
+            'total_penalty_count': 0,
+            'favorites': []
         }
 
         self.users[user_id] = user_dict
@@ -269,3 +285,33 @@ class UserDAO:
         self.users[userid]['is_suspended'] = False
         self.save_users()
         logger.info(f"Reactivated user: {userid}")
+
+    def toggle_favorite(self, userid: str, movie_id: str) -> bool:
+        """
+        Toggle a movie in user's favorites list.
+        Returns True if added, False if removed.
+        """
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        if 'favorites' not in self.users[userid]:
+            self.users[userid]['favorites'] = []
+
+        favorites = self.users[userid]['favorites']
+
+        if movie_id in favorites:
+            favorites.remove(movie_id)
+            self.save_users()
+            logger.info(
+                f"Removed movie {movie_id} from"
+                f" user {userid}'s favorites"
+            )
+            return False
+        else:
+            favorites.append(movie_id)
+            self.save_users()
+            logger.info(
+                f"Added movie {movie_id} to"
+                f" user {userid}'s favorites"
+            )
+            return True

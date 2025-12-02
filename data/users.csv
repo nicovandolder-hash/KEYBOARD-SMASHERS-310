@@ -1,3 +1,3 @@
-userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count
-user_001,admin_user,admin@test.com,402e3e7d1144746852fd0a89b0c9926d$84cdefeba603cb67fb3601aa85b1e2f5d5a2f93c0d1277398fd9750def1f456a,3,2025-12-02T00:09:33.560145,true,false,0,0
-user_002,reviewer,reviewer@test.com,4d5d1fbd7240ad1a3fd99af4eb0178cb$c7b9d3ed2b8669ba510a9c80d46aa8d8bed38abe647206d22217a14d37a7b5f3,3,2025-12-02T00:09:33.568508,false,true,0,0
+userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites
+user_001,admin_user,admin@test.com,b0a0b8f87b119c5bbd3b678f1c9bd5c5$df1f3e8154e43e769c9941dff7cebefe5885cf38e52f7bd7b8b165c5b7cb16f6,3,2025-12-02T01:13:59.468055,true,false,0,0,
+user_002,reviewer,reviewer@test.com,41c28c0cecdd56fa520af4f66a3d7e3f$d0ec4fe2cac79b397ad1782dcab01c809cbec133ff71707b229ebadb86492698,3,2025-12-02T01:13:59.475520,false,true,0,0,
