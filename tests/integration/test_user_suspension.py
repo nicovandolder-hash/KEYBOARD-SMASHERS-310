@@ -46,8 +46,9 @@ def admin_client(client):
         "password": "AdminPass123!"
     }
     create_response = client.post("/users/register", json=admin_data)
-    assert create_response.status_code == 201, f"Failed to create admin: {
-        create_response.json()}"
+    assert create_response.status_code == 201, (
+        f"Failed to create admin: {create_response.json()}"
+    )
     user_id = create_response.json()["userid"]
 
     # Make user admin via direct DAO manipulation
