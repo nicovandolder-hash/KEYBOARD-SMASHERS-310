@@ -1,7 +1,6 @@
 import pytest
 from keyboard_smashers.dao.user_dao import UserDAO
 from keyboard_smashers.models.user_model import User
-from pathlib import Path
 import tempfile
 import os
 
@@ -35,7 +34,7 @@ class TestUserSuspension:
             'password': 'TestPass123!'
         }
         created_user = user_dao.create_user(user_data)
-        
+
         assert created_user['is_suspended'] is False
 
     def test_suspend_user_success(self, user_dao):
@@ -48,10 +47,10 @@ class TestUserSuspension:
         }
         created_user = user_dao.create_user(user_data)
         user_id = created_user['userid']
-        
+
         # Suspend user
         user_dao.suspend_user(user_id)
-        
+
         # Verify suspension
         suspended_user = user_dao.get_user(user_id)
         assert suspended_user['is_suspended'] is True
@@ -67,10 +66,10 @@ class TestUserSuspension:
         created_user = user_dao.create_user(user_data)
         user_id = created_user['userid']
         user_dao.suspend_user(user_id)
-        
+
         # Reactivate user
         user_dao.reactivate_user(user_id)
-        
+
         # Verify reactivation
         reactivated_user = user_dao.get_user(user_id)
         assert reactivated_user['is_suspended'] is False
@@ -96,10 +95,10 @@ class TestUserSuspension:
         created_user = user_dao.create_user(user_data)
         user_id = created_user['userid']
         user_dao.suspend_user(user_id)
-        
+
         # Create new DAO instance (reloads from CSV)
         new_dao = UserDAO(csv_path=user_dao.csv_path)
-        
+
         # Verify suspension persisted
         user = new_dao.get_user(user_id)
         assert user['is_suspended'] is True

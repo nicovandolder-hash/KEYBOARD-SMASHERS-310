@@ -40,10 +40,12 @@ class UserDAO:
                         'password': row.get('password', ''),
                         'reputation': int(row.get('reputation', 3)),
                         'creation_date': creation_date,
-                        'is_admin': row.get('is_admin', 'false').lower() == (
+                        'is_admin': (
+                            row.get('is_admin', 'false').lower() ==
                             'true'
                         ),
-                        'is_suspended': row.get('is_suspended', 'false').lower() == (
+                        'is_suspended': (
+                            row.get('is_suspended', 'false').lower() ==
                             'true'
                         ),
                         'total_reviews': int(row.get('total_reviews', 0)),
@@ -64,7 +66,7 @@ class UserDAO:
                         try:
                             user_num = int(user_dict['userid'].split("_")[1])
                             self.user_counter = (
-                                 max(self.user_counter, user_num + 1)
+                                max(self.user_counter, user_num + 1)
                             )
                         except (IndexError, ValueError):
                             pass
@@ -102,9 +104,13 @@ class UserDAO:
                         'email': user['email'],
                         'password': user['password'],
                         'reputation': user['reputation'],
-                        'creation_date': user['creation_date'].isoformat(),
+                        'creation_date': (
+                            user['creation_date'].isoformat()
+                        ),
                         'is_admin': str(user['is_admin']).lower(),
-                        'is_suspended': str(user.get('is_suspended', False)).lower(),
+                        'is_suspended': (
+                            str(user.get('is_suspended', False)).lower()
+                        ),
                         'total_reviews': user['total_reviews'],
                         'total_penalty_count': (
                             user.get('total_penalty_count', 0)

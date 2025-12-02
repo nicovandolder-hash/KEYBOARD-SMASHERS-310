@@ -130,7 +130,7 @@ class ReviewController:
         """
         Filter out reviews from suspended users.
         IMDB reviews (user_id is None) are always included.
-        
+
         Args:
             reviews: List of review dictionaries
             user_dao: Optional UserDAO instance for testing
@@ -140,16 +140,16 @@ class ReviewController:
                 user_controller_instance
             )
             user_dao = user_controller_instance.user_dao
-        
+
         filtered_reviews = []
         for review in reviews:
             user_id = review.get('user_id')
-            
+
             # Include IMDB reviews (no user_id)
             if user_id is None:
                 filtered_reviews.append(review)
                 continue
-            
+
             # Check if user is suspended
             try:
                 user_dict = user_dao.get_user(user_id)
@@ -164,7 +164,7 @@ class ReviewController:
                 # User doesn't exist - include review anyway
                 # (unit tests may not have user setup)
                 filtered_reviews.append(review)
-        
+
         return filtered_reviews
 
     def get_review_by_id(self, review_id: str) -> ReviewSchema:
@@ -188,14 +188,15 @@ class ReviewController:
     ) -> PaginatedReviewResponse:
         logger.info(
             f"Fetching reviews for movie: {movie_id} "
-            f"(skip={skip}, limit={limit}, include_suspended={include_suspended})"
+            f"(skip={skip}, limit={limit}, "
+            f"include_suspended={include_suspended})"
         )
         all_reviews = self.review_dao.get_reviews_for_movie(movie_id)
-        
+
         # Filter suspended users' reviews unless explicitly included
         if not include_suspended:
             all_reviews = self._filter_suspended_user_reviews(all_reviews)
-        
+
         total = len(all_reviews)
 
         # Apply pagination
@@ -225,14 +226,15 @@ class ReviewController:
     ) -> PaginatedReviewResponse:
         logger.info(
             f"Fetching reviews by user: {user_id} "
-            f"(skip={skip}, limit={limit}, include_suspended={include_suspended})"
+            f"(skip={skip}, limit={limit}, "
+            f"include_suspended={include_suspended})"
         )
         all_reviews = self.review_dao.get_reviews_by_user(user_id)
-        
+
         # Filter if user is suspended (unless explicitly included)
         if not include_suspended:
             all_reviews = self._filter_suspended_user_reviews(all_reviews)
-        
+
         total = len(all_reviews)
 
         # Apply pagination
@@ -665,7 +667,7 @@ def create_review(
             status_code=403,
             detail="Cannot create review. Account is suspended."
         )
-    
+
     return review_controller_instance.create_review(
         review_data, current_user_id)
 

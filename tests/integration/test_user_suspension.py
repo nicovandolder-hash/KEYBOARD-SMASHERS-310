@@ -1,7 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
 from keyboard_smashers.api import app
-from keyboard_smashers.controllers.user_controller import user_controller_instance
+from keyboard_smashers.controllers.user_controller import (
+    user_controller_instance
+)
 from keyboard_smashers import auth
 
 
@@ -14,12 +16,12 @@ def clean_test_data():
     user_dao.email_index.clear()
     user_dao.username_index.clear()
     user_dao.user_counter = 1
-    
+
     # Clear sessions
     auth.sessions.clear()
-    
+
     yield
-    
+
     # Cleanup after test
     user_dao.users.clear()
     user_dao.email_index.clear()
@@ -44,24 +46,25 @@ def admin_client(client):
         "password": "AdminPass123!"
     }
     create_response = client.post("/users/register", json=admin_data)
-    assert create_response.status_code == 201, f"Failed to create admin: {create_response.json()}"
+    assert create_response.status_code == 201, f"Failed to create admin: {
+        create_response.json()}"
     user_id = create_response.json()["userid"]
-    
+
     # Make user admin via direct DAO manipulation
     user_dao = user_controller_instance.user_dao
     user_dao.users[user_id]['is_admin'] = True
     user_dao.save_users()
-    
+
     # Login as admin
     login_response = client.post("/users/login", json={
         "email": "admin@test.com",
         "password": "AdminPass123!"
     })
-    
+
     # Extract session token from cookies
     session_token = login_response.cookies.get("session_token")
     client.cookies.set("session_token", session_token)
-    
+
     return client
 
 
@@ -75,16 +78,16 @@ def regular_client(client):
         "password": "UserPass123!"
     }
     client.post("/users/register", json=user_data)
-    
+
     # Login as regular user
     login_response = client.post("/users/login", json={
         "email": "user@test.com",
         "password": "UserPass123!"
     })
-    
+
     session_token = login_response.cookies.get("session_token")
     client.cookies.set("session_token", session_token)
-    
+
     return client
 
 
@@ -109,9 +112,10 @@ class TestSuspensionEndpoints:
             "email": "target@test.com",
             "password": "TargetPass123!"
         }
-        create_response = admin_client.post("/users/register", json=target_user_data)
+        create_response = admin_client.post(
+            "/users/register", json=target_user_data)
         user_id = create_response.json()["userid"]
-        
+
         # Suspend user
         response = admin_client.post(f"/users/{user_id}/suspend")
         assert response.status_code == 200
@@ -140,10 +144,11 @@ class TestSuspensionEndpoints:
             "email": "target@test.com",
             "password": "TargetPass123!"
         }
-        create_response = admin_client.post("/users/register", json=target_user_data)
+        create_response = admin_client.post(
+            "/users/register", json=target_user_data)
         user_id = create_response.json()["userid"]
         admin_client.post(f"/users/{user_id}/suspend")
-        
+
         # Reactivate user
         response = admin_client.post(f"/users/{user_id}/reactivate")
         assert response.status_code == 200
@@ -168,16 +173,16 @@ class TestSuspendedUserLogin:
         }
         create_response = client.post("/users/register", json=user_data)
         user_id = create_response.json()["userid"]
-        
+
         # Suspend user
         admin_client.post(f"/users/{user_id}/suspend")
-        
+
         # Attempt login
         login_response = client.post("/users/login", json={
             "email": "suspended@test.com",
             "password": "TestPass123!"
         })
-        
+
         assert login_response.status_code == 403
         assert "suspended" in login_response.json()["detail"].lower()
 
@@ -191,17 +196,17 @@ class TestSuspendedUserLogin:
         }
         create_response = client.post("/users/register", json=user_data)
         user_id = create_response.json()["userid"]
-        
+
         # Suspend then reactivate
         admin_client.post(f"/users/{user_id}/suspend")
         admin_client.post(f"/users/{user_id}/reactivate")
-        
+
         # Attempt login
         login_response = client.post("/users/login", json={
             "email": "reactivated@test.com",
             "password": "TestPass123!"
         })
-        
+
         assert login_response.status_code == 200
         assert "session_token" in login_response.cookies
 
@@ -213,16 +218,17 @@ class TestSuspendedUserReviewCreation:
         """Suspended users should not be able to create reviews"""
         # Create separate client for reviewer
         reviewer_client = TestClient(app)
-        
+
         # Create user
         user_data = {
             "username": "reviewer",
             "email": "reviewer@test.com",
             "password": "ReviewPass123!"
         }
-        create_response = reviewer_client.post("/users/register", json=user_data)
+        create_response = reviewer_client.post(
+            "/users/register", json=user_data)
         user_id = create_response.json()["userid"]
-        
+
         # Login as user
         login_response = reviewer_client.post("/users/login", json={
             "email": "reviewer@test.com",
@@ -230,11 +236,11 @@ class TestSuspendedUserReviewCreation:
         })
         session_token = login_response.cookies.get("session_token")
         reviewer_client.cookies.set("session_token", session_token)
-        
+
         # Suspend user (using admin)
         suspend_response = admin_client.post(f"/users/{user_id}/suspend")
         assert suspend_response.status_code == 200
-        
+
         # Attempt to create review (should fail with 403)
         review_data = {
             "movie_id": "tt0111161",  # Shawshank Redemption
@@ -243,6 +249,6 @@ class TestSuspendedUserReviewCreation:
             "review_title": "Excellent"
         }
         review_response = reviewer_client.post("/reviews/", json=review_data)
-        
+
         assert review_response.status_code == 403
         assert "suspended" in review_response.json()["detail"].lower()

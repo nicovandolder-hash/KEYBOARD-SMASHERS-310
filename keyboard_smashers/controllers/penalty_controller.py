@@ -159,7 +159,7 @@ class PenaltyController:
             'reason': penalty_data.reason,
             'severity': penalty_data.severity,
             'start_date': penalty_data.start_date if (
-                            penalty_data.start_date) else datetime.now(),
+                penalty_data.start_date) else datetime.now(),
             'end_date': penalty_data.end_date if penalty_data.end_date else (
                 datetime.now() + timedelta(days=7)),
             'issued_by': admin_id
@@ -346,7 +346,7 @@ def get_my_penalties(
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get paginated list of current user's penalties
-    
+
     - **status**: Filter by 'active' or 'inactive' (optional)
     - **skip**: Number of penalties to skip (default: 0)
     - **limit**: Maximum penalties to return (default: 50, max: 100)
@@ -377,7 +377,7 @@ def get_user_penalty_summary(
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get summary of active and historical penalties for a user
-    
+
     Returns both active and historical penalties separately with counts.
     Accessible by admins or the user themselves.
     """
@@ -394,7 +394,7 @@ def get_user_penalty_summary(
         raise HTTPException(status_code=401, detail="Invalid session")
 
     requester = user_controller_instance.get_user_model_by_id(requester_id)
-    
+
     # Allow access if requester is admin OR requesting their own penalties
     if not requester.is_admin and requester_id != user_id:
         raise HTTPException(
@@ -429,7 +429,7 @@ def create_penalty(
     if not admin.is_admin:
         raise HTTPException(status_code=403, detail=(
             "Admin privileges required")
-            )
+        )
 
     return penalty_controller_instance.create_penalty(penalty_data, admin_id)
 
@@ -443,7 +443,7 @@ def get_all_penalties(
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get paginated list of all penalties (admin only)
-    
+
     - **status**: Filter by 'active' or 'inactive' (optional)
     - **user_id**: Filter by specific user (optional)
     - **skip**: Number of penalties to skip (default: 0)

@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 @pytest.fixture
 def mock_penalty_dao():
     with patch(
-              'keyboard_smashers.controllers.penalty_controller.PenaltyDAO'
-              ) as mock:
+        'keyboard_smashers.controllers.penalty_controller.PenaltyDAO'
+    ) as mock:
         dao_instance = Mock()
         mock.return_value = dao_instance
         dao_instance.penalties = {}
@@ -30,8 +30,8 @@ def mock_penalty_dao():
 @pytest.fixture
 def mock_user_dao():
     with patch(
-              'keyboard_smashers.controllers.penalty_controller.UserDAO'
-              ) as mock:
+        'keyboard_smashers.controllers.penalty_controller.UserDAO'
+    ) as mock:
         dao_instance = Mock()
         mock.return_value = dao_instance
         yield dao_instance
