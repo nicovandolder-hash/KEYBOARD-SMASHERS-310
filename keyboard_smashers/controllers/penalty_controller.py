@@ -67,6 +67,21 @@ class UpdatePenaltySchema(BaseModel):
     end_date: Optional[datetime] = Field(None, description="Updated end date")
 
 
+class PenaltySummarySchema(BaseModel):
+    """Response model for user penalty summary"""
+    user_id: str = Field(..., description="User ID")
+    active_penalties: List[PenaltyAPISchema] = Field(
+        ..., description="Currently active penalties"
+    )
+    historical_penalties: List[PenaltyAPISchema] = Field(
+        ..., description="Past/inactive penalties"
+    )
+    total_active: int = Field(..., description="Count of active penalties")
+    total_historical: int = Field(
+        ..., description="Count of historical penalties"
+    )
+
+
 class PenaltyController:
 
     penalty_dao = None
@@ -251,6 +266,38 @@ class PenaltyController:
                 detail=f"Penalty '{penalty_id}' not found"
             )
 
+    def get_user_penalty_summary(self, user_id: str) -> PenaltySummarySchema:
+        """Get summary of active and historical penalties for a user"""
+        logger.info(f"Fetching penalty summary for user: {user_id}")
+
+        try:
+            self.user_dao.load_users()
+            self.user_dao.get_user(user_id)
+        except KeyError:
+            raise HTTPException(
+                status_code=404,
+                detail=f"User '{user_id}' not found"
+            )
+
+        all_penalties = self.penalty_dao.get_penalties_by_user(user_id)
+        active = [p for p in all_penalties if p.is_active()]
+        historical = [p for p in all_penalties if not p.is_active()]
+
+        logger.info(
+            f"User {user_id} has {len(active)} active "
+            f"and {len(historical)} historical penalties"
+        )
+
+        return PenaltySummarySchema(
+            user_id=user_id,
+            active_penalties=[self.penalty_to_schema(p) for p in active],
+            historical_penalties=[
+                self.penalty_to_schema(p) for p in historical
+            ],
+            total_active=len(active),
+            total_historical=len(historical)
+        )
+
 
 penalty_controller_instance = PenaltyController()
 
@@ -278,6 +325,40 @@ def get_my_penalties(
         status=status,
         user_id=user_id
     )
+
+
+@router.get("/user/{user_id}/summary", response_model=PenaltySummarySchema)
+def get_user_penalty_summary(
+    user_id: str,
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """Get summary of active and historical penalties for a user
+    
+    Returns both active and historical penalties separately with counts.
+    Accessible by admins or the user themselves.
+    """
+    from keyboard_smashers.auth import SessionManager
+    from keyboard_smashers.controllers.user_controller import (
+        user_controller_instance
+    )
+
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    requester_id = SessionManager.validate_session(session_token)
+    if not requester_id:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    requester = user_controller_instance.get_user_model_by_id(requester_id)
+    
+    # Allow access if requester is admin OR requesting their own penalties
+    if not requester.is_admin and requester_id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only view your own penalty summary"
+        )
+
+    return penalty_controller_instance.get_user_penalty_summary(user_id)
 
 
 # ---------------- PROTECTED ADMIN ONLY ENDPOINTS ----------------
