@@ -240,8 +240,12 @@ class MovieController:
         logger.info(f"Found {len(matching_movies)} movies in genre: {genre}")
         return [self._dict_to_schema(movie) for movie in matching_movies]
 
-    def search_movies(self, query: str) -> List[MovieSchema]:
-        logger.info(f"Searching movies with query: {query}")
+    def search_movies(
+        self,
+        query: str,
+        sort_by: Optional[str] = None
+    ) -> List[MovieSchema]:
+        logger.info(f"Searching movies with query: {query}, sort: {sort_by}")
         all_movies = self.movie_dao.get_all_movies()
 
         query_lower = query.lower()
@@ -251,6 +255,18 @@ class MovieController:
                 query_lower in str(movie.get('director', '')).lower() or
                 query_lower in str(movie.get('description', '')).lower())
         ]
+
+        # Apply sorting if requested
+        if sort_by:
+            if sort_by == "year":
+                matching_movies.sort(
+                    key=lambda m: m.get('year', 0),
+                    reverse=True
+                )
+            elif sort_by == "title":
+                matching_movies.sort(
+                    key=lambda m: str(m.get('title', '')).lower()
+                )
 
         logger.info(
             f"Found {len(matching_movies)} movies matching query: {query}"
@@ -275,8 +291,8 @@ def get_all_movies(skip: int = 0, limit: int = 20):
 
 
 @router.get("/search", response_model=List[MovieSchema])
-def search_movies(q: str):
-    return movie_controller_instance.search_movies(q)
+def search_movies(q: str, sort_by: Optional[str] = None):
+    return movie_controller_instance.search_movies(q, sort_by=sort_by)
 
 
 @router.get("/genre/{genre}", response_model=List[MovieSchema])
