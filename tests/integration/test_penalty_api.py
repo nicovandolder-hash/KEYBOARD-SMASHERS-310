@@ -203,9 +203,9 @@ class TestPenaltyAPIPublicEndpoints:
     def test_get_my_penalties_with_auth_no_penalties(self, regular_client):
         response = regular_client.get("/penalties/my-penalties")
         assert response.status_code == 200
-        penalties = response.json()
-        assert isinstance(penalties, list)
-        assert len(penalties) == 0
+        data = response.json()
+        assert "penalties" in data
+        assert len(data["penalties"]) == 0
 
     def test_get_my_penalties_with_status_filter_active(
             self, regular_client, admin_client):
@@ -218,7 +218,8 @@ class TestPenaltyAPIPublicEndpoints:
 
         response = regular_client.get("/penalties/my-penalties?status=active")
         assert response.status_code == 200
-        penalties = response.json()
+        data = response.json()
+        penalties = data["penalties"]
         assert all(p["is_active"] for p in penalties)
 
     def test_get_my_penalties_with_status_filter_inactive(
@@ -226,7 +227,8 @@ class TestPenaltyAPIPublicEndpoints:
         response = regular_client.get(
             "/penalties/my-penalties?status=inactive")
         assert response.status_code == 200
-        penalties = response.json()
+        data = response.json()
+        penalties = data["penalties"]
         assert all(not p["is_active"] for p in penalties)
 
 
@@ -297,8 +299,8 @@ class TestPenaltyAPIAdminEndpoints:
     def test_get_all_penalties_with_admin(self, admin_client):
         response = admin_client.get("/penalties/")
         assert response.status_code == 200
-        penalties = response.json()
-        assert isinstance(penalties, list)
+        data = response.json()
+        assert "penalties" in data
 
     def test_get_all_penalties_with_user_filter(self, admin_client):
         penalty_data = {
@@ -310,13 +312,15 @@ class TestPenaltyAPIAdminEndpoints:
 
         response = admin_client.get("/penalties/?user_id=test_admin")
         assert response.status_code == 200
-        penalties = response.json()
+        data = response.json()
+        penalties = data["penalties"]
         assert all(p["user_id"] == "test_admin" for p in penalties)
 
     def test_get_all_penalties_with_status_filter(self, admin_client):
         response = admin_client.get("/penalties/?status=active")
         assert response.status_code == 200
-        penalties = response.json()
+        data = response.json()
+        penalties = data["penalties"]
         assert all(p["is_active"] for p in penalties)
 
     def test_get_all_penalties_invalid_status(self, admin_client):
@@ -434,7 +438,8 @@ class TestPenaltyAPIDataPersistence:
 
         list_response = admin_client.get("/penalties/")
         assert list_response.status_code == 200
-        penalty_ids = [p["penalty_id"] for p in list_response.json()]
+        data = list_response.json()
+        penalty_ids = [p["penalty_id"] for p in data["penalties"]]
         assert penalty_id in penalty_ids
 
     def test_update_persists_across_requests(self, admin_client):
@@ -497,8 +502,9 @@ class TestPenaltyAPIComplexScenario:
 
         user_penalties = regular_client.get("/penalties/my-penalties")
         assert user_penalties.status_code == 200
+        data = user_penalties.json()
         assert any(p["penalty_id"] ==
-                   penalty_id for p in user_penalties.json())
+                   penalty_id for p in data["penalties"])
 
         update_data = {"severity": 5}
         update_response = admin_client.put(
