@@ -82,6 +82,19 @@ class PenaltySummarySchema(BaseModel):
     )
 
 
+class PaginatedPenaltyResponse(BaseModel):
+    """Response model for paginated penalties"""
+    penalties: List[PenaltyAPISchema] = Field(
+        ..., description="List of penalties for current page"
+    )
+    total: int = Field(..., description="Total penalties available")
+    skip: int = Field(..., description="Number of penalties skipped")
+    limit: int = Field(..., description="Maximum penalties per page")
+    has_more: bool = Field(
+        ..., description="Whether more penalties are available"
+    )
+
+
 class PenaltyController:
 
     penalty_dao = None
@@ -184,10 +197,14 @@ class PenaltyController:
     def get_all_penalties(
         self,
         status: Optional[str] = None,
-        user_id: Optional[str] = None
-    ) -> List[PenaltyAPISchema]:
-        logger.debug(f"Retrieving penalties (status={status},"
-                     f" user_id={user_id})")
+        user_id: Optional[str] = None,
+        skip: int = 0,
+        limit: int = 50
+    ) -> PaginatedPenaltyResponse:
+        logger.debug(
+            f"Retrieving penalties (status={status}, user_id={user_id}, "
+            f"skip={skip}, limit={limit})"
+        )
 
         penalties = self.penalty_dao.get_all_penalties()
 
@@ -212,7 +229,21 @@ class PenaltyController:
                 detail="Invalid status. Must be 'active' or 'inactive'"
             )
 
-        return [self.penalty_to_schema(p) for p in penalties]
+        total = len(penalties)
+        paginated_penalties = penalties[skip:skip + limit]
+
+        logger.info(
+            f"Found {total} total penalties, returning "
+            f"{len(paginated_penalties)}"
+        )
+
+        return PaginatedPenaltyResponse(
+            penalties=[self.penalty_to_schema(p) for p in paginated_penalties],
+            total=total,
+            skip=skip,
+            limit=limit,
+            has_more=(skip + limit) < total
+        )
 
     def update_penalty(
         self,
@@ -307,11 +338,19 @@ router = APIRouter(
 )
 
 
-@router.get("/my-penalties", response_model=List[PenaltyAPISchema])
+@router.get("/my-penalties", response_model=PaginatedPenaltyResponse)
 def get_my_penalties(
     status: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 50,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
+    """Get paginated list of current user's penalties
+    
+    - **status**: Filter by 'active' or 'inactive' (optional)
+    - **skip**: Number of penalties to skip (default: 0)
+    - **limit**: Maximum penalties to return (default: 50, max: 100)
+    """
     from keyboard_smashers.auth import SessionManager
 
     if not session_token:
@@ -321,9 +360,14 @@ def get_my_penalties(
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid session")
 
+    # Enforce max limit
+    limit = min(limit, 100)
+
     return penalty_controller_instance.get_all_penalties(
         status=status,
-        user_id=user_id
+        user_id=user_id,
+        skip=skip,
+        limit=limit
     )
 
 
@@ -390,13 +434,21 @@ def create_penalty(
     return penalty_controller_instance.create_penalty(penalty_data, admin_id)
 
 
-@router.get("/", response_model=List[PenaltyAPISchema])
+@router.get("/", response_model=PaginatedPenaltyResponse)
 def get_all_penalties(
     status: Optional[str] = None,
     user_id: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 50,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
-
+    """Get paginated list of all penalties (admin only)
+    
+    - **status**: Filter by 'active' or 'inactive' (optional)
+    - **user_id**: Filter by specific user (optional)
+    - **skip**: Number of penalties to skip (default: 0)
+    - **limit**: Maximum penalties to return (default: 50, max: 100)
+    """
     from keyboard_smashers.auth import SessionManager
     from keyboard_smashers.controllers.user_controller import (
         user_controller_instance
@@ -415,8 +467,11 @@ def get_all_penalties(
             "Admin privileges required")
         )
 
+    # Enforce max limit
+    limit = min(limit, 100)
+
     return penalty_controller_instance.get_all_penalties(
-        status=status, user_id=user_id)
+        status=status, user_id=user_id, skip=skip, limit=limit)
 
 
 @router.get("/{penalty_id}", response_model=PenaltyAPISchema)
