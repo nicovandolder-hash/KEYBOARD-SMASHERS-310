@@ -786,8 +786,7 @@ def get_followers(
     except KeyError as e:
         raise HTTPException(
             status_code=404,
-            detail=f"User not found: {
-                str(e)}")
+            detail=f"User not found: {str(e)}")
     except Exception as e:
         logger.error(f"Error getting followers for {user_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -831,8 +830,7 @@ def get_following(
     except KeyError as e:
         raise HTTPException(
             status_code=404,
-            detail=f"User not found: {
-                str(e)}")
+            detail=f"User not found: {str(e)}")
     except Exception as e:
         logger.error(f"Error getting following for {user_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
