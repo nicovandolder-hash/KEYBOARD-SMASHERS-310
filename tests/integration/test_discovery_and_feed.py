@@ -21,8 +21,14 @@ def clean_test_data():
     user_dao.user_counter = 1
     auth.sessions.clear()
     
-    # Store original reviews
+    # Store and clear original reviews and indexes
     original_reviews = review_dao.reviews.copy()
+    original_reviews_by_movie = review_dao.reviews_by_movie.copy()
+    original_reviews_by_user = review_dao.reviews_by_user.copy()
+    
+    review_dao.reviews.clear()
+    review_dao.reviews_by_movie.clear()
+    review_dao.reviews_by_user.clear()
 
     yield
 
@@ -32,8 +38,10 @@ def clean_test_data():
     user_dao.user_counter = 1
     auth.sessions.clear()
     
-    # Restore reviews
+    # Restore reviews and indexes
     review_dao.reviews = original_reviews
+    review_dao.reviews_by_movie = original_reviews_by_movie
+    review_dao.reviews_by_user = original_reviews_by_user
 
 
 @pytest.fixture
@@ -172,7 +180,7 @@ def test_following_feed_with_follows(client):
         'movie_id': 'tt0111161',
         'review_text': 'Great movie!',
         'rating': 5,
-        'timestamp': '2024-01-01T10:00:00'
+        'review_date': '2024-01-01T10:00:00'
     }
     charlie_review = {
         'review_id': 'review_charlie_1',
@@ -180,11 +188,17 @@ def test_following_feed_with_follows(client):
         'movie_id': 'tt0068646',
         'review_text': 'Amazing film!',
         'rating': 5,
-        'timestamp': '2024-01-02T10:00:00'
+        'review_date': '2024-01-02T10:00:00'
     }
     
     review_dao.reviews[bob_review['review_id']] = bob_review
     review_dao.reviews[charlie_review['review_id']] = charlie_review
+    
+    # Update indexes
+    review_dao.reviews_by_user.setdefault(bob_id, []).append(bob_review['review_id'])
+    review_dao.reviews_by_user.setdefault(charlie_id, []).append(charlie_review['review_id'])
+    review_dao.reviews_by_movie.setdefault(bob_review['movie_id'], []).append(bob_review['review_id'])
+    review_dao.reviews_by_movie.setdefault(charlie_review['movie_id'], []).append(charlie_review['review_id'])
     
     # Alice follows Bob and Charlie
     client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
@@ -226,9 +240,12 @@ def test_following_feed_pagination(client):
             'movie_id': 'tt0111161',
             'review_text': f'Review {i}',
             'rating': 5,
-            'timestamp': f'2024-01-0{i+1}T10:00:00'
+            'review_date': f'2024-01-0{i+1}T10:00:00'
         }
         review_dao.reviews[review['review_id']] = review
+        # Update indexes
+        review_dao.reviews_by_user.setdefault(bob_id, []).append(review['review_id'])
+        review_dao.reviews_by_movie.setdefault(review['movie_id'], []).append(review['review_id'])
     
     # Alice follows Bob
     client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
