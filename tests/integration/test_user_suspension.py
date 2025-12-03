@@ -255,4 +255,8 @@ class TestSuspendedUserReviewCreation:
         # After suspension, user's session is invalidated so they get 401
         assert review_response.status_code == 401
         detail = review_response.json()["detail"].lower()
-        assert "invalid" in detail or "expired" in detail or "session" in detail
+        assert (
+            "invalid" in detail or
+            "expired" in detail or
+            "session" in detail
+        )
