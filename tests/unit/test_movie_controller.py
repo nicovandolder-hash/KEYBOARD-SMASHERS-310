@@ -75,9 +75,12 @@ class TestGetAllMovies:
         """Test getting all movies when DAO returns empty list."""
         mock_dao.get_all_movies.return_value = []
 
-        movies = controller.get_all_movies()
+        response = controller.get_all_movies()
 
-        assert movies == []
+        assert response.movies == []
+        assert response.total == 0
+        assert response.page == 1
+        assert response.page_size == 20
         mock_dao.get_all_movies.assert_called_once()
 
     def test_get_all_movies_with_data(self, controller, mock_dao,
@@ -85,11 +88,12 @@ class TestGetAllMovies:
         """Test getting all movies when DAO returns data."""
         mock_dao.get_all_movies.return_value = sample_movies_list
 
-        movies = controller.get_all_movies()
+        response = controller.get_all_movies()
 
-        assert len(movies) == 3
-        assert all(hasattr(m, 'title') for m in movies)
-        assert movies[0].title == 'Inception'
+        assert len(response.movies) == 3
+        assert response.total == 3
+        assert all(hasattr(m, 'title') for m in response.movies)
+        assert response.movies[0].title == 'Inception'
         mock_dao.get_all_movies.assert_called_once()
 
 

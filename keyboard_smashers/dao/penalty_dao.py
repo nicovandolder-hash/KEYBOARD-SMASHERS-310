@@ -45,7 +45,7 @@ class PenaltyDAO:
                         self.user_penalties[penalty.user_id] = []
                     self.user_penalties[penalty.user_id].append(
                         penalty.penalty_id
-                        )
+                    )
 
                     if penalty.penalty_id.startswith("penalty_"):
                         try:
@@ -150,18 +150,16 @@ class PenaltyDAO:
         if 'severity' in data:
             penalty.severity = penalty._validate_severity(data['severity'])
         if 'start_date' in data:
-            penalty.start_date = data['start_date']
             start_date = data['start_date']
             penalty.start_date = (
-               start_date.replace(tzinfo=None) if start_date.tzinfo
-               else start_date
+                start_date.replace(tzinfo=None) if start_date.tzinfo
+                else start_date
             )
         if 'end_date' in data:
-            penalty.end_date = data['end_date']
             end_date = data['end_date']
             penalty.end_date = (
-              end_date.replace(tzinfo=None) if end_date and end_date.tzinfo
-              else end_date
+                end_date.replace(tzinfo=None) if end_date and end_date.tzinfo
+                else end_date
             )
 
         self.save_penalties()

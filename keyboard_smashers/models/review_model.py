@@ -37,7 +37,7 @@ class Review(ReviewSubject):
             event_data={
                 "user_id": user_id,
                 "message": (
-                   "Your review received a helpful vote from user {user_id}."
+                    "Your review received a helpful vote from user {user_id}."
                 )
             }
         )

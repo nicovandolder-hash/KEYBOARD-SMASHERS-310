@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 from pathlib import Path
 from dotenv import load_dotenv

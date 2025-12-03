@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 @pytest.fixture
 def mock_penalty_dao():
     with patch(
-              'keyboard_smashers.controllers.penalty_controller.PenaltyDAO'
-              ) as mock:
+        'keyboard_smashers.controllers.penalty_controller.PenaltyDAO'
+    ) as mock:
         dao_instance = Mock()
         mock.return_value = dao_instance
         dao_instance.penalties = {}
@@ -30,8 +30,8 @@ def mock_penalty_dao():
 @pytest.fixture
 def mock_user_dao():
     with patch(
-              'keyboard_smashers.controllers.penalty_controller.UserDAO'
-              ) as mock:
+        'keyboard_smashers.controllers.penalty_controller.UserDAO'
+    ) as mock:
         dao_instance = Mock()
         mock.return_value = dao_instance
         yield dao_instance
@@ -183,8 +183,8 @@ class TestPenaltyControllerRead:
 
         result = penalty_controller.get_all_penalties()
 
-        assert len(result) == 1
-        assert isinstance(result[0], PenaltyAPISchema)
+        assert len(result.penalties) == 1
+        assert isinstance(result.penalties[0], PenaltyAPISchema)
         mock_penalty_dao.get_all_penalties.assert_called_once()
 
     def test_get_all_penalties_by_user(
@@ -195,8 +195,8 @@ class TestPenaltyControllerRead:
 
         result = penalty_controller.get_all_penalties(user_id="user_001")
 
-        assert len(result) == 1
-        assert result[0].user_id == "user_001"
+        assert len(result.penalties) == 1
+        assert result.penalties[0].user_id == "user_001"
         mock_penalty_dao.get_penalties_by_user.assert_called_once_with(
             "user_001")
 
@@ -236,9 +236,9 @@ class TestPenaltyControllerRead:
 
         result = penalty_controller.get_all_penalties(status="active")
 
-        assert len(result) == 1
-        assert result[0].penalty_id == "penalty_001"
-        assert result[0].is_active is True
+        assert len(result.penalties) == 1
+        assert result.penalties[0].penalty_id == "penalty_001"
+        assert result.penalties[0].is_active is True
 
     def test_get_all_penalties_inactive_filter(self, penalty_controller,
                                                mock_penalty_dao):
@@ -267,8 +267,8 @@ class TestPenaltyControllerRead:
 
         result = penalty_controller.get_all_penalties(status="inactive")
 
-        assert len(result) == 1
-        assert result[0].penalty_id == "penalty_002"
+        assert len(result.penalties) == 1
+        assert result.penalties[0].penalty_id == "penalty_002"
 
     def test_get_all_penalties_invalid_status(self, penalty_controller):
         with pytest.raises(HTTPException) as exc_info:

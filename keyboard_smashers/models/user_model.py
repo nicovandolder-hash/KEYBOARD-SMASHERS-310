@@ -1,6 +1,8 @@
 from datetime import datetime
 import re
 import logging
+import hashlib
+import os
 from keyboard_smashers.interfaces.observer_interface import Observer
 
 logger = logging.getLogger(__name__)
@@ -8,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 class User(Observer):
     def __init__(self, username, email, userid, password=None, reputation=3,
-                 creation_date=None, is_admin=False, total_penalty_count=0):
+                 creation_date=None, is_admin=False, total_penalty_count=0,
+                 is_suspended=False, following=None, followers=None,
+                 blocked_users=None):
         self.username = username
         self.email = email
         self.userid = userid
@@ -18,16 +22,20 @@ class User(Observer):
         self.reviews = []
         self.total_reviews = 0
         self.is_admin = is_admin
+        self.is_suspended = is_suspended
         self.notifications = []
-        self.total_penalty_count = total_penalty_count,
+        self.total_penalty_count = total_penalty_count
         self.penalties = []
+        self.following = following if following is not None else []
+        self.followers = followers if followers is not None else []
+        self.blocked_users = blocked_users if blocked_users is not None else []
 
         logger.info(
             f"User created:"
             f"{self.username} (ID: {userid}, Admin: {self.is_admin})")
 
         if password:
-            self.set_password(password)
+            self.password = password
 
     def set_password(self, password):
 
@@ -62,7 +70,13 @@ class User(Observer):
                 raise ValueError(
                     "Password must contain at least one lowercase letter.")
 
-            self.password = password
+            # Generate a random salt (16 bytes)
+            salt = os.urandom(16).hex()
+            # Hash the password + salt
+            hashed = hashlib.sha256((password + salt).encode()).hexdigest()
+            # Store both: "salt$hash"
+            self.password = f"{salt}${hashed}"
+
             logger.info(f"Password set successfully for user: {self.username}")
             return "Password set successfully"
 
@@ -73,7 +87,21 @@ class User(Observer):
             raise
 
     def check_password(self, password):
-        is_correct = self.password == password
+        if not self.password:
+            return False
+
+        if '$' in self.password:
+            try:
+                salt, stored_hash = self.password.split('$')
+                input_hash = hashlib.sha256(
+                    (password + salt).encode()).hexdigest()
+                is_correct = input_hash == stored_hash
+            except ValueError:
+                is_correct = False
+        else:
+            # Legacy plain text password support
+            is_correct = self.password == password
+
         if is_correct:
             logger.debug(f"Password check passed for user: {self.username}")
         else:

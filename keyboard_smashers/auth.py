@@ -57,6 +57,24 @@ class SessionManager:
         if expired:
             logger.info(f"Cleaned up {len(expired)} expired sessions")
 
+    @staticmethod
+    def invalidate_user_sessions(user_id: str):
+        """Invalidate all sessions for a specific user.
+
+        Used during account deletion/suspension.
+        """
+        tokens_to_delete = [
+            token for token, data in sessions.items()
+            if data['user_id'] == user_id
+        ]
+        for token in tokens_to_delete:
+            del sessions[token]
+        if tokens_to_delete:
+            logger.info(
+                f"Invalidated {len(tokens_to_delete)} sessions "
+                f"for user: {user_id}"
+            )
+
 
 async def get_current_user(
     session_token: Annotated[
