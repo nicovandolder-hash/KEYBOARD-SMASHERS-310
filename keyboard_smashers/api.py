@@ -18,7 +18,6 @@ from keyboard_smashers.controllers.movie_controller import (    # noqa: E402
 from keyboard_smashers.controllers.penalty_controller import (  # noqa: E402
     router as penalty_router, penalty_controller_instance
 )
-import logging  # noqa: E402
 
 
 setup_logging()
