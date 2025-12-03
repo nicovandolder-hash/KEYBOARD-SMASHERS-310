@@ -435,6 +435,9 @@ class UserDAO:
                 followers=followee.get('followers', []),
                 blocked_users=followee.get('blocked_users', [])
             )
+            # Load existing notifications before adding new one
+            followee_user.notifications = followee.get('notifications', [])
+            
             # Create a dummy review object for notification
             class FollowNotification:
                 review_id = "follow_notification"

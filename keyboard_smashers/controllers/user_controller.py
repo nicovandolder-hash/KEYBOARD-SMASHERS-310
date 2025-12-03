@@ -5,6 +5,7 @@ from datetime import datetime
 import logging
 from keyboard_smashers.dao.user_dao import UserDAO
 from keyboard_smashers.models.user_model import User
+from keyboard_smashers.auth import SessionManager
 
 logger = logging.getLogger(__name__)
 
@@ -963,9 +964,9 @@ def search_users(
     }
 
 
-@router.get("/users/me/notifications")
+@router.get("/me/notifications")
 def get_my_notifications(
-    session: str = Cookie(None),
+    session_token: str = Cookie(None, alias="session_token"),
     limit: int = 50,
     offset: int = 0
 ):
@@ -973,10 +974,10 @@ def get_my_notifications(
     Get the authenticated user's notifications (e.g., new followers).
     Returns most recent notifications first.
     """
-    if not session:
+    if not session_token:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-    user_id = user_controller_instance.session_manager.get_user_id(session)
+    user_id = SessionManager.validate_session(session_token)
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid session")
 
