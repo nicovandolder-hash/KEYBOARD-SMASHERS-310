@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response, Cookie
+from fastapi import APIRouter, HTTPException, Response, Cookie, Path
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
@@ -25,6 +25,8 @@ class UserAPISchema(BaseModel):
         "Whether the user is an administrator"))
     total_penalty_count: int = Field(0, description=(
         "Total number of penalties issued to the user"))
+    favorites: List[str] = Field(default_factory=list, description=(
+        "List of favorite movie IDs"))
 
     class Config:
         from_attributes = True
@@ -74,13 +76,37 @@ class UserController:
             reputation=user_dict['reputation'],
             creation_date=user_dict['creation_date'],
             is_admin=user_dict['is_admin'],
-            total_penalty_count=user_dict.get('total_penalty_count', 0)
+            total_penalty_count=user_dict.get('total_penalty_count', 0),
+            is_suspended=user_dict.get('is_suspended', False)
         )
 
     def dict_to_schema(self, user_dict: dict) -> UserAPISchema:
+        from keyboard_smashers.controllers.movie_controller import (
+            movie_controller_instance
+        )
+
+        # Filter out deleted movies from favorites
+        if 'favorites' in user_dict and user_dict['favorites']:
+            valid_favorites = []
+            for movie_id in user_dict['favorites']:
+                try:
+                    movie_controller_instance.movie_dao.get_movie(movie_id)
+                    valid_favorites.append(movie_id)
+                except KeyError:
+                    pass
+            user_dict['favorites'] = valid_favorites
+
         return UserAPISchema(**user_dict)
 
     def authenticate_user(self, email: str, password: str):
+        # Validate inputs
+        if not email or not email.strip():
+            logger.warning("Authentication failed: Email cannot be empty")
+            return None
+        if not password:
+            logger.warning("Authentication failed: Password cannot be empty")
+            return None
+
         user_dict = self.user_dao.get_user_by_email(email)
 
         if not user_dict:
@@ -185,9 +211,78 @@ class UserController:
     def delete_user_by_id(self, user_id: str) -> dict:
         logger.info(f"Attempting to delete user: {user_id}")
         try:
+            # Cascade delete: Remove all user data before deleting user
+
+            # 1. Delete user's reviews
+            from keyboard_smashers.controllers.review_controller import (
+                review_controller_instance
+            )
+            try:
+                reviews = review_controller_instance.review_dao
+                user_reviews = reviews.get_reviews_by_user(user_id)
+                for review in user_reviews:
+                    reviews.delete_review(review['review_id'])
+                logger.info(
+                    f"Deleted {len(user_reviews)} reviews "
+                    f"for user {user_id}"
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Error deleting reviews for user {user_id}: {e}"
+                )
+
+            # 2. Delete user's penalties
+            from keyboard_smashers.controllers.penalty_controller import (
+                penalty_controller_instance
+            )
+            try:
+                penalties = penalty_controller_instance.penalty_dao
+                user_penalties = penalties.get_penalties_by_user(user_id)
+                for penalty in user_penalties:
+                    penalties.delete_penalty(penalty.penalty_id)
+                logger.info(
+                    f"Deleted {len(user_penalties)} penalties "
+                    f"for user {user_id}"
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Error deleting penalties for user {user_id}: {e}"
+                )
+
+            # 3. Delete user's reports
+            from keyboard_smashers.dao.report_dao import ReportDAO
+            try:
+                report_dao = ReportDAO()
+                user_reports = report_dao.get_reports_by_user(user_id)
+                for report in user_reports:
+                    report_dao.delete_report(report['report_id'])
+                logger.info(
+                    f"Deleted {len(user_reports)} reports "
+                    f"by user {user_id}"
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Error deleting reports for user {user_id}: {e}"
+                )
+
+            # 4. Invalidate user's sessions
+            from keyboard_smashers.auth import SessionManager
+            try:
+                SessionManager.invalidate_user_sessions(user_id)
+                logger.info(f"Invalidated sessions for user {user_id}")
+            except Exception as e:
+                logger.warning(
+                    f"Error invalidating sessions for user {user_id}: {e}")
+
+            # 5. Finally, delete the user
             self.user_dao.delete_user(user_id)
             logger.info(f"Deleted user: {user_id}")
-            return {"message": f"User '{user_id}' deleted successfully"}
+            return {
+                "message": (
+                    f"User '{user_id}' and all associated data "
+                    f"deleted successfully"
+                )
+            }
         except KeyError:
             logger.error(f"User with ID '{user_id}' not found for deletion")
             raise HTTPException(
@@ -201,6 +296,13 @@ class UserController:
         return [self.dict_to_schema(user) for user in users]
 
     def get_user_by_id(self, user_id: str) -> Optional[UserAPISchema]:
+        # Validate input
+        if not user_id or not user_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="User ID cannot be empty"
+            )
+
         logger.debug(f"Retrieving user by ID: {user_id}")
         try:
             user_dict = self.user_dao.get_user(user_id)
@@ -250,6 +352,13 @@ def login(login_data: LoginSchema, response: Response):
         raise HTTPException(
             status_code=401,
             detail="Invalid email or password")
+
+    # Check if user is suspended
+    if user.is_suspended:
+        raise HTTPException(
+            status_code=403,
+            detail="Account is suspended. Please contact an administrator.")
+
     session_token = SessionManager.create_session(user.userid)
 
     response.set_cookie(
@@ -339,7 +448,7 @@ def get_users(
 
 @router.get("/{user_id}", response_model=UserAPISchema)
 def get_user(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -355,7 +464,7 @@ def get_user(
             detail="Invalid or expired session. Please login again.")
 
     current_user = (
-         user_controller_instance.get_user_model_by_id(current_user_id)
+        user_controller_instance.get_user_model_by_id(current_user_id)
     )
 
     if current_user_id != user_id and not current_user.is_admin:
@@ -372,8 +481,8 @@ def get_user(
 
 @router.put("/{user_id}", response_model=UserAPISchema)
 def update_user(
-    user_id: str,
-    user_data: UpdateUserSchema,
+    user_id: str = Path(..., min_length=1, max_length=100),
+    user_data: UpdateUserSchema = None,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -389,7 +498,7 @@ def update_user(
             detail="Invalid or expired session. Please login again.")
 
     current_user = (
-         user_controller_instance.get_user_model_by_id(current_user_id)
+        user_controller_instance.get_user_model_by_id(current_user_id)
     )
     if current_user_id != user_id and not current_user.is_admin:
         raise HTTPException(
@@ -402,7 +511,7 @@ def update_user(
 
 @router.delete("/{user_id}")
 def delete_user(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -424,3 +533,131 @@ def delete_user(
             detail="Admin privileges required")
 
     return user_controller_instance.delete_user_by_id(user_id)
+
+
+@router.post("/{user_id}/suspend")
+def suspend_user(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Admin endpoint to suspend a user account.
+    Suspended users cannot log in or create reviews.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    user = user_controller_instance.get_user_model_by_id(current_user_id)
+    if not user or not user.is_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin privileges required")
+
+    try:
+        user_controller_instance.user_dao.suspend_user(user_id)
+        # Invalidate all active sessions for the suspended user
+        SessionManager.invalidate_user_sessions(user_id)
+        logger.info(
+            f"Admin {current_user_id} suspended user {user_id} "
+            f"and invalidated their sessions"
+        )
+        return {"message": f"User {user_id} has been suspended"}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/reactivate")
+def reactivate_user(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Admin endpoint to reactivate a suspended user account.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    user = user_controller_instance.get_user_model_by_id(current_user_id)
+    if not user or not user.is_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin privileges required")
+
+    try:
+        user_controller_instance.user_dao.reactivate_user(user_id)
+        return {"message": f"User {user_id} has been reactivated"}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/favorites/{movie_id}")
+def toggle_favorite(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    movie_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Toggle a movie in/out of user's favorites list.
+    Returns whether the movie was added (true) or removed (false).
+    """
+    from keyboard_smashers.auth import SessionManager
+    from keyboard_smashers.controllers.movie_controller import (
+        movie_controller_instance
+    )
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    if current_user_id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Can only modify your own favorites")
+
+    try:
+        movie_controller_instance.movie_dao.get_movie(movie_id)
+    except KeyError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Movie with ID '{movie_id}' not found")
+
+    try:
+        added = user_controller_instance.user_dao.toggle_favorite(
+            user_id, movie_id
+        )
+        action = "added to" if added else "removed from"
+        return {
+            "message": f"Movie {movie_id} {action} favorites",
+            "added": added,
+            "favorites": (
+                user_controller_instance.user_dao.get_user(user_id)[
+                    'favorites'
+                ]
+            )
+        }
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))

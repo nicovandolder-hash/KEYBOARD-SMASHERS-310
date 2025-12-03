@@ -360,3 +360,7 @@ class ReviewDAO:
                 f"operations, kept {len(df_compacted)} current reviews"
             )
             return operations_removed
+
+
+# Global shared instance
+review_dao_instance = ReviewDAO()

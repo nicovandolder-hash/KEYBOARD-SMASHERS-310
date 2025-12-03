@@ -1,19 +1,19 @@
+import logging
 from fastapi import FastAPI
 from pathlib import Path
 from keyboard_smashers.logging_config import setup_logging
 from keyboard_smashers.controllers.review_controller import (
-     router as review_router, review_controller_instance
+    router as review_router, review_controller_instance
 )
 from keyboard_smashers.controllers.user_controller import (
-     router as user_router, user_controller_instance
+    router as user_router, user_controller_instance
 )
 from keyboard_smashers.controllers.movie_controller import (
-     router as movie_router, movie_controller_instance
+    router as movie_router, movie_controller_instance
 )
 from keyboard_smashers.controllers.penalty_controller import (
     router as penalty_router, penalty_controller_instance
 )
-import logging
 
 setup_logging()
 logger = logging.getLogger(__name__)

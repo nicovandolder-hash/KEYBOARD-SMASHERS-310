@@ -15,7 +15,7 @@ def test_data_files():
     )
     users_file.write(
         "userid,username,email,password,reputation,creation_date,"
-        "is_admin,total_reviews,total_penalty_count\n"
+        "is_admin,total_reviews,total_penalty_count,is_suspended\n"
     )
     users_file.close()
 
@@ -68,6 +68,9 @@ def test_data_files():
     original_reports_path = review_controller_instance.report_dao.csv_path
 
     user_controller_instance.user_dao.csv_path = users_file.name
+    user_controller_instance.user_dao.users = {}
+    user_controller_instance.user_dao.email_index = {}
+    user_controller_instance.user_dao.username_index = {}
     user_controller_instance.user_dao.load_users()
 
     movie_controller_instance.movie_dao.csv_path = movies_file.name
@@ -76,6 +79,10 @@ def test_data_files():
     review_controller_instance.review_dao.new_reviews_csv_path = (
         reviews_file.name
     )
+    review_controller_instance.review_dao.reviews.clear()
+    review_controller_instance.review_dao.reviews_by_movie.clear()
+    review_controller_instance.review_dao.reviews_by_user.clear()
+
     review_controller_instance.report_dao.csv_path = reports_file.name
     review_controller_instance.report_dao.load_reports()
 

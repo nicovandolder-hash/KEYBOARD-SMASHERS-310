@@ -32,8 +32,6 @@ class Penalty:
             else end_date
         )
 
-        self.start_date = start_date
-        self.end_date = end_date
         self.issued_by = issued_by
         self.created_at = created_at if created_at else datetime.now()
 

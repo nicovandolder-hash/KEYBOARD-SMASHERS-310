@@ -35,9 +35,9 @@ def mock_report_dao():
 def controller(mock_review_dao, mock_report_dao):
     """Create ReviewController with mocked DAOs."""
     with patch(
-        'keyboard_smashers.controllers.review_controller.ReviewDAO'
-    ) as mock_dao_class:
-        mock_dao_class.return_value = mock_review_dao
+        'keyboard_smashers.controllers.review_controller.review_dao_instance',
+        mock_review_dao
+    ):
         controller = ReviewController(
             imdb_csv_path="test.csv",
             new_reviews_csv_path="test_new.csv"
