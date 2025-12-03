@@ -35,6 +35,7 @@ class PublicUserSchema(BaseModel):
     username: str = Field(..., description="User's display name")
     reputation: int = Field(..., description="User reputation score")
     total_reviews: int = Field(..., description="Total number of reviews written")
+    favorites: List[str] = Field(..., description="List of favorite movie IDs")
 
     class Config:
         from_attributes = True
@@ -767,7 +768,8 @@ def get_followers(
                 userid=follower['userid'],
                 username=follower['username'],
                 reputation=follower.get('reputation', 3),
-                total_reviews=follower.get('total_reviews', 0)
+                total_reviews=follower.get('total_reviews', 0),
+                favorites=follower.get('favorites', [])
             )
             for follower in paginated
         ]
@@ -808,7 +810,8 @@ def get_following(
                 userid=followee['userid'],
                 username=followee['username'],
                 reputation=followee.get('reputation', 3),
-                total_reviews=followee.get('total_reviews', 0)
+                total_reviews=followee.get('total_reviews', 0),
+                favorites=followee.get('favorites', [])
             )
             for followee in paginated
         ]
@@ -945,7 +948,8 @@ def search_users(
             userid=user.userid,
             username=user.username,
             reputation=user.reputation,
-            total_reviews=user.total_reviews
+            total_reviews=user.total_reviews,
+            favorites=user.favorites
         )
         for user in paginated
     ]
