@@ -1,3 +1,3 @@
-userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites
-user_001,admin_user,admin@test.com,50d30a4f2232f95ea4f874d03c4d5825$a1b4f234456378ee3492350638f5bd95618e83cf5fc705d7029613e689b7616c,3,2025-12-03T00:20:56.003509,true,false,0,0,
-user_002,reviewer,reviewer@test.com,eab61481e7804842f3aa7487bb5d8730$cd97d0035d68fe751d0ec479c3bc15405a2a72c3a56579c8ab60d3b306c4ec11,3,2025-12-03T00:20:56.010050,false,true,0,0,
+userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites,following,followers,blocked_users,notifications
+user_001,admin_user,admin@test.com,65c99a5af4d04d5cfb440a10e9d480c4$fedc791ed052a077c5b38f7f6448e196ccca1c53def2f3ede5c08b0b1aceda8a,3,2025-12-03T04:22:33.594132,true,false,0,0,,,,,[]
+user_002,reviewer,reviewer@test.com,6dcefde3b0718d4d1eb65e1a9c0e30f8$7dd753151b1e4418b77f6616c8cdb60b0a373032e675ad8c7ccfd525228f2f4e,3,2025-12-03T04:22:33.601011,false,true,0,0,,,,,[]

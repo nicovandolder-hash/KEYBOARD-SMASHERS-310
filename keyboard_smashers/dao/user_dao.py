@@ -42,6 +42,43 @@ class UserDAO:
                         if favorites_str else []
                     )
 
+                    following_str = row.get('following', '')
+                    following = (
+                        [
+                            f.strip()
+                            for f in following_str.split(',') if f.strip()
+                        ]
+                        if following_str else []
+                    )
+
+                    followers_str = row.get('followers', '')
+                    followers = (
+                        [
+                            f.strip()
+                            for f in followers_str.split(',') if f.strip()
+                        ]
+                        if followers_str else []
+                    )
+
+                    blocked_str = row.get('blocked_users', '')
+                    blocked_users = (
+                        [
+                            f.strip()
+                            for f in blocked_str.split(',') if f.strip()
+                        ]
+                        if blocked_str else []
+                    )
+
+                    # Load notifications (stored as JSON-like string)
+                    notifications = []
+                    notifications_str = row.get('notifications', '')
+                    if notifications_str:
+                        try:
+                            import json
+                            notifications = json.loads(notifications_str)
+                        except (json.JSONDecodeError, ValueError):
+                            notifications = []
+
                     user_dict = {
                         'userid': row['userid'],
                         'username': row['username'],
@@ -61,7 +98,11 @@ class UserDAO:
                         'total_penalty_count': int(
                             row.get('total_penalty_count', 0)
                         ),
-                        'favorites': favorites
+                        'favorites': favorites,
+                        'following': following,
+                        'followers': followers,
+                        'blocked_users': blocked_users,
+                        'notifications': notifications
                     }
 
                     self.users[user_dict['userid']] = user_dict
@@ -103,7 +144,11 @@ class UserDAO:
                     'is_suspended',
                     'total_reviews',
                     'total_penalty_count',
-                    'favorites'
+                    'favorites',
+                    'following',
+                    'followers',
+                    'blocked_users',
+                    'notifications'
                 ]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
@@ -112,6 +157,29 @@ class UserDAO:
                     favorites_str = (
                         ','.join(user.get('favorites', []))
                     )
+                    following_str = (
+                        ','.join(user.get('following', []))
+                    )
+                    followers_str = (
+                        ','.join(user.get('followers', []))
+                    )
+                    blocked_str = (
+                        ','.join(user.get('blocked_users', []))
+                    )
+                    # Serialize notifications to JSON
+                    import json
+                    notifications = user.get('notifications', [])
+                    # Convert datetime objects to strings for JSON
+                    # serialization
+                    notifications_serializable = []
+                    for notif in notifications:
+                        notif_copy = notif.copy()
+                        ts = notif_copy.get('timestamp')
+                        if ts and hasattr(ts, 'isoformat'):
+                            notif_copy['timestamp'] = ts.isoformat()
+                        notifications_serializable.append(notif_copy)
+                    notifications_str = json.dumps(notifications_serializable)
+
                     writer.writerow({
                         'userid': user['userid'],
                         'username': user['username'],
@@ -129,7 +197,11 @@ class UserDAO:
                         'total_penalty_count': (
                             user.get('total_penalty_count', 0)
                         ),
-                        'favorites': favorites_str
+                        'favorites': favorites_str,
+                        'following': following_str,
+                        'followers': followers_str,
+                        'blocked_users': blocked_str,
+                        'notifications': notifications_str
                     })
 
             logger.info(f"Saved {len(self.users)} users to {self.csv_path}")
@@ -162,7 +234,11 @@ class UserDAO:
             'is_suspended': user_data.get('is_suspended', False),
             'total_reviews': 0,
             'total_penalty_count': 0,
-            'favorites': []
+            'favorites': [],
+            'following': [],
+            'followers': [],
+            'blocked_users': [],
+            'notifications': []
         }
 
         self.users[user_id] = user_dict
@@ -315,3 +391,214 @@ class UserDAO:
                 f" user {userid}'s favorites"
             )
             return True
+
+    def follow_user(self, follower_id: str, followee_id: str) -> None:
+        """
+        Make follower_id follow followee_id.
+        Sends notification to followee.
+        """
+        if follower_id not in self.users:
+            raise KeyError(f"User with ID '{follower_id}' not found")
+        if followee_id not in self.users:
+            raise KeyError(f"User with ID '{followee_id}' not found")
+        if follower_id == followee_id:
+            raise ValueError("Users cannot follow themselves")
+
+        follower = self.users[follower_id]
+        followee = self.users[followee_id]
+
+        # Check if users have blocked each other
+        if self.is_blocked(follower_id, followee_id):
+            raise ValueError(
+                "Cannot follow a user you have blocked or who has blocked you")
+
+        if 'following' not in follower:
+            follower['following'] = []
+        if 'followers' not in followee:
+            followee['followers'] = []
+
+        # Idempotent - only add if not already following
+        if followee_id not in follower['following']:
+            follower['following'].append(followee_id)
+            followee['followers'].append(follower_id)
+
+            # Send notification using Observer pattern
+            from keyboard_smashers.models.user_model import User
+            followee_user = User(
+                username=followee['username'],
+                email=followee['email'],
+                userid=followee['userid'],
+                password=followee['password'],
+                reputation=followee['reputation'],
+                creation_date=followee['creation_date'],
+                is_admin=followee['is_admin'],
+                is_suspended=followee.get('is_suspended', False),
+                total_penalty_count=followee.get('total_penalty_count', 0),
+                following=followee.get('following', []),
+                followers=followee.get('followers', []),
+                blocked_users=followee.get('blocked_users', [])
+            )
+            # Load existing notifications before adding new one
+            followee_user.notifications = followee.get('notifications', [])
+
+            # Create a dummy review object for notification
+            class FollowNotification:
+                review_id = "follow_notification"
+
+            followee_user.update(
+                FollowNotification(),
+                'user_follow',
+                {'message': f"{follower['username']} started following you!"}
+            )
+            # Update notifications in dict
+            followee['notifications'] = followee_user.notifications
+
+            self.save_users()
+            logger.info(
+                f"User {follower_id} now follows {followee_id}"
+            )
+
+    def unfollow_user(self, follower_id: str, followee_id: str) -> None:
+        """Remove follow relationship between two users."""
+        if follower_id not in self.users:
+            raise KeyError(f"User with ID '{follower_id}' not found")
+        if followee_id not in self.users:
+            raise KeyError(f"User with ID '{followee_id}' not found")
+
+        follower = self.users[follower_id]
+        followee = self.users[followee_id]
+
+        if 'following' not in follower:
+            follower['following'] = []
+        if 'followers' not in followee:
+            followee['followers'] = []
+
+        if followee_id in follower['following']:
+            follower['following'].remove(followee_id)
+        if follower_id in followee['followers']:
+            followee['followers'].remove(follower_id)
+
+        self.save_users()
+        logger.info(
+            f"User {follower_id} unfollowed {followee_id}"
+        )
+
+    def get_followers(self, userid: str) -> List[Dict[str, Any]]:
+        """Get list of users who follow this user."""
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        user = self.users[userid]
+        follower_ids = user.get('followers', [])
+
+        followers = []
+        for follower_id in follower_ids:
+            if follower_id in self.users:
+                followers.append(self.users[follower_id].copy())
+
+        return followers
+
+    def get_following(self, userid: str) -> List[Dict[str, Any]]:
+        """Get list of users that this user follows."""
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        user = self.users[userid]
+        following_ids = user.get('following', [])
+
+        following = []
+        for following_id in following_ids:
+            if following_id in self.users:
+                following.append(self.users[following_id].copy())
+
+        return following
+
+    def block_user(self, blocker_id: str, blocked_id: str):
+        """
+        Block a user. Bidirectional blocking - both users block each other.
+        Automatically removes any existing follow relationships.
+        """
+        if blocker_id not in self.users:
+            raise KeyError(f"User with ID '{blocker_id}' not found")
+        if blocked_id not in self.users:
+            raise KeyError(f"User with ID '{blocked_id}' not found")
+
+        if blocker_id == blocked_id:
+            raise ValueError("Cannot block yourself")
+
+        blocker = self.users[blocker_id]
+        blocked = self.users[blocked_id]
+
+        # Initialize blocked_users lists if needed
+        if 'blocked_users' not in blocker:
+            blocker['blocked_users'] = []
+        if 'blocked_users' not in blocked:
+            blocked['blocked_users'] = []
+
+        # Add bidirectional blocking (idempotent)
+        if blocked_id not in blocker['blocked_users']:
+            blocker['blocked_users'].append(blocked_id)
+        if blocker_id not in blocked['blocked_users']:
+            blocked['blocked_users'].append(blocker_id)
+
+        # Remove any existing follow relationships
+        if 'following' in blocker and blocked_id in blocker['following']:
+            blocker['following'].remove(blocked_id)
+        if 'followers' in blocker and blocked_id in blocker['followers']:
+            blocker['followers'].remove(blocked_id)
+        if 'following' in blocked and blocker_id in blocked['following']:
+            blocked['following'].remove(blocker_id)
+        if 'followers' in blocked and blocker_id in blocked['followers']:
+            blocked['followers'].remove(blocker_id)
+
+        self.save_users()
+        logger.info(
+            f"User {blocker_id} blocked {blocked_id}"
+            f" (bidirectional block applied)"
+        )
+
+    def unblock_user(self, unblocker_id: str, blocked_id: str):
+        """
+        Unblock a user. Removes bidirectional block for both users.
+        """
+        if unblocker_id not in self.users:
+            raise KeyError(f"User with ID '{unblocker_id}' not found")
+        if blocked_id not in self.users:
+            raise KeyError(f"User with ID '{blocked_id}' not found")
+
+        unblocker = self.users[unblocker_id]
+        blocked = self.users[blocked_id]
+
+        # Initialize blocked_users lists if needed
+        if 'blocked_users' not in unblocker:
+            unblocker['blocked_users'] = []
+        if 'blocked_users' not in blocked:
+            blocked['blocked_users'] = []
+
+        # Remove bidirectional block (idempotent)
+        if blocked_id in unblocker['blocked_users']:
+            unblocker['blocked_users'].remove(blocked_id)
+        if unblocker_id in blocked['blocked_users']:
+            blocked['blocked_users'].remove(unblocker_id)
+
+        self.save_users()
+        logger.info(
+            f"User {unblocker_id} unblocked {blocked_id}"
+            f" (bidirectional unblock applied)"
+        )
+
+    def is_blocked(self, user_id: str, other_user_id: str) -> bool:
+        """
+        Check if two users have blocked each other.
+        Returns True if either user has blocked the other.
+        """
+        if user_id not in self.users or other_user_id not in self.users:
+            return False
+
+        user = self.users[user_id]
+        other_user = self.users[other_user_id]
+
+        user_blocked = other_user_id in user.get('blocked_users', [])
+        other_blocked = user_id in other_user.get('blocked_users', [])
+
+        return user_blocked or other_blocked

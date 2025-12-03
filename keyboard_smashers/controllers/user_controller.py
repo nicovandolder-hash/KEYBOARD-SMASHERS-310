@@ -5,8 +5,20 @@ from datetime import datetime
 import logging
 from keyboard_smashers.dao.user_dao import UserDAO
 from keyboard_smashers.models.user_model import User
+from keyboard_smashers.auth import SessionManager
 
 logger = logging.getLogger(__name__)
+
+# API Constants
+DEFAULT_REPUTATION = 3
+DEFAULT_PAGE_LIMIT = 20
+DEFAULT_NOTIFICATIONS_LIMIT = 50
+DEFAULT_PAGE_OFFSET = 0
+MAX_PAGE_LIMIT = 100
+MIN_PAGE_LIMIT = 1
+PATH_MIN_LENGTH = 1
+PATH_MAX_LENGTH = 100
+SESSION_MAX_AGE_SECONDS = 7200  # 2 hours
 
 
 class UserAPISchema(BaseModel):
@@ -16,7 +28,8 @@ class UserAPISchema(BaseModel):
         "reviewer_bob"))
     email: str = Field(..., description="User's email address", example=(
         "bob@stu.ubc.ca"))
-    reputation: int = Field(3, description="User reputation score")
+    reputation: int = Field(
+        DEFAULT_REPUTATION, description="User reputation score")
     creation_date: datetime = Field(None, description=(
         "Date user account was created"))
     total_reviews: int = Field(0, description=(
@@ -28,6 +41,16 @@ class UserAPISchema(BaseModel):
     favorites: List[str] = Field(default_factory=list, description=(
         "List of favorite movie IDs"))
 
+
+class PublicUserSchema(BaseModel):
+    """Minimal user information safe for public viewing"""
+    userid: str = Field(..., description="Unique User ID")
+    username: str = Field(..., description="User's display name")
+    reputation: int = Field(..., description="User reputation score")
+    total_reviews: int = Field(...,
+                               description="Total number of reviews written")
+    favorites: List[str] = Field(..., description="List of favorite movie IDs")
+
     class Config:
         from_attributes = True
 
@@ -36,7 +59,8 @@ class UserCreateSchema(BaseModel):
     username: str = Field(..., description="User's display name")
     email: str = Field(..., description="User's email address")
     password: str = Field(..., description="User's password")
-    reputation: int = Field(3, description="User reputation score")
+    reputation: int = Field(
+        DEFAULT_REPUTATION, description="User reputation score")
     is_admin: bool = Field(False, description=(
         "Whether the user is an administrator"))
 
@@ -367,7 +391,7 @@ def login(login_data: LoginSchema, response: Response):
         httponly=True,
         secure=False,
         samesite="lax",
-        max_age=7200
+        max_age=SESSION_MAX_AGE_SECONDS
     )
 
     return {
@@ -448,7 +472,8 @@ def get_users(
 
 @router.get("/{user_id}", response_model=UserAPISchema)
 def get_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -481,7 +506,8 @@ def get_user(
 
 @router.put("/{user_id}", response_model=UserAPISchema)
 def update_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     user_data: UpdateUserSchema = None,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
@@ -511,7 +537,8 @@ def update_user(
 
 @router.delete("/{user_id}")
 def delete_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -537,7 +564,8 @@ def delete_user(
 
 @router.post("/{user_id}/suspend")
 def suspend_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -577,7 +605,8 @@ def suspend_user(
 
 @router.post("/{user_id}/reactivate")
 def reactivate_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -610,8 +639,12 @@ def reactivate_user(
 
 @router.post("/{user_id}/favorites/{movie_id}")
 def toggle_favorite(
-    user_id: str = Path(..., min_length=1, max_length=100),
-    movie_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -661,3 +694,399 @@ def toggle_favorite(
         }
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/follow")
+def follow_user(
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Follow a user. Authenticated user follows the specified user_id.
+    Returns a success message with updated follower counts.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.follow_user(
+            current_user_id, user_id
+        )
+        followee = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully followed {followee['username']}",
+            "following": user_id,
+            "follower_count": len(followee.get('followers', []))
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.delete("/{user_id}/follow")
+def unfollow_user(
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Unfollow a user. Authenticated user unfollows the specified user_id.
+    Returns a success message with updated follower counts.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.unfollow_user(
+            current_user_id, user_id
+        )
+        followee = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully unfollowed {followee['username']}",
+            "unfollowed": user_id,
+            "follower_count": len(followee.get('followers', []))
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/{user_id}/followers")
+def get_followers(
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    limit: int = DEFAULT_PAGE_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
+):
+    """
+    Get a paginated list of users who follow the specified user.
+    No authentication required (public information).
+    """
+    try:
+        all_followers = user_controller_instance.user_dao.get_followers(
+            user_id
+        )
+        paginated = all_followers[offset:offset + limit]
+
+        # Convert to public schema (hide sensitive info)
+        public_followers = [
+            PublicUserSchema(
+                userid=follower['userid'],
+                username=follower['username'],
+                reputation=follower.get('reputation', DEFAULT_REPUTATION),
+                total_reviews=follower.get('total_reviews', 0),
+                favorites=follower.get('favorites', [])
+            )
+            for follower in paginated
+        ]
+
+        return {
+            "user_id": user_id,
+            "total": len(all_followers),
+            "limit": limit,
+            "offset": offset,
+            "followers": public_followers
+        }
+    except KeyError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=f"User not found: {str(e)}")
+    except Exception as e:
+        logger.error(f"Error getting followers for {user_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{user_id}/following")
+def get_following(
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    limit: int = DEFAULT_PAGE_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
+):
+    """
+    Get a paginated list of users that the specified user follows.
+    No authentication required (public information).
+    """
+    try:
+        all_following = user_controller_instance.user_dao.get_following(
+            user_id
+        )
+        paginated = all_following[offset:offset + limit]
+
+        # Convert to public schema (hide sensitive info)
+        public_following = [
+            PublicUserSchema(
+                userid=followee['userid'],
+                username=followee['username'],
+                reputation=followee.get('reputation', DEFAULT_REPUTATION),
+                total_reviews=followee.get('total_reviews', 0),
+                favorites=followee.get('favorites', [])
+            )
+            for followee in paginated
+        ]
+
+        return {
+            "user_id": user_id,
+            "total": len(all_following),
+            "limit": limit,
+            "offset": offset,
+            "following": public_following
+        }
+    except KeyError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=f"User not found: {str(e)}")
+    except Exception as e:
+        logger.error(f"Error getting following for {user_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{user_id}/block")
+def block_user(
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Block a user. Creates bidirectional block and removes follow relationships.
+    Authenticated user blocks the specified user_id.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.block_user(
+            current_user_id, user_id
+        )
+        blocked_user = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully blocked {blocked_user['username']}",
+            "blocked": user_id
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.delete("/{user_id}/block")
+def unblock_user(
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Unblock a user. Removes bidirectional block between users.
+    Authenticated user unblocks the specified user_id.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.unblock_user(
+            current_user_id, user_id
+        )
+        unblocked_user = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully unblocked {unblocked_user['username']}",
+            "unblocked": user_id
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/me/blocked")
+def get_blocked_users(
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Get list of users blocked by the authenticated user.
+    Returns user IDs and usernames of blocked users.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user = user_controller_instance.user_dao.get_user(current_user_id)
+        blocked_user_ids = user.get('blocked_users', [])
+
+        # Get details for each blocked user
+        blocked_users = []
+        for blocked_id in blocked_user_ids:
+            try:
+                blocked_user = user_controller_instance.user_dao.get_user(
+                    blocked_id
+                )
+                blocked_users.append({
+                    "userid": blocked_user['userid'],
+                    "username": blocked_user['username']
+                })
+            except KeyError:
+                # Skip if blocked user no longer exists
+                continue
+
+        return {
+            "blocked_users": blocked_users,
+            "total": len(blocked_users)
+        }
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/search/users")
+def search_users(
+    q: str = "",
+    limit: int = DEFAULT_PAGE_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
+):
+    """
+    Public endpoint to search for users by username.
+    Allows users to discover and find each other.
+
+    Args:
+        q: Search query (username substring, case-insensitive)
+        limit: Maximum number of results (default 20)
+        offset: Number of results to skip for pagination
+    """
+    if limit < MIN_PAGE_LIMIT or limit > MAX_PAGE_LIMIT:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Limit must be between {MIN_PAGE_LIMIT} "
+                f"and {MAX_PAGE_LIMIT}"
+            )
+        )
+
+    # Get all users
+    all_users = user_controller_instance.get_all_users()
+
+    # Filter by search query if provided
+    if q:
+        query_lower = q.lower()
+        filtered_users = [
+            user for user in all_users
+            if query_lower in user.username.lower()
+        ]
+    else:
+        filtered_users = all_users
+
+    # Sort by username for consistency
+    filtered_users.sort(key=lambda u: u.username.lower())
+
+    total = len(filtered_users)
+    paginated = filtered_users[offset:offset + limit]
+
+    # Convert to public schema (hide sensitive info)
+    public_users = [
+        PublicUserSchema(
+            userid=user.userid,
+            username=user.username,
+            reputation=user.reputation,
+            total_reviews=user.total_reviews,
+            favorites=user.favorites
+        )
+        for user in paginated
+    ]
+
+    return {
+        "users": public_users,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "query": q
+    }
+
+
+@router.get("/me/notifications")
+def get_my_notifications(
+    session_token: str = Cookie(None, alias="session_token"),
+    limit: int = DEFAULT_NOTIFICATIONS_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
+):
+    """
+    Get the authenticated user's notifications (e.g., new followers).
+    Returns most recent notifications first.
+    """
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    user_id = SessionManager.validate_session(session_token)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    try:
+        user = user_controller_instance.user_dao.get_user(user_id)
+        notifications = user.get('notifications', [])
+
+        # Sort by timestamp (most recent first)
+        sorted_notifications = sorted(
+            notifications,
+            key=lambda n: n.get('timestamp', ''),
+            reverse=True
+        )
+
+        total = len(sorted_notifications)
+        paginated = sorted_notifications[offset:offset + limit]
+
+        return {
+            "notifications": paginated,
+            "total": total,
+            "unread": total,  # All notifications considered unread for now
+            "limit": limit,
+            "offset": offset
+        }
+    except KeyError:
+        raise HTTPException(status_code=404, detail="User not found")
+    except Exception as e:
+        logger.error(f"Error getting notifications for {user_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

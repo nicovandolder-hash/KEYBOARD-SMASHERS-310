@@ -9,12 +9,32 @@ from keyboard_smashers.models.penalty_model import Penalty
 
 logger = logging.getLogger(__name__)
 
+# Severity validation constants
+SEVERITY_MIN = 1
+SEVERITY_MAX = 5
+
+# Pagination constants
+DEFAULT_PAGE_OFFSET = 0
+DEFAULT_PAGE_LIMIT = 50
+MAX_PAGE_LIMIT = 100
+MIN_PAGE_LIMIT = 1
+
+# Path/text validation constants
+PATH_MIN_LENGTH = 1
+PATH_MAX_LENGTH = 100
+REASON_MIN_LENGTH = 10
+
 
 class PenaltyAPISchema(BaseModel):
     penalty_id: str = Field(..., description="Unique Penalty ID")
     user_id: str = Field(..., description="User ID this penalty applies to")
     reason: str = Field(..., description="Reason for the penalty")
-    severity: int = Field(..., description="Severity level (1-5)", ge=1, le=5)
+    severity: int = Field(
+        ...,
+        description="Severity level (1-5)",
+        ge=SEVERITY_MIN,
+        le=SEVERITY_MAX
+    )
     start_date: datetime = Field(..., description="When penalty starts")
     end_date: Optional[datetime] = Field(None, description=(
         "When penalty ends (None = permanent)")
@@ -33,8 +53,15 @@ class PenaltyAPISchema(BaseModel):
 
 class CreatePenaltySchema(BaseModel):
     user_id: str = Field(..., description="User ID to penalize")
-    reason: str = Field(..., description="Reason for penalty", min_length=10)
-    severity: int = Field(..., description="Severity level (1-5)", ge=1, le=5)
+    reason: str = Field(
+        ..., description="Reason for penalty", min_length=REASON_MIN_LENGTH
+    )
+    severity: int = Field(
+        ...,
+        description="Severity level (1-5)",
+        ge=SEVERITY_MIN,
+        le=SEVERITY_MAX
+    )
     start_date: Optional[datetime] = Field(None, description=(
         "When penalty starts (default: now)")
     )
@@ -58,9 +85,9 @@ class CreatePenaltySchema(BaseModel):
 
 class UpdatePenaltySchema(BaseModel):
     reason: Optional[str] = Field(None, description=(
-        "Updated reason"), min_length=10)
+        "Updated reason"), min_length=REASON_MIN_LENGTH)
     severity: Optional[int] = Field(None, description=(
-        "Updated severity (1-5)"), ge=1, le=5)
+        "Updated severity (1-5)"), ge=SEVERITY_MIN, le=SEVERITY_MAX)
     start_date: Optional[datetime] = Field(None, description=(
         "Updated start date")
     )
@@ -205,8 +232,8 @@ class PenaltyController:
         self,
         status: Optional[str] = None,
         user_id: Optional[str] = None,
-        skip: int = 0,
-        limit: int = 50
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_PAGE_LIMIT
     ) -> PaginatedPenaltyResponse:
         # Validate inputs
         if user_id is not None and (not user_id or not user_id.strip()):
@@ -377,10 +404,13 @@ def get_my_penalties(
         description="Filter by 'active' or 'inactive'"
     ),
     skip: int = Query(
-        0, ge=0, description="Number of penalties to skip"
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of penalties to skip"
     ),
     limit: int = Query(
-        50, ge=1, le=100, description="Maximum penalties to return"
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum penalties to return"
     ),
     session_token: Optional[str] = Cookie(
         default=None, alias="session_token"
@@ -411,7 +441,9 @@ def get_my_penalties(
 
 @router.get("/user/{user_id}/summary", response_model=PenaltySummarySchema)
 def get_user_penalty_summary(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get summary of active and historical penalties for a user
@@ -483,10 +515,13 @@ def get_all_penalties(
         None, description="Filter by specific user"
     ),
     skip: int = Query(
-        0, ge=0, description="Number of penalties to skip"
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of penalties to skip"
     ),
     limit: int = Query(
-        50, ge=1, le=100, description="Maximum penalties to return"
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum penalties to return"
     ),
     session_token: Optional[str] = Cookie(
         default=None, alias="session_token"
@@ -523,7 +558,9 @@ def get_all_penalties(
 
 @router.get("/{penalty_id}", response_model=PenaltyAPISchema)
 def get_penalty(
-    penalty_id: str = Path(..., min_length=1, max_length=100),
+    penalty_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -549,7 +586,9 @@ def get_penalty(
 
 @router.put("/{penalty_id}", response_model=PenaltyAPISchema)
 def update_penalty(
-    penalty_id: str = Path(..., min_length=1, max_length=100),
+    penalty_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     penalty_data: UpdatePenaltySchema = None,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
@@ -576,7 +615,9 @@ def update_penalty(
 
 @router.delete("/{penalty_id}")
 def delete_penalty(
-    penalty_id: str = Path(..., min_length=1, max_length=100),
+    penalty_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager

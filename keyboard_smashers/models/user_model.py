@@ -11,7 +11,8 @@ logger = logging.getLogger(__name__)
 class User(Observer):
     def __init__(self, username, email, userid, password=None, reputation=3,
                  creation_date=None, is_admin=False, total_penalty_count=0,
-                 is_suspended=False):
+                 is_suspended=False, following=None, followers=None,
+                 blocked_users=None):
         self.username = username
         self.email = email
         self.userid = userid
@@ -25,6 +26,9 @@ class User(Observer):
         self.notifications = []
         self.total_penalty_count = total_penalty_count
         self.penalties = []
+        self.following = following if following is not None else []
+        self.followers = followers if followers is not None else []
+        self.blocked_users = blocked_users if blocked_users is not None else []
 
         logger.info(
             f"User created:"

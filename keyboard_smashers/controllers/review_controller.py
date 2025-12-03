@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Query, Path
+from fastapi import APIRouter, HTTPException, Depends, Query, Path, Cookie
 from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
@@ -8,6 +8,27 @@ from keyboard_smashers.dao.report_dao import ReportDAO
 from keyboard_smashers.auth import get_current_user, get_current_admin_user
 
 logger = logging.getLogger(__name__)
+
+# Rating constants
+RATING_MIN = 1
+RATING_MAX = 5
+
+# Pagination constants
+DEFAULT_PAGE_OFFSET = 0
+DEFAULT_PAGE_LIMIT = 10
+DEFAULT_FEED_LIMIT = 50
+DEFAULT_REPORTS_LIMIT = 50
+MAX_PAGE_LIMIT = 100
+MIN_PAGE_LIMIT = 1
+
+# Path validation constants
+PATH_MIN_LENGTH = 1
+PATH_MAX_LENGTH = 100
+
+# Text field constants
+REVIEW_TEXT_MIN_LENGTH = 1
+REVIEW_TEXT_MAX_LENGTH = 250
+REPORT_REASON_MAX_LENGTH = 500
 
 # Setup admin actions logger
 admin_logger = logging.getLogger('admin_actions')
@@ -34,25 +55,35 @@ class ReviewSchema(BaseModel):
         None, description="User ID (null for IMDB reviews)")
     imdb_username: Optional[str] = Field(
         None, description="IMDB username for legacy reviews")
-    rating: float = Field(..., description="Rating from 1-5", ge=1, le=5)
+    rating: float = Field(
+        ..., description="Rating from 1-5", ge=RATING_MIN, le=RATING_MAX
+    )
     review_text: str = Field(..., description="Review text content")
     review_date: str = Field(..., description="Review date")
 
 
 class ReviewCreateSchema(BaseModel):
-    movie_id: str = Field(..., description="Movie ID to review", min_length=1)
-    rating: float = Field(..., description="Rating from 1-5", ge=1, le=5)
-    review_text: str = Field(...,
-                             description="Review text",
-                             max_length=250,
-                             min_length=1)
+    movie_id: str = Field(
+        ..., description="Movie ID to review", min_length=PATH_MIN_LENGTH
+    )
+    rating: float = Field(
+        ..., description="Rating from 1-5", ge=RATING_MIN, le=RATING_MAX
+    )
+    review_text: str = Field(
+        ...,
+        description="Review text",
+        max_length=REVIEW_TEXT_MAX_LENGTH,
+        min_length=REVIEW_TEXT_MIN_LENGTH
+    )
 
 
 class ReviewUpdateSchema(BaseModel):
     rating: Optional[float] = Field(
-        None, description="Rating from 1-5", ge=1, le=5)
+        None, description="Rating from 1-5", ge=RATING_MIN, le=RATING_MAX
+    )
     review_text: Optional[str] = Field(
-        None, description="Review text", max_length=250)
+        None, description="Review text", max_length=REVIEW_TEXT_MAX_LENGTH
+    )
 
 
 class PaginatedReviewResponse(BaseModel):
@@ -118,6 +149,52 @@ class ReviewController:
 
     def _dict_to_schema(self, review_dict: dict) -> ReviewSchema:
         return ReviewSchema(**review_dict)
+
+    def _filter_blocked_user_reviews(
+        self,
+        reviews: List[dict],
+        current_user_id: str,
+        user_dao=None
+    ) -> List[dict]:
+        """
+        Filter out reviews from users who have blocked current user
+        or whom current user has blocked.
+        IMDB reviews (user_id is None) are always included.
+
+        Args:
+            reviews: List of review dictionaries
+            current_user_id: ID of the current viewing user
+            user_dao: Optional UserDAO instance for testing
+        """
+        if user_dao is None:
+            from keyboard_smashers.controllers.user_controller import (
+                user_controller_instance
+            )
+            user_dao = user_controller_instance.user_dao
+
+        filtered_reviews = []
+        for review in reviews:
+            review_user_id = review.get('user_id')
+
+            # Include IMDB reviews (no user_id)
+            if review_user_id is None:
+                filtered_reviews.append(review)
+                continue
+
+            # Check if blocked
+            try:
+                if not user_dao.is_blocked(current_user_id, review_user_id):
+                    filtered_reviews.append(review)
+                else:
+                    logger.debug(
+                        f"Filtered review {review.get('review_id')} "
+                        f"from blocked user {review_user_id}"
+                    )
+            except (KeyError, ValueError, AttributeError):
+                # If any error checking block status, include review
+                filtered_reviews.append(review)
+
+        return filtered_reviews
 
     def _filter_suspended_user_reviews(
         self,
@@ -186,9 +263,10 @@ class ReviewController:
     def get_reviews_for_movie(
         self,
         movie_id: str,
-        skip: int = 0,
-        limit: int = 10,
-        include_suspended: bool = False
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_PAGE_LIMIT,
+        include_suspended: bool = False,
+        current_user_id: Optional[str] = None
     ) -> PaginatedReviewResponse:
         # Validate inputs
         if not movie_id or not movie_id.strip():
@@ -218,6 +296,12 @@ class ReviewController:
         if not include_suspended:
             all_reviews = self._filter_suspended_user_reviews(all_reviews)
 
+        # Filter blocked users if current user is authenticated
+        if current_user_id:
+            all_reviews = self._filter_blocked_user_reviews(
+                all_reviews, current_user_id
+            )
+
         total = len(all_reviews)
 
         # Apply pagination
@@ -241,9 +325,10 @@ class ReviewController:
     def get_reviews_by_user(
         self,
         user_id: str,
-        skip: int = 0,
-        limit: int = 10,
-        include_suspended: bool = False
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_PAGE_LIMIT,
+        include_suspended: bool = False,
+        current_user_id: Optional[str] = None
     ) -> PaginatedReviewResponse:
         # Validate inputs
         if not user_id or not user_id.strip():
@@ -272,6 +357,12 @@ class ReviewController:
         # Filter if user is suspended (unless explicitly included)
         if not include_suspended:
             all_reviews = self._filter_suspended_user_reviews(all_reviews)
+
+        # Filter blocked users if current user is authenticated
+        if current_user_id:
+            all_reviews = self._filter_blocked_user_reviews(
+                all_reviews, current_user_id
+            )
 
         total = len(all_reviews)
 
@@ -493,8 +584,8 @@ class ReviewController:
 
     def get_reported_reviews_for_admin(
         self,
-        skip: int = 0,
-        limit: int = 50,
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_FEED_LIMIT,
         admin_viewed: Optional[bool] = None
     ) -> dict:
         """Get paginated list of reported reviews with review details"""
@@ -660,41 +751,80 @@ router = APIRouter(
 
 @router.get("/movie/{movie_id}", response_model=PaginatedReviewResponse)
 def get_reviews_for_movie(
-    movie_id: str = Path(..., min_length=1, max_length=100),
-    skip: int = Query(0, ge=0, description="Number of reviews to skip"),
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
+    skip: int = Query(
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of reviews to skip"
+    ),
     limit: int = Query(
-        10, ge=1, le=100, description="Maximum reviews to return"
-    )
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum reviews to return"
+    ),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
     Get paginated reviews for a specific movie.
+    If authenticated, filters out reviews from blocked users.
 
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
+    from keyboard_smashers.auth import SessionManager
+
+    # Validate session if token exists
+    current_user_id = None
+    if session_token:
+        current_user_id = SessionManager.validate_session(session_token)
+
     return review_controller_instance.get_reviews_for_movie(
-        movie_id, skip, limit)
+        movie_id, skip, limit, current_user_id=current_user_id
+    )
 
 
 @router.get("/user/{user_id}", response_model=PaginatedReviewResponse)
 def get_reviews_by_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
-    skip: int = Query(0, ge=0, description="Number of reviews to skip"),
+    user_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
+    skip: int = Query(
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of reviews to skip"
+    ),
     limit: int = Query(
-        10, ge=1, le=100, description="Maximum reviews to return"
-    )
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum reviews to return"
+    ),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
     Get paginated reviews by a specific user.
+    If authenticated, filters out reviews from blocked users.
 
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
-    return review_controller_instance.get_reviews_by_user(user_id, skip, limit)
+    from keyboard_smashers.auth import SessionManager
+
+    # Validate session if token exists
+    current_user_id = None
+    if session_token:
+        current_user_id = SessionManager.validate_session(session_token)
+
+    return review_controller_instance.get_reviews_by_user(
+        user_id, skip, limit, current_user_id=current_user_id
+    )
 
 
 @router.get("/{review_id}", response_model=ReviewSchema)
-def get_review(review_id: str = Path(..., min_length=1, max_length=100)):
+def get_review(
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    )
+):
     """Get a specific review by ID"""
     return review_controller_instance.get_review_by_id(review_id)
 
@@ -724,7 +854,9 @@ def create_review(
 
 @router.put("/{review_id}", response_model=ReviewSchema)
 def update_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     review_data: ReviewUpdateSchema = None,
     current_user_id: str = Depends(get_current_user)
 ):
@@ -736,7 +868,9 @@ def update_review(
 
 @router.delete("/{review_id}")
 def delete_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     current_user_id: str = Depends(get_current_user)
 ):
     """Delete your own review (requires authentication)"""
@@ -745,9 +879,13 @@ def delete_review(
 
 @router.post("/{review_id}/report", status_code=201)
 def report_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     reason: str = Query(
-        "", max_length=500, description="Reason for reporting"
+        "",
+        max_length=REPORT_REASON_MAX_LENGTH,
+        description="Reason for reporting"
     ),
     current_user_id: str = Depends(get_current_user)
 ):
@@ -798,10 +936,13 @@ def report_review(
 )
 def admin_get_reported_reviews(
     skip: int = Query(
-        0, ge=0, description="Number of reports to skip"
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of reports to skip"
     ),
     limit: int = Query(
-        50, ge=1, le=100, description="Maximum reports per page"
+        DEFAULT_REPORTS_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum reports per page"
     ),
     admin_viewed: Optional[bool] = Query(
         None, description="Filter by viewed status"
@@ -825,7 +966,9 @@ def admin_get_reported_reviews(
 
 @router.patch("/reports/{report_id}/admin/view")
 def admin_mark_report_viewed(
-    report_id: str = Path(..., min_length=1, max_length=100),
+    report_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Mark a report as viewed by admin (admin only)"""
@@ -834,7 +977,9 @@ def admin_mark_report_viewed(
 
 @router.delete("/{review_id}/admin")
 def admin_delete_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Admin delete any review for moderation (requires admin privileges)"""
@@ -843,8 +988,116 @@ def admin_delete_review(
 
 @router.delete("/reports/{report_id}/admin")
 def admin_delete_report(
-    report_id: str = Path(..., min_length=1, max_length=100),
+    report_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Admin delete a specific report (requires admin privileges)"""
     return review_controller_instance.admin_delete_report(report_id)
+
+
+@router.get("/feed/following")
+def get_following_feed(
+    skip: int = DEFAULT_PAGE_OFFSET,
+    limit: int = DEFAULT_PAGE_LIMIT,
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Get a feed of reviews from users you follow.
+    Efficiently retrieves all reviews from followed users in one call.
+    Returns reviews sorted by most recent first.
+
+    Args:
+        skip: Number of reviews to skip (pagination)
+        limit: Maximum reviews to return (1-100)
+        session_token: Authentication cookie
+    """
+    from keyboard_smashers.auth import SessionManager
+    from keyboard_smashers.controllers.user_controller import (
+        user_controller_instance
+    )
+
+    # Require authentication
+    if not session_token:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated. Please login."
+        )
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again."
+        )
+
+    # Validate pagination params
+    if skip < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Skip must be non-negative"
+        )
+    if limit < MIN_PAGE_LIMIT or limit > MAX_PAGE_LIMIT:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Limit must be between {MIN_PAGE_LIMIT} "
+                f"and {MAX_PAGE_LIMIT}"
+            )
+        )
+
+    # Get list of users current user follows
+    try:
+        following_users = user_controller_instance.user_dao.get_following(
+            current_user_id
+        )
+        following_ids = [user['userid'] for user in following_users]
+    except KeyError:
+        following_ids = []
+
+    if not following_ids:
+        return {
+            "reviews": [],
+            "total": 0,
+            "skip": skip,
+            "limit": limit,
+            "following_count": 0
+        }
+
+    # Get all reviews from followed users
+    all_reviews = []
+    for user_id in following_ids:
+        dao = review_controller_instance.review_dao
+        user_reviews = dao.get_reviews_by_user(user_id)
+        all_reviews.extend(user_reviews)
+
+    # Filter suspended users
+    all_reviews = review_controller_instance._filter_suspended_user_reviews(
+        all_reviews
+    )
+
+    # Sort by creation date (newest first)
+    # Assuming reviews have a timestamp field
+    try:
+        all_reviews.sort(
+            key=lambda r: r.get('timestamp', ''),
+            reverse=True
+        )
+    except (KeyError, TypeError):
+        # If no timestamp, keep original order
+        pass
+
+    total = len(all_reviews)
+    paginated = all_reviews[skip:skip + limit]
+
+    return {
+        "reviews": [
+            review_controller_instance._dict_to_schema(review)
+            for review in paginated
+        ],
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+        "following_count": len(following_ids)
+    }

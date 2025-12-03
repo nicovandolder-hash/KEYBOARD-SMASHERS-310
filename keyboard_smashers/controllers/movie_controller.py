@@ -9,6 +9,24 @@ from keyboard_smashers.auth import get_current_admin_user
 
 logger = logging.getLogger(__name__)
 
+# Pagination constants
+DEFAULT_PAGE_OFFSET = 0
+DEFAULT_PAGE_LIMIT = 20
+MAX_PAGE_LIMIT = 100
+MIN_PAGE_LIMIT = 1
+
+# Path validation constants
+PATH_MIN_LENGTH = 1
+PATH_MAX_LENGTH = 100
+
+# Search/filter constants
+SEARCH_QUERY_MAX_LENGTH = 500
+GENRE_MAX_LENGTH = 100
+
+# Year validation constants
+YEAR_MIN = 1800
+YEAR_MAX = 2100
+
 
 class MovieSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -96,7 +114,7 @@ class MovieController:
         return MovieSchema(**cleaned_dict)
 
     def get_all_movies(
-        self, skip: int = 0, limit: int = 20
+        self, skip: int = DEFAULT_PAGE_OFFSET, limit: int = DEFAULT_PAGE_LIMIT
     ) -> PaginatedMoviesResponse:
         # Validate inputs
         if skip < 0:
@@ -104,10 +122,13 @@ class MovieController:
                 status_code=400,
                 detail="Skip must be non-negative"
             )
-        if limit < 1 or limit > 100:
+        if limit < MIN_PAGE_LIMIT or limit > MAX_PAGE_LIMIT:
             raise HTTPException(
                 status_code=400,
-                detail="Limit must be between 1 and 100"
+                detail=(
+                    f"Limit must be between {MIN_PAGE_LIMIT} "
+                    f"and {MAX_PAGE_LIMIT}"
+                )
             )
 
         logger.info(f"Fetching movies with skip={skip}, limit={limit}")
@@ -376,9 +397,14 @@ router = APIRouter(
 
 @router.get("/", response_model=PaginatedMoviesResponse)
 def get_all_movies(
-    skip: int = Query(0, ge=0, description="Number of movies to skip"),
+    skip: int = Query(
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of movies to skip"
+    ),
     limit: int = Query(
-        20, ge=1, le=100, description="Maximum movies to return"
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum movies to return"
     )
 ):
     return movie_controller_instance.get_all_movies(skip=skip, limit=limit)
@@ -387,16 +413,16 @@ def get_all_movies(
 @router.get("/search", response_model=List[MovieSchema])
 def search_movies(
     q: Optional[str] = Query(
-        None, max_length=500, description="Search query"
+        None, max_length=SEARCH_QUERY_MAX_LENGTH, description="Search query"
     ),
     sort_by: Optional[str] = Query(
         None, description="Sort by: 'title' or 'year'"
     ),
     genre: Optional[str] = Query(
-        None, max_length=100, description="Filter by genre"
+        None, max_length=GENRE_MAX_LENGTH, description="Filter by genre"
     ),
     year: Optional[int] = Query(
-        None, ge=1800, le=2100, description="Filter by year"
+        None, ge=YEAR_MIN, le=YEAR_MAX, description="Filter by year"
     )
 ):
     return movie_controller_instance.search_movies(
@@ -405,12 +431,20 @@ def search_movies(
 
 
 @router.get("/genre/{genre}", response_model=List[MovieSchema])
-def get_movies_by_genre(genre: str = Path(..., max_length=100, min_length=1)):
+def get_movies_by_genre(
+    genre: str = Path(
+        ..., max_length=GENRE_MAX_LENGTH, min_length=PATH_MIN_LENGTH
+    )
+):
     return movie_controller_instance.get_movies_by_genre(genre)
 
 
 @router.get("/{movie_id}", response_model=MovieSchema)
-def get_movie(movie_id: str = Path(..., min_length=1, max_length=100)):
+def get_movie(
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    )
+):
     return movie_controller_instance.get_movie_by_id(movie_id)
 
 
@@ -426,7 +460,9 @@ def create_movie(
 
 @router.put("/{movie_id}", response_model=MovieSchema)
 def update_movie(
-    movie_id: str = Path(..., min_length=1, max_length=100),
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     movie_data: MovieUpdateSchema = None,
     admin_user_id: str = Depends(get_current_admin_user)
 ):
@@ -435,7 +471,9 @@ def update_movie(
 
 @router.delete("/{movie_id}")
 def delete_movie(
-    movie_id: str = Path(..., min_length=1, max_length=100),
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     return movie_controller_instance.delete_movie(movie_id)
