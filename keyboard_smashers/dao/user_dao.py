@@ -76,7 +76,7 @@ class UserDAO:
                         try:
                             import json
                             notifications = json.loads(notifications_str)
-                        except:
+                        except (json.JSONDecodeError, ValueError):
                             notifications = []
 
                     user_dict = {
@@ -177,7 +177,7 @@ class UserDAO:
                             notif_copy['timestamp'] = notif_copy['timestamp'].isoformat()
                         notifications_serializable.append(notif_copy)
                     notifications_str = json.dumps(notifications_serializable)
-                    
+
                     writer.writerow({
                         'userid': user['userid'],
                         'username': user['username'],
@@ -437,7 +437,7 @@ class UserDAO:
             )
             # Load existing notifications before adding new one
             followee_user.notifications = followee.get('notifications', [])
-            
+
             # Create a dummy review object for notification
             class FollowNotification:
                 review_id = "follow_notification"

@@ -762,7 +762,7 @@ def get_followers(
             user_id
         )
         paginated = all_followers[offset:offset + limit]
-        
+
         # Convert to public schema (hide sensitive info)
         public_followers = [
             PublicUserSchema(
@@ -774,7 +774,7 @@ def get_followers(
             )
             for follower in paginated
         ]
-        
+
         return {
             "user_id": user_id,
             "total": len(all_followers),
@@ -804,7 +804,7 @@ def get_following(
             user_id
         )
         paginated = all_following[offset:offset + limit]
-        
+
         # Convert to public schema (hide sensitive info)
         public_following = [
             PublicUserSchema(
@@ -816,7 +816,7 @@ def get_following(
             )
             for followee in paginated
         ]
-        
+
         return {
             "user_id": user_id,
             "total": len(all_following),
@@ -923,10 +923,10 @@ def search_users(
             status_code=400,
             detail="Limit must be between 1 and 100"
         )
-    
+
     # Get all users
     all_users = user_controller_instance.get_all_users()
-    
+
     # Filter by search query if provided
     if q:
         query_lower = q.lower()
@@ -936,13 +936,13 @@ def search_users(
         ]
     else:
         filtered_users = all_users
-    
+
     # Sort by username for consistency
     filtered_users.sort(key=lambda u: u.username.lower())
-    
+
     total = len(filtered_users)
     paginated = filtered_users[offset:offset + limit]
-    
+
     # Convert to public schema (hide sensitive info)
     public_users = [
         PublicUserSchema(
@@ -954,7 +954,7 @@ def search_users(
         )
         for user in paginated
     ]
-    
+
     return {
         "users": public_users,
         "total": total,
@@ -984,17 +984,17 @@ def get_my_notifications(
     try:
         user = user_controller_instance.user_dao.get_user(user_id)
         notifications = user.get('notifications', [])
-        
+
         # Sort by timestamp (most recent first)
         sorted_notifications = sorted(
             notifications,
             key=lambda n: n.get('timestamp', ''),
             reverse=True
         )
-        
+
         total = len(sorted_notifications)
         paginated = sorted_notifications[offset:offset + limit]
-        
+
         return {
             "notifications": paginated,
             "total": total,
