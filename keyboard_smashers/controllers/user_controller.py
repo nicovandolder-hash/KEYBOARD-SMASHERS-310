@@ -787,3 +787,75 @@ def get_following(
         }
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/block")
+def block_user(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Block a user. Creates bidirectional block and removes follow relationships.
+    Authenticated user blocks the specified user_id.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.block_user(
+            current_user_id, user_id
+        )
+        blocked_user = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully blocked {blocked_user['username']}",
+            "blocked": user_id
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.delete("/{user_id}/block")
+def unblock_user(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Unblock a user. Removes bidirectional block between users.
+    Authenticated user unblocks the specified user_id.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.unblock_user(
+            current_user_id, user_id
+        )
+        unblocked_user = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully unblocked {unblocked_user['username']}",
+            "unblocked": user_id
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
