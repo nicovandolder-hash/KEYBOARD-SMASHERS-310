@@ -661,3 +661,129 @@ def toggle_favorite(
         }
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/{user_id}/follow")
+def follow_user(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Follow a user. Authenticated user follows the specified user_id.
+    Returns a success message with updated follower counts.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.follow_user(
+            current_user_id, user_id
+        )
+        followee = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully followed {followee['username']}",
+            "following": user_id,
+            "follower_count": len(followee.get('followers', []))
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.delete("/{user_id}/follow")
+def unfollow_user(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Unfollow a user. Authenticated user unfollows the specified user_id.
+    Returns a success message with updated follower counts.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user_controller_instance.user_dao.unfollow_user(
+            current_user_id, user_id
+        )
+        followee = user_controller_instance.user_dao.get_user(user_id)
+        return {
+            "message": f"Successfully unfollowed {followee['username']}",
+            "unfollowed": user_id,
+            "follower_count": len(followee.get('followers', []))
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/{user_id}/followers")
+def get_followers(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    limit: int = 20,
+    offset: int = 0
+):
+    """
+    Get a paginated list of users who follow the specified user.
+    No authentication required (public information).
+    """
+    try:
+        all_followers = user_controller_instance.user_dao.get_followers(
+            user_id
+        )
+        paginated = all_followers[offset:offset + limit]
+        return {
+            "user_id": user_id,
+            "total": len(all_followers),
+            "limit": limit,
+            "offset": offset,
+            "followers": paginated
+        }
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/{user_id}/following")
+def get_following(
+    user_id: str = Path(..., min_length=1, max_length=100),
+    limit: int = 20,
+    offset: int = 0
+):
+    """
+    Get a paginated list of users that the specified user follows.
+    No authentication required (public information).
+    """
+    try:
+        all_following = user_controller_instance.user_dao.get_following(
+            user_id
+        )
+        paginated = all_following[offset:offset + limit]
+        return {
+            "user_id": user_id,
+            "total": len(all_following),
+            "limit": limit,
+            "offset": offset,
+            "following": paginated
+        }
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
