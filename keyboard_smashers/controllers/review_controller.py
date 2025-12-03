@@ -9,6 +9,27 @@ from keyboard_smashers.auth import get_current_user, get_current_admin_user
 
 logger = logging.getLogger(__name__)
 
+# Rating constants
+RATING_MIN = 1
+RATING_MAX = 5
+
+# Pagination constants
+DEFAULT_PAGE_OFFSET = 0
+DEFAULT_PAGE_LIMIT = 10
+DEFAULT_FEED_LIMIT = 50
+DEFAULT_REPORTS_LIMIT = 50
+MAX_PAGE_LIMIT = 100
+MIN_PAGE_LIMIT = 1
+
+# Path validation constants
+PATH_MIN_LENGTH = 1
+PATH_MAX_LENGTH = 100
+
+# Text field constants
+REVIEW_TEXT_MIN_LENGTH = 1
+REVIEW_TEXT_MAX_LENGTH = 250
+REPORT_REASON_MAX_LENGTH = 500
+
 # Setup admin actions logger
 admin_logger = logging.getLogger('admin_actions')
 admin_logger.setLevel(logging.INFO)
@@ -34,25 +55,35 @@ class ReviewSchema(BaseModel):
         None, description="User ID (null for IMDB reviews)")
     imdb_username: Optional[str] = Field(
         None, description="IMDB username for legacy reviews")
-    rating: float = Field(..., description="Rating from 1-5", ge=1, le=5)
+    rating: float = Field(
+        ..., description="Rating from 1-5", ge=RATING_MIN, le=RATING_MAX
+    )
     review_text: str = Field(..., description="Review text content")
     review_date: str = Field(..., description="Review date")
 
 
 class ReviewCreateSchema(BaseModel):
-    movie_id: str = Field(..., description="Movie ID to review", min_length=1)
-    rating: float = Field(..., description="Rating from 1-5", ge=1, le=5)
-    review_text: str = Field(...,
-                             description="Review text",
-                             max_length=250,
-                             min_length=1)
+    movie_id: str = Field(
+        ..., description="Movie ID to review", min_length=PATH_MIN_LENGTH
+    )
+    rating: float = Field(
+        ..., description="Rating from 1-5", ge=RATING_MIN, le=RATING_MAX
+    )
+    review_text: str = Field(
+        ...,
+        description="Review text",
+        max_length=REVIEW_TEXT_MAX_LENGTH,
+        min_length=REVIEW_TEXT_MIN_LENGTH
+    )
 
 
 class ReviewUpdateSchema(BaseModel):
     rating: Optional[float] = Field(
-        None, description="Rating from 1-5", ge=1, le=5)
+        None, description="Rating from 1-5", ge=RATING_MIN, le=RATING_MAX
+    )
     review_text: Optional[str] = Field(
-        None, description="Review text", max_length=250)
+        None, description="Review text", max_length=REVIEW_TEXT_MAX_LENGTH
+    )
 
 
 class PaginatedReviewResponse(BaseModel):
@@ -232,8 +263,8 @@ class ReviewController:
     def get_reviews_for_movie(
         self,
         movie_id: str,
-        skip: int = 0,
-        limit: int = 10,
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_PAGE_LIMIT,
         include_suspended: bool = False,
         current_user_id: Optional[str] = None
     ) -> PaginatedReviewResponse:
@@ -294,8 +325,8 @@ class ReviewController:
     def get_reviews_by_user(
         self,
         user_id: str,
-        skip: int = 0,
-        limit: int = 10,
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_PAGE_LIMIT,
         include_suspended: bool = False,
         current_user_id: Optional[str] = None
     ) -> PaginatedReviewResponse:
@@ -553,8 +584,8 @@ class ReviewController:
 
     def get_reported_reviews_for_admin(
         self,
-        skip: int = 0,
-        limit: int = 50,
+        skip: int = DEFAULT_PAGE_OFFSET,
+        limit: int = DEFAULT_FEED_LIMIT,
         admin_viewed: Optional[bool] = None
     ) -> dict:
         """Get paginated list of reported reviews with review details"""
@@ -720,10 +751,17 @@ router = APIRouter(
 
 @router.get("/movie/{movie_id}", response_model=PaginatedReviewResponse)
 def get_reviews_for_movie(
-    movie_id: str = Path(..., min_length=1, max_length=100),
-    skip: int = Query(0, ge=0, description="Number of reviews to skip"),
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
+    skip: int = Query(
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of reviews to skip"
+    ),
     limit: int = Query(
-        10, ge=1, le=100, description="Maximum reviews to return"
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum reviews to return"
     ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
@@ -748,10 +786,17 @@ def get_reviews_for_movie(
 
 @router.get("/user/{user_id}", response_model=PaginatedReviewResponse)
 def get_reviews_by_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
-    skip: int = Query(0, ge=0, description="Number of reviews to skip"),
+    user_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
+    skip: int = Query(
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of reviews to skip"
+    ),
     limit: int = Query(
-        10, ge=1, le=100, description="Maximum reviews to return"
+        DEFAULT_PAGE_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum reviews to return"
     ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
@@ -775,7 +820,11 @@ def get_reviews_by_user(
 
 
 @router.get("/{review_id}", response_model=ReviewSchema)
-def get_review(review_id: str = Path(..., min_length=1, max_length=100)):
+def get_review(
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    )
+):
     """Get a specific review by ID"""
     return review_controller_instance.get_review_by_id(review_id)
 
@@ -805,7 +854,9 @@ def create_review(
 
 @router.put("/{review_id}", response_model=ReviewSchema)
 def update_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     review_data: ReviewUpdateSchema = None,
     current_user_id: str = Depends(get_current_user)
 ):
@@ -817,7 +868,9 @@ def update_review(
 
 @router.delete("/{review_id}")
 def delete_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     current_user_id: str = Depends(get_current_user)
 ):
     """Delete your own review (requires authentication)"""
@@ -826,9 +879,13 @@ def delete_review(
 
 @router.post("/{review_id}/report", status_code=201)
 def report_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     reason: str = Query(
-        "", max_length=500, description="Reason for reporting"
+        "",
+        max_length=REPORT_REASON_MAX_LENGTH,
+        description="Reason for reporting"
     ),
     current_user_id: str = Depends(get_current_user)
 ):
@@ -879,10 +936,13 @@ def report_review(
 )
 def admin_get_reported_reviews(
     skip: int = Query(
-        0, ge=0, description="Number of reports to skip"
+        DEFAULT_PAGE_OFFSET, ge=0, description="Number of reports to skip"
     ),
     limit: int = Query(
-        50, ge=1, le=100, description="Maximum reports per page"
+        DEFAULT_REPORTS_LIMIT,
+        ge=MIN_PAGE_LIMIT,
+        le=MAX_PAGE_LIMIT,
+        description="Maximum reports per page"
     ),
     admin_viewed: Optional[bool] = Query(
         None, description="Filter by viewed status"
@@ -906,7 +966,9 @@ def admin_get_reported_reviews(
 
 @router.patch("/reports/{report_id}/admin/view")
 def admin_mark_report_viewed(
-    report_id: str = Path(..., min_length=1, max_length=100),
+    report_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Mark a report as viewed by admin (admin only)"""
@@ -915,7 +977,9 @@ def admin_mark_report_viewed(
 
 @router.delete("/{review_id}/admin")
 def admin_delete_review(
-    review_id: str = Path(..., min_length=1, max_length=100),
+    review_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Admin delete any review for moderation (requires admin privileges)"""
@@ -924,7 +988,9 @@ def admin_delete_review(
 
 @router.delete("/reports/{report_id}/admin")
 def admin_delete_report(
-    report_id: str = Path(..., min_length=1, max_length=100),
+    report_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Admin delete a specific report (requires admin privileges)"""
@@ -933,8 +999,8 @@ def admin_delete_report(
 
 @router.get("/feed/following")
 def get_following_feed(
-    skip: int = 0,
-    limit: int = 20,
+    skip: int = DEFAULT_PAGE_OFFSET,
+    limit: int = DEFAULT_PAGE_LIMIT,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -972,10 +1038,13 @@ def get_following_feed(
             status_code=400,
             detail="Skip must be non-negative"
         )
-    if limit < 1 or limit > 100:
+    if limit < MIN_PAGE_LIMIT or limit > MAX_PAGE_LIMIT:
         raise HTTPException(
             status_code=400,
-            detail="Limit must be between 1 and 100"
+            detail=(
+                f"Limit must be between {MIN_PAGE_LIMIT} "
+                f"and {MAX_PAGE_LIMIT}"
+            )
         )
 
     # Get list of users current user follows

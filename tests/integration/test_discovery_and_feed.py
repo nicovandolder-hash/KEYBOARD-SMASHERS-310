@@ -2,6 +2,7 @@
 Integration tests for user discovery and following feed functionality
 """
 import pytest
+from http import HTTPStatus
 from fastapi.testclient import TestClient
 from keyboard_smashers.api import app
 from keyboard_smashers.controllers.user_controller import (
@@ -11,6 +12,11 @@ from keyboard_smashers.controllers.review_controller import (
     review_controller_instance
 )
 from keyboard_smashers import auth
+
+# HTTP Status Code Constants
+HTTP_OK = HTTPStatus.OK
+HTTP_CREATED = HTTPStatus.CREATED
+HTTP_UNAUTHORIZED = HTTPStatus.UNAUTHORIZED
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -61,14 +67,14 @@ def create_and_login_user(client, username, email, password):
         "email": email,
         "password": password
     })
-    assert register_response.status_code == 201
+    assert register_response.status_code == HTTP_CREATED
     user_id = register_response.json()["userid"]
 
     login_response = client.post("/users/login", json={
         "email": email,
         "password": password
     })
-    assert login_response.status_code == 200
+    assert login_response.status_code == HTTP_OK
     token = login_response.cookies.get("session_token")
 
     # Clear client cookies to prevent cookie jar interference
@@ -95,7 +101,7 @@ def test_search_users_public_access(client):
 
     # Search without authentication
     response = client.get("/users/search/users")
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["total"] == 3
     assert len(data["users"]) == 3
@@ -117,7 +123,7 @@ def test_search_users_by_query(client):
 
     # Search for "alice"
     response = client.get("/users/search/users?q=alice")
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["total"] == 2
     assert data["query"] == "alice"
@@ -140,7 +146,7 @@ def test_search_users_pagination(client):
 
     # Get first page
     response1 = client.get("/users/search/users?limit=2&offset=0")
-    assert response1.status_code == 200
+    assert response1.status_code == HTTP_OK
     data1 = response1.json()
     assert data1["total"] == 5
     assert len(data1["users"]) == 2
@@ -149,7 +155,7 @@ def test_search_users_pagination(client):
 
     # Get second page
     response2 = client.get("/users/search/users?limit=2&offset=2")
-    assert response2.status_code == 200
+    assert response2.status_code == HTTP_OK
     data2 = response2.json()
     assert len(data2["users"]) == 2
 
@@ -162,7 +168,7 @@ def test_search_users_pagination(client):
 def test_following_feed_requires_auth(client):
     """Test that following feed requires authentication"""
     response = client.get("/reviews/feed/following")
-    assert response.status_code == 401
+    assert response.status_code == HTTP_UNAUTHORIZED
 
 
 def test_following_feed_empty(client):
@@ -175,7 +181,7 @@ def test_following_feed_empty(client):
         "/reviews/feed/following",
         cookies={"session_token": alice_token}
     )
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["total"] == 0
     assert len(data["reviews"]) == 0
@@ -243,7 +249,7 @@ def test_following_feed_with_follows(client):
         "/reviews/feed/following",
         cookies={"session_token": alice_token}
     )
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["total"] == 2
     assert len(data["reviews"]) == 2
@@ -294,7 +300,7 @@ def test_following_feed_pagination(client):
         "/reviews/feed/following?limit=2&skip=0",
         cookies={"session_token": alice_token}
     )
-    assert response1.status_code == 200
+    assert response1.status_code == HTTP_OK
     data1 = response1.json()
     assert data1["total"] == 5
     assert len(data1["reviews"]) == 2
@@ -304,6 +310,6 @@ def test_following_feed_pagination(client):
         "/reviews/feed/following?limit=2&skip=2",
         cookies={"session_token": alice_token}
     )
-    assert response2.status_code == 200
+    assert response2.status_code == HTTP_OK
     data2 = response2.json()
     assert len(data2["reviews"]) == 2

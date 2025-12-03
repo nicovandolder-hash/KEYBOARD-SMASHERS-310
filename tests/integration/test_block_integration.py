@@ -2,12 +2,20 @@
 Integration tests for block/unblock functionality
 """
 import pytest
+from http import HTTPStatus
 from fastapi.testclient import TestClient
 from keyboard_smashers.api import app
 from keyboard_smashers.controllers.user_controller import (
     user_controller_instance
 )
 from keyboard_smashers import auth
+
+# HTTP Status Code Constants
+HTTP_OK = HTTPStatus.OK
+HTTP_CREATED = HTTPStatus.CREATED
+HTTP_BAD_REQUEST = HTTPStatus.BAD_REQUEST
+HTTP_UNAUTHORIZED = HTTPStatus.UNAUTHORIZED
+HTTP_NOT_FOUND = HTTPStatus.NOT_FOUND
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -42,14 +50,14 @@ def create_and_login_user(client, username, email, password):
         "email": email,
         "password": password
     })
-    assert register_response.status_code == 201
+    assert register_response.status_code == HTTP_CREATED
     user_id = register_response.json()["userid"]
 
     login_response = client.post("/users/login", json={
         "email": email,
         "password": password
     })
-    assert login_response.status_code == 200
+    assert login_response.status_code == HTTP_OK
     token = login_response.cookies.get("session_token")
 
     # Clear client cookies to prevent cookie jar interference
@@ -71,7 +79,7 @@ def test_block_user_success(client):
         f"/users/{bob_id}/block",
         cookies={"session_token": alice_token}
     )
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["message"] == "Successfully blocked bob"
     assert data["blocked"] == bob_id
@@ -93,7 +101,7 @@ def test_block_self_fails(client):
         f"/users/{alice_id}/block",
         cookies={"session_token": alice_token}
     )
-    assert response.status_code == 400
+    assert response.status_code == HTTP_BAD_REQUEST
     assert "Cannot block yourself" in response.json()["detail"]
 
 
@@ -106,7 +114,7 @@ def test_block_nonexistent_user_fails(client):
         "/users/nonexistent_user/block",
         cookies={"session_token": alice_token}
     )
-    assert response.status_code == 404
+    assert response.status_code == HTTP_NOT_FOUND
 
 
 def test_block_requires_authentication(client):
@@ -120,7 +128,7 @@ def test_block_requires_authentication(client):
     client.cookies.clear()
 
     response = client.post(f"/users/{bob_id}/block")
-    assert response.status_code == 401
+    assert response.status_code == HTTP_UNAUTHORIZED
 
 
 def test_block_removes_follow_relationships(client):
@@ -178,7 +186,7 @@ def test_block_prevents_following(client):
         f"/users/{bob_id}/follow",
         cookies={
             "session_token": alice_token})
-    assert response1.status_code == 400
+    assert response1.status_code == HTTP_BAD_REQUEST
     assert "blocked" in response1.json()["detail"].lower()
 
     # Bob tries to follow Alice
@@ -186,7 +194,7 @@ def test_block_prevents_following(client):
         f"/users/{alice_id}/follow",
         cookies={
             "session_token": bob_token})
-    assert response2.status_code == 400
+    assert response2.status_code == HTTP_BAD_REQUEST
     assert "blocked" in response2.json()["detail"].lower()
 
 
@@ -202,14 +210,14 @@ def test_block_idempotent(client):
         f"/users/{bob_id}/block",
         cookies={
             "session_token": alice_token})
-    assert response1.status_code == 200
+    assert response1.status_code == HTTP_OK
 
     # Block again
     response2 = client.post(
         f"/users/{bob_id}/block",
         cookies={
             "session_token": alice_token})
-    assert response2.status_code == 200
+    assert response2.status_code == HTTP_OK
 
     # Verify only one block exists
     user_dao = user_controller_instance.user_dao
@@ -235,7 +243,7 @@ def test_unblock_user_success(client):
         f"/users/{bob_id}/block",
         cookies={
             "session_token": alice_token})
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["message"] == "Successfully unblocked bob"
 
@@ -267,7 +275,7 @@ def test_unblock_requires_authentication(client):
 
     # Try to unblock without authentication
     response = client.delete(f"/users/{bob_id}/block")
-    assert response.status_code == 401
+    assert response.status_code == HTTP_UNAUTHORIZED
 
 
 def test_unblock_allows_following_again(client):
@@ -292,14 +300,14 @@ def test_unblock_allows_following_again(client):
         f"/users/{bob_id}/follow",
         cookies={
             "session_token": alice_token})
-    assert response1.status_code == 200
+    assert response1.status_code == HTTP_OK
 
     # And Bob should be able to follow Alice
     response2 = client.post(
         f"/users/{alice_id}/follow",
         cookies={
             "session_token": bob_token})
-    assert response2.status_code == 200
+    assert response2.status_code == HTTP_OK
 
 
 def test_get_blocked_users_empty(client):
@@ -311,7 +319,7 @@ def test_get_blocked_users_empty(client):
         "/users/me/blocked",
         cookies={
             "session_token": alice_token})
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["blocked_users"] == []
     assert data["total"] == 0
@@ -339,7 +347,7 @@ def test_get_blocked_users_list(client):
         "/users/me/blocked",
         cookies={
             "session_token": alice_token})
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
 
     assert data["total"] == 2
@@ -391,4 +399,4 @@ def test_get_blocked_users_after_unblock(client):
 def test_get_blocked_users_requires_auth(client):
     """Test that getting blocked users requires authentication"""
     response = client.get("/users/me/blocked")
-    assert response.status_code == 401
+    assert response.status_code == HTTP_UNAUTHORIZED

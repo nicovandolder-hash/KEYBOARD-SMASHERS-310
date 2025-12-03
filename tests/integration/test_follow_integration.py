@@ -2,12 +2,26 @@
 Integration tests for follow/unfollow functionality
 """
 import pytest
+from http import HTTPStatus
 from fastapi.testclient import TestClient
 from keyboard_smashers.api import app
 from keyboard_smashers.controllers.user_controller import (
     user_controller_instance
 )
 from keyboard_smashers import auth
+
+# HTTP Status Code Constants
+HTTP_OK = HTTPStatus.OK
+HTTP_CREATED = HTTPStatus.CREATED
+HTTP_BAD_REQUEST = HTTPStatus.BAD_REQUEST
+HTTP_UNAUTHORIZED = HTTPStatus.UNAUTHORIZED
+HTTP_NOT_FOUND = HTTPStatus.NOT_FOUND
+
+# Pagination Constants
+DEFAULT_PAGE_LIMIT = 2
+DEFAULT_PAGE_OFFSET = 0
+SECOND_PAGE_OFFSET = 2
+TEST_FOLLOWER_COUNT = 3
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -43,7 +57,7 @@ def create_and_login_user(client, username, email, password):
         "email": email,
         "password": password
     })
-    assert register_response.status_code == 201, (
+    assert register_response.status_code == HTTP_CREATED, (
         f"Failed to register {username}"
     )
     user_id = register_response.json()["userid"]
@@ -53,7 +67,7 @@ def create_and_login_user(client, username, email, password):
         "email": email,
         "password": password
     })
-    assert login_response.status_code == 200, f"Failed to login {username}"
+    assert login_response.status_code == HTTP_OK, f"Failed to login {username}"
     token = login_response.cookies.get("session_token")
     assert token is not None, f"No session token for {username}"
 
@@ -77,7 +91,7 @@ def test_follow_user_success(client):
         f"/users/{bob_id}/follow",
         cookies={"session_token": alice_token}
     )
-    assert follow_response.status_code == 200
+    assert follow_response.status_code == HTTP_OK
     data = follow_response.json()
     assert data["message"] == "Successfully followed bob"
     assert data["following"] == bob_id
@@ -101,7 +115,7 @@ def test_follow_self_fails(client):
         f"/users/{alice_id}/follow",
         cookies={"session_token": alice_token}
     )
-    assert follow_response.status_code == 400
+    assert follow_response.status_code == HTTP_BAD_REQUEST
     assert "cannot follow" in follow_response.json()["detail"].lower()
 
 
@@ -115,7 +129,7 @@ def test_follow_nonexistent_user_fails(client):
         "/users/nonexistent_user/follow",
         cookies={"session_token": alice_token}
     )
-    assert follow_response.status_code == 404
+    assert follow_response.status_code == HTTP_NOT_FOUND
 
 
 def test_follow_requires_authentication(client):
@@ -130,7 +144,7 @@ def test_follow_requires_authentication(client):
 
     # Try to follow without authentication
     follow_response = client.post(f"/users/{bob_id}/follow")
-    assert follow_response.status_code == 401
+    assert follow_response.status_code == HTTP_UNAUTHORIZED
 
 
 def test_follow_idempotent(client):
@@ -145,14 +159,14 @@ def test_follow_idempotent(client):
         f"/users/{bob_id}/follow",
         cookies={"session_token": alice_token}
     )
-    assert response1.status_code == 200
+    assert response1.status_code == HTTP_OK
 
     # Follow again
     response2 = client.post(
         f"/users/{bob_id}/follow",
         cookies={"session_token": alice_token}
     )
-    assert response2.status_code == 200
+    assert response2.status_code == HTTP_OK
 
     # Verify only one follow relationship exists
     user_dao = user_controller_instance.user_dao
@@ -180,7 +194,7 @@ def test_unfollow_user_success(client):
         f"/users/{bob_id}/follow",
         cookies={"session_token": alice_token}
     )
-    assert unfollow_response.status_code == 200
+    assert unfollow_response.status_code == HTTP_OK
     data = unfollow_response.json()
     assert data["message"] == "Successfully unfollowed bob"
 
@@ -212,7 +226,7 @@ def test_unfollow_requires_authentication(client):
 
     # Try to unfollow without authentication
     unfollow_response = client.delete(f"/users/{bob_id}/follow")
-    assert unfollow_response.status_code == 401
+    assert unfollow_response.status_code == HTTP_UNAUTHORIZED
 
 
 def test_get_followers(client):
@@ -234,7 +248,7 @@ def test_get_followers(client):
 
     # Get Alice's followers
     response = client.get(f"/users/{alice_id}/followers")
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["user_id"] == alice_id
     assert data["total"] == 2
@@ -261,7 +275,7 @@ def test_get_following(client):
 
     # Get who Alice is following
     response = client.get(f"/users/{alice_id}/following")
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
     data = response.json()
     assert data["user_id"] == alice_id
     assert data["total"] == 2
@@ -277,7 +291,7 @@ def test_followers_pagination(client):
         client, "alice", "alice@example.com", "AlicePass123!")
 
     # Create 3 followers
-    for i in range(3):
+    for i in range(TEST_FOLLOWER_COUNT):
         _, token = create_and_login_user(
             client,
             f"follower{i}",
@@ -290,19 +304,25 @@ def test_followers_pagination(client):
                 "session_token": token})
 
     # Get first page (limit 2)
-    response1 = client.get(f"/users/{alice_id}/followers?limit=2&offset=0")
-    assert response1.status_code == 200
+    response1 = client.get(
+        f"/users/{alice_id}/followers"
+        f"?limit={DEFAULT_PAGE_LIMIT}&offset={DEFAULT_PAGE_OFFSET}"
+    )
+    assert response1.status_code == HTTP_OK
     data1 = response1.json()
-    assert data1["total"] == 3
-    assert len(data1["followers"]) == 2
-    assert data1["limit"] == 2
-    assert data1["offset"] == 0
+    assert data1["total"] == TEST_FOLLOWER_COUNT
+    assert len(data1["followers"]) == DEFAULT_PAGE_LIMIT
+    assert data1["limit"] == DEFAULT_PAGE_LIMIT
+    assert data1["offset"] == DEFAULT_PAGE_OFFSET
 
     # Get second page
-    response2 = client.get(f"/users/{alice_id}/followers?limit=2&offset=2")
-    assert response2.status_code == 200
+    response2 = client.get(
+        f"/users/{alice_id}/followers"
+        f"?limit={DEFAULT_PAGE_LIMIT}&offset={SECOND_PAGE_OFFSET}"
+    )
+    assert response2.status_code == HTTP_OK
     data2 = response2.json()
-    assert data2["total"] == 3
+    assert data2["total"] == TEST_FOLLOWER_COUNT
     assert len(data2["followers"]) == 1
-    assert data2["limit"] == 2
-    assert data2["offset"] == 2
+    assert data2["limit"] == DEFAULT_PAGE_LIMIT
+    assert data2["offset"] == SECOND_PAGE_OFFSET

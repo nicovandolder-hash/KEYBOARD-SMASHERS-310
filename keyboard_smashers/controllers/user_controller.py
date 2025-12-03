@@ -9,6 +9,17 @@ from keyboard_smashers.auth import SessionManager
 
 logger = logging.getLogger(__name__)
 
+# API Constants
+DEFAULT_REPUTATION = 3
+DEFAULT_PAGE_LIMIT = 20
+DEFAULT_NOTIFICATIONS_LIMIT = 50
+DEFAULT_PAGE_OFFSET = 0
+MAX_PAGE_LIMIT = 100
+MIN_PAGE_LIMIT = 1
+PATH_MIN_LENGTH = 1
+PATH_MAX_LENGTH = 100
+SESSION_MAX_AGE_SECONDS = 7200  # 2 hours
+
 
 class UserAPISchema(BaseModel):
 
@@ -17,7 +28,8 @@ class UserAPISchema(BaseModel):
         "reviewer_bob"))
     email: str = Field(..., description="User's email address", example=(
         "bob@stu.ubc.ca"))
-    reputation: int = Field(3, description="User reputation score")
+    reputation: int = Field(
+        DEFAULT_REPUTATION, description="User reputation score")
     creation_date: datetime = Field(None, description=(
         "Date user account was created"))
     total_reviews: int = Field(0, description=(
@@ -47,7 +59,8 @@ class UserCreateSchema(BaseModel):
     username: str = Field(..., description="User's display name")
     email: str = Field(..., description="User's email address")
     password: str = Field(..., description="User's password")
-    reputation: int = Field(3, description="User reputation score")
+    reputation: int = Field(
+        DEFAULT_REPUTATION, description="User reputation score")
     is_admin: bool = Field(False, description=(
         "Whether the user is an administrator"))
 
@@ -378,7 +391,7 @@ def login(login_data: LoginSchema, response: Response):
         httponly=True,
         secure=False,
         samesite="lax",
-        max_age=7200
+        max_age=SESSION_MAX_AGE_SECONDS
     )
 
     return {
@@ -459,7 +472,8 @@ def get_users(
 
 @router.get("/{user_id}", response_model=UserAPISchema)
 def get_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -492,7 +506,8 @@ def get_user(
 
 @router.put("/{user_id}", response_model=UserAPISchema)
 def update_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     user_data: UpdateUserSchema = None,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
@@ -522,7 +537,8 @@ def update_user(
 
 @router.delete("/{user_id}")
 def delete_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -548,7 +564,8 @@ def delete_user(
 
 @router.post("/{user_id}/suspend")
 def suspend_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -588,7 +605,8 @@ def suspend_user(
 
 @router.post("/{user_id}/reactivate")
 def reactivate_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -621,8 +639,12 @@ def reactivate_user(
 
 @router.post("/{user_id}/favorites/{movie_id}")
 def toggle_favorite(
-    user_id: str = Path(..., min_length=1, max_length=100),
-    movie_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
+    movie_id: str = Path(
+        ..., min_length=PATH_MIN_LENGTH, max_length=PATH_MAX_LENGTH
+    ),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -676,7 +698,8 @@ def toggle_favorite(
 
 @router.post("/{user_id}/follow")
 def follow_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -713,7 +736,8 @@ def follow_user(
 
 @router.delete("/{user_id}/follow")
 def unfollow_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -750,9 +774,10 @@ def unfollow_user(
 
 @router.get("/{user_id}/followers")
 def get_followers(
-    user_id: str = Path(..., min_length=1, max_length=100),
-    limit: int = 20,
-    offset: int = 0
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    limit: int = DEFAULT_PAGE_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
 ):
     """
     Get a paginated list of users who follow the specified user.
@@ -769,7 +794,7 @@ def get_followers(
             PublicUserSchema(
                 userid=follower['userid'],
                 username=follower['username'],
-                reputation=follower.get('reputation', 3),
+                reputation=follower.get('reputation', DEFAULT_REPUTATION),
                 total_reviews=follower.get('total_reviews', 0),
                 favorites=follower.get('favorites', [])
             )
@@ -794,9 +819,10 @@ def get_followers(
 
 @router.get("/{user_id}/following")
 def get_following(
-    user_id: str = Path(..., min_length=1, max_length=100),
-    limit: int = 20,
-    offset: int = 0
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
+    limit: int = DEFAULT_PAGE_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
 ):
     """
     Get a paginated list of users that the specified user follows.
@@ -813,7 +839,7 @@ def get_following(
             PublicUserSchema(
                 userid=followee['userid'],
                 username=followee['username'],
-                reputation=followee.get('reputation', 3),
+                reputation=followee.get('reputation', DEFAULT_REPUTATION),
                 total_reviews=followee.get('total_reviews', 0),
                 favorites=followee.get('favorites', [])
             )
@@ -838,7 +864,8 @@ def get_following(
 
 @router.post("/{user_id}/block")
 def block_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -874,7 +901,8 @@ def block_user(
 
 @router.delete("/{user_id}/block")
 def unblock_user(
-    user_id: str = Path(..., min_length=1, max_length=100),
+    user_id: str = Path(..., min_length=PATH_MIN_LENGTH,
+                        max_length=PATH_MAX_LENGTH),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -958,8 +986,8 @@ def get_blocked_users(
 @router.get("/search/users")
 def search_users(
     q: str = "",
-    limit: int = 20,
-    offset: int = 0
+    limit: int = DEFAULT_PAGE_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
 ):
     """
     Public endpoint to search for users by username.
@@ -970,10 +998,13 @@ def search_users(
         limit: Maximum number of results (default 20)
         offset: Number of results to skip for pagination
     """
-    if limit < 1 or limit > 100:
+    if limit < MIN_PAGE_LIMIT or limit > MAX_PAGE_LIMIT:
         raise HTTPException(
             status_code=400,
-            detail="Limit must be between 1 and 100"
+            detail=(
+                f"Limit must be between {MIN_PAGE_LIMIT} "
+                f"and {MAX_PAGE_LIMIT}"
+            )
         )
 
     # Get all users
@@ -1019,8 +1050,8 @@ def search_users(
 @router.get("/me/notifications")
 def get_my_notifications(
     session_token: str = Cookie(None, alias="session_token"),
-    limit: int = 50,
-    offset: int = 0
+    limit: int = DEFAULT_NOTIFICATIONS_LIMIT,
+    offset: int = DEFAULT_PAGE_OFFSET
 ):
     """
     Get the authenticated user's notifications (e.g., new followers).
