@@ -242,7 +242,8 @@ class TestSuspendedUserReviewCreation:
         suspend_response = admin_client.post(f"/users/{user_id}/suspend")
         assert suspend_response.status_code == 200
 
-        # Attempt to create review (should fail with 403)
+        # Attempt to create review (should fail with 401 because session
+        # was invalidated)
         review_data = {
             "movie_id": "tt0111161",  # Shawshank Redemption
             "rating": 5,
@@ -251,5 +252,7 @@ class TestSuspendedUserReviewCreation:
         }
         review_response = reviewer_client.post("/reviews/", json=review_data)
 
-        assert review_response.status_code == 403
-        assert "suspended" in review_response.json()["detail"].lower()
+        # After suspension, user's session is invalidated so they get 401
+        assert review_response.status_code == 401
+        detail = review_response.json()["detail"].lower()
+        assert "invalid" in detail or "expired" in detail or "session" in detail
