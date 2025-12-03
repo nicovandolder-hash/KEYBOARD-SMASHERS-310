@@ -106,7 +106,7 @@ class UserController:
         if not password:
             logger.warning("Authentication failed: Password cannot be empty")
             return None
-        
+
         user_dict = self.user_dao.get_user_by_email(email)
 
         if not user_dict:
@@ -302,7 +302,7 @@ class UserController:
                 status_code=400,
                 detail="User ID cannot be empty"
             )
-        
+
         logger.debug(f"Retrieving user by ID: {user_id}")
         try:
             user_dict = self.user_dao.get_user(user_id)

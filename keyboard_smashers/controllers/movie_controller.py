@@ -109,7 +109,7 @@ class MovieController:
                 status_code=400,
                 detail="Limit must be between 1 and 100"
             )
-        
+
         logger.info(f"Fetching movies with skip={skip}, limit={limit}")
         all_movies = self.movie_dao.get_all_movies()
         total = len(all_movies)
@@ -136,7 +136,7 @@ class MovieController:
                 status_code=400,
                 detail="Movie ID cannot be empty"
             )
-        
+
         logger.info(f"Fetching movie: {movie_id}")
         try:
             movie_dict = self.movie_dao.get_movie(movie_id)
@@ -237,7 +237,7 @@ class MovieController:
                 status_code=400,
                 detail="Title search query must be 500 characters or less"
             )
-        
+
         logger.info(f"Searching movies by title: {title}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -264,7 +264,7 @@ class MovieController:
                 status_code=400,
                 detail="Genre must be 100 characters or less"
             )
-        
+
         logger.info(f"Fetching movies by genre: {genre}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -311,7 +311,7 @@ class MovieController:
                 status_code=400,
                 detail="Genre must be 100 characters or less"
             )
-        
+
         logger.info(
             f"Searching movies: query={query}, sort={sort_by}, "
             f"genre={genre}, year={year}"
@@ -377,17 +377,27 @@ router = APIRouter(
 @router.get("/", response_model=PaginatedMoviesResponse)
 def get_all_movies(
     skip: int = Query(0, ge=0, description="Number of movies to skip"),
-    limit: int = Query(20, ge=1, le=100, description="Maximum movies to return")
+    limit: int = Query(
+        20, ge=1, le=100, description="Maximum movies to return"
+    )
 ):
     return movie_controller_instance.get_all_movies(skip=skip, limit=limit)
 
 
 @router.get("/search", response_model=List[MovieSchema])
 def search_movies(
-    q: Optional[str] = Query(None, max_length=500, description="Search query"),
-    sort_by: Optional[str] = Query(None, description="Sort by: 'title' or 'year'"),
-    genre: Optional[str] = Query(None, max_length=100, description="Filter by genre"),
-    year: Optional[int] = Query(None, ge=1800, le=2100, description="Filter by year")
+    q: Optional[str] = Query(
+        None, max_length=500, description="Search query"
+    ),
+    sort_by: Optional[str] = Query(
+        None, description="Sort by: 'title' or 'year'"
+    ),
+    genre: Optional[str] = Query(
+        None, max_length=100, description="Filter by genre"
+    ),
+    year: Optional[int] = Query(
+        None, ge=1800, le=2100, description="Filter by year"
+    )
 ):
     return movie_controller_instance.search_movies(
         q, sort_by=sort_by, genre=genre, year=year

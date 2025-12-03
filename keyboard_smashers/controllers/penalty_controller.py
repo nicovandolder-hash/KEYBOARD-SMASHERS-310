@@ -187,7 +187,7 @@ class PenaltyController:
                 status_code=400,
                 detail="Penalty ID cannot be empty"
             )
-        
+
         logger.debug(f"Retrieving penalty: {penalty_id}")
 
         try:
@@ -224,7 +224,7 @@ class PenaltyController:
                 status_code=400,
                 detail="Limit must be between 1 and 100"
             )
-        
+
         logger.debug(
             f"Retrieving penalties (status={status}, user_id={user_id}, "
             f"skip={skip}, limit={limit})"
@@ -329,7 +329,7 @@ class PenaltyController:
                 status_code=400,
                 detail="User ID cannot be empty"
             )
-        
+
         logger.info(f"Fetching penalty summary for user: {user_id}")
 
         try:
@@ -371,10 +371,20 @@ router = APIRouter(
 
 @router.get("/my-penalties", response_model=PaginatedPenaltyResponse)
 def get_my_penalties(
-    status: Optional[str] = Query(None, pattern="^(active|inactive)$", description="Filter by 'active' or 'inactive'"),
-    skip: int = Query(0, ge=0, description="Number of penalties to skip"),
-    limit: int = Query(50, ge=1, le=100, description="Maximum penalties to return"),
-    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+    status: Optional[str] = Query(
+        None,
+        pattern="^(active|inactive)$",
+        description="Filter by 'active' or 'inactive'"
+    ),
+    skip: int = Query(
+        0, ge=0, description="Number of penalties to skip"
+    ),
+    limit: int = Query(
+        50, ge=1, le=100, description="Maximum penalties to return"
+    ),
+    session_token: Optional[str] = Cookie(
+        default=None, alias="session_token"
+    )
 ):
     """Get paginated list of current user's penalties
 
@@ -464,11 +474,23 @@ def create_penalty(
 
 @router.get("/", response_model=PaginatedPenaltyResponse)
 def get_all_penalties(
-    status: Optional[str] = Query(None, pattern="^(active|inactive)$", description="Filter by 'active' or 'inactive'"),
-    user_id: Optional[str] = Query(None, description="Filter by specific user"),
-    skip: int = Query(0, ge=0, description="Number of penalties to skip"),
-    limit: int = Query(50, ge=1, le=100, description="Maximum penalties to return"),
-    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+    status: Optional[str] = Query(
+        None,
+        pattern="^(active|inactive)$",
+        description="Filter by 'active' or 'inactive'"
+    ),
+    user_id: Optional[str] = Query(
+        None, description="Filter by specific user"
+    ),
+    skip: int = Query(
+        0, ge=0, description="Number of penalties to skip"
+    ),
+    limit: int = Query(
+        50, ge=1, le=100, description="Maximum penalties to return"
+    ),
+    session_token: Optional[str] = Cookie(
+        default=None, alias="session_token"
+    )
 ):
     """Get paginated list of all penalties (admin only)
 

@@ -171,7 +171,7 @@ class ReviewController:
                 status_code=400,
                 detail="Review ID cannot be empty"
             )
-        
+
         logger.info(f"Fetching review: {review_id}")
         try:
             review_dict = self.review_dao.get_review(review_id)
@@ -206,7 +206,7 @@ class ReviewController:
                 status_code=400,
                 detail="Limit must be between 1 and 100"
             )
-        
+
         logger.info(
             f"Fetching reviews for movie: {movie_id} "
             f"(skip={skip}, limit={limit}, "
@@ -261,7 +261,7 @@ class ReviewController:
                 status_code=400,
                 detail="Limit must be between 1 and 100"
             )
-        
+
         logger.info(
             f"Fetching reviews by user: {user_id} "
             f"(skip={skip}, limit={limit}, "
@@ -509,7 +509,7 @@ class ReviewController:
                 status_code=400,
                 detail="Limit must be between 1 and 100"
             )
-        
+
         logger.info(
             f"Admin fetching reported reviews (skip={skip}, limit={limit}, "
             f"admin_viewed={admin_viewed})"
@@ -662,7 +662,9 @@ router = APIRouter(
 def get_reviews_for_movie(
     movie_id: str = Path(..., min_length=1, max_length=100),
     skip: int = Query(0, ge=0, description="Number of reviews to skip"),
-    limit: int = Query(10, ge=1, le=100, description="Maximum reviews to return")
+    limit: int = Query(
+        10, ge=1, le=100, description="Maximum reviews to return"
+    )
 ):
     """
     Get paginated reviews for a specific movie.
@@ -678,7 +680,9 @@ def get_reviews_for_movie(
 def get_reviews_by_user(
     user_id: str = Path(..., min_length=1, max_length=100),
     skip: int = Query(0, ge=0, description="Number of reviews to skip"),
-    limit: int = Query(10, ge=1, le=100, description="Maximum reviews to return")
+    limit: int = Query(
+        10, ge=1, le=100, description="Maximum reviews to return"
+    )
 ):
     """
     Get paginated reviews by a specific user.
@@ -742,7 +746,9 @@ def delete_review(
 @router.post("/{review_id}/report", status_code=201)
 def report_review(
     review_id: str = Path(..., min_length=1, max_length=100),
-    reason: str = Query("", max_length=500, description="Reason for reporting"),
+    reason: str = Query(
+        "", max_length=500, description="Reason for reporting"
+    ),
     current_user_id: str = Depends(get_current_user)
 ):
     """Report a review for moderation (requires authentication)"""
@@ -791,9 +797,15 @@ def report_review(
     response_model=PaginatedReportedReviewsResponse
 )
 def admin_get_reported_reviews(
-    skip: int = Query(0, ge=0, description="Number of reports to skip"),
-    limit: int = Query(50, ge=1, le=100, description="Maximum reports per page"),
-    admin_viewed: Optional[bool] = Query(None, description="Filter by viewed status"),
+    skip: int = Query(
+        0, ge=0, description="Number of reports to skip"
+    ),
+    limit: int = Query(
+        50, ge=1, le=100, description="Maximum reports per page"
+    ),
+    admin_viewed: Optional[bool] = Query(
+        None, description="Filter by viewed status"
+    ),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Get paginated list of reported reviews (admin only)
