@@ -564,6 +564,12 @@ def suspend_user(
 
     try:
         user_controller_instance.user_dao.suspend_user(user_id)
+        # Invalidate all active sessions for the suspended user
+        SessionManager.invalidate_user_sessions(user_id)
+        logger.info(
+            f"Admin {current_user_id} suspended user {user_id} "
+            f"and invalidated their sessions"
+        )
         return {"message": f"User {user_id} has been suspended"}
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))

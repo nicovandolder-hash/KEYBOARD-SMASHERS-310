@@ -23,7 +23,7 @@ class User(Observer):
         self.is_admin = is_admin
         self.is_suspended = is_suspended
         self.notifications = []
-        self.total_penalty_count = total_penalty_count,
+        self.total_penalty_count = total_penalty_count
         self.penalties = []
 
         logger.info(
