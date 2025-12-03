@@ -4,224 +4,234 @@ Integration tests for block/unblock functionality
 import pytest
 from fastapi.testclient import TestClient
 from keyboard_smashers.api import app
-from keyboard_smashers.controllers.user_controller import (
-    user_controller_instance
-)
+from keyboard_smashers.controllers.user_controller import user_controller_instance
 from keyboard_smashers import auth
 
 
-@pytest.fixture(autouse=True)
-def setup_and_teardown():
-    """Setup and teardown for each test"""
-    # Store original data
-    original_users = user_controller_instance.user_dao.users.copy()
-    original_sessions = auth.sessions.copy()
+@pytest.fixture(scope="function", autouse=True)
+def clean_test_data():
+    """Clean test data before and after each test"""
+    user_dao = user_controller_instance.user_dao
+    user_dao.users.clear()
+    user_dao.email_index.clear()
+    user_dao.username_index.clear()
+    user_dao.user_counter = 1
+    auth.sessions.clear()
 
     yield
 
-    # Restore original data
-    user_controller_instance.user_dao.users = original_users
-    auth.sessions = original_sessions
+    user_dao.users.clear()
+    user_dao.email_index.clear()
+    user_dao.username_index.clear()
+    user_dao.user_counter = 1
+    auth.sessions.clear()
 
 
-client = TestClient(app)
+@pytest.fixture
+def client():
+    """Create test client"""
+    return TestClient(app)
 
 
-def test_block_user_success():
-    """Test successfully blocking a user"""
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
+def create_and_login_user(client, username, email, password):
+    """Helper to create and login a user, returns (user_id, session_token)"""
+    register_response = client.post("/users/register", json={
+        "username": username,
+        "email": email,
+        "password": password
+    })
+    assert register_response.status_code == 201
+    user_id = register_response.json()["userid"]
+    
+    login_response = client.post("/users/login", json={
+        "email": email,
+        "password": password
+    })
     assert login_response.status_code == 200
     token = login_response.cookies.get("session_token")
-
-    # Block user_002
-    block_response = client.post(
-        "/users/user_002/block",
-        cookies={"session_token": token}
-    )
-    assert block_response.status_code == 200
-    data = block_response.json()
-    assert data["message"] == "Successfully blocked bob_reviewer"
-    assert data["blocked"] == "user_002"
-
-    # Verify bidirectional block
-    user_001 = user_controller_instance.user_dao.get_user("user_001")
-    user_002 = user_controller_instance.user_dao.get_user("user_002")
-    assert "user_002" in user_001["blocked_users"]
-    assert "user_001" in user_002["blocked_users"]
+    
+    return user_id, token
 
 
-def test_block_self_fails():
-    """Test that users cannot block themselves"""
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    # Try to block self
-    block_response = client.post(
-        "/users/user_001/block",
-        cookies={"session_token": token}
-    )
-    assert block_response.status_code == 400
-    assert "Cannot block yourself" in block_response.json()["detail"]
-
-
-def test_block_removes_follow_relationships():
-    """Test that blocking removes existing follow relationships"""
-    # Setup: user_001 follows user_002 and vice versa
-    user_controller_instance.user_dao.follow_user("user_001", "user_002")
-    user_controller_instance.user_dao.follow_user("user_002", "user_001")
-
-    # Verify follows exist
-    user_001 = user_controller_instance.user_dao.get_user("user_001")
-    user_002 = user_controller_instance.user_dao.get_user("user_002")
-    assert "user_002" in user_001["following"]
-    assert "user_001" in user_002["following"]
-
-    # Login and block
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    client.post("/users/user_002/block", cookies={"session_token": token})
-
-    # Verify follows removed
-    user_001 = user_controller_instance.user_dao.get_user("user_001")
-    user_002 = user_controller_instance.user_dao.get_user("user_002")
-    assert "user_002" not in user_001.get("following", [])
-    assert "user_001" not in user_002.get("following", [])
-    assert "user_002" not in user_001.get("followers", [])
-    assert "user_001" not in user_002.get("followers", [])
-
-
-def test_block_without_authentication_fails():
-    """Test that blocking requires authentication"""
-    block_response = client.post("/users/user_002/block")
-    assert block_response.status_code == 401
-
-
-def test_unblock_user_success():
-    """Test successfully unblocking a user"""
-    # Setup: user_001 blocks user_002
-    user_controller_instance.user_dao.block_user("user_001", "user_002")
-
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    # Unblock user_002
-    unblock_response = client.delete(
-        "/users/user_002/block",
-        cookies={"session_token": token}
-    )
-    assert unblock_response.status_code == 200
-    data = unblock_response.json()
-    assert data["message"] == "Successfully unblocked bob_reviewer"
-    assert data["unblocked"] == "user_002"
-
-    # Verify block removed
-    user_001 = user_controller_instance.user_dao.get_user("user_001")
-    user_002 = user_controller_instance.user_dao.get_user("user_002")
-    assert "user_002" not in user_001.get("blocked_users", [])
-    assert "user_001" not in user_002.get("blocked_users", [])
-
-
-def test_blocked_users_cannot_follow():
-    """Test that blocked users cannot follow each other"""
-    # Block user_002
-    user_controller_instance.user_dao.block_user("user_001", "user_002")
-
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    # Try to follow user_002 (blocked)
-    follow_response = client.post(
-        "/users/user_002/follow",
-        cookies={"session_token": token}
-    )
-    # Should fail because they're blocked
-    assert follow_response.status_code == 400
-
-
-def test_block_idempotent():
-    """Test that blocking the same user multiple times is idempotent"""
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    # Block user_002 twice
-    client.post("/users/user_002/block", cookies={"session_token": token})
-    client.post("/users/user_002/block", cookies={"session_token": token})
-
-    # Verify only one block exists
-    user_001 = user_controller_instance.user_dao.get_user("user_001")
-    assert user_001["blocked_users"].count("user_002") == 1
-
-
-def test_unblock_idempotent():
-    """Test that unblocking when not blocked is idempotent"""
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    # Unblock user_002 (not blocked)
-    response = client.delete(
-        "/users/user_002/block",
-        cookies={"session_token": token}
+def test_block_user_success(client):
+    """Test successfully blocking a user"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Alice blocks Bob
+    response = client.post(
+        f"/users/{bob_id}/block",
+        cookies={"session_token": alice_token}
     )
     assert response.status_code == 200
+    data = response.json()
+    assert data["message"] == "Successfully blocked bob"
+    assert data["blocked"] == bob_id
+    
+    # Verify bidirectional blocking
+    user_dao = user_controller_instance.user_dao
+    alice = user_dao.get_user(alice_id)
+    bob = user_dao.get_user(bob_id)
+    assert bob_id in alice["blocked_users"]
+    assert alice_id in bob["blocked_users"]
 
 
-def test_is_blocked_functionality():
-    """Test the is_blocked helper method"""
-    # Block user_002
-    user_controller_instance.user_dao.block_user("user_001", "user_002")
-
-    # Test is_blocked
-    assert user_controller_instance.user_dao.is_blocked(
-        "user_001", "user_002"
-    ) is True
-    assert user_controller_instance.user_dao.is_blocked(
-        "user_002", "user_001"
-    ) is True
-    assert user_controller_instance.user_dao.is_blocked(
-        "user_001", "user_003"
-    ) is False
+def test_block_self_fails(client):
+    """Test that users cannot block themselves"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    
+    response = client.post(
+        f"/users/{alice_id}/block",
+        cookies={"session_token": alice_token}
+    )
+    assert response.status_code == 400
+    assert "Cannot block yourself" in response.json()["detail"]
 
 
-def test_block_nonexistent_user_fails():
+def test_block_nonexistent_user_fails(client):
     """Test that blocking a nonexistent user fails"""
-    # Login as user_001
-    login_response = client.post(
-        "/auth/login",
-        json={"email": "alice@example.com", "password": "Password123!"}
-    )
-    token = login_response.cookies.get("session_token")
-
-    # Try to block nonexistent user
-    block_response = client.post(
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    
+    response = client.post(
         "/users/nonexistent_user/block",
-        cookies={"session_token": token}
+        cookies={"session_token": alice_token}
     )
-    assert block_response.status_code == 404
+    assert response.status_code == 404
+
+
+def test_block_requires_authentication(client):
+    """Test that blocking requires authentication"""
+    alice_id, _ = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Clear cookies to simulate unauthenticated request
+    client.cookies.clear()
+    
+    response = client.post(f"/users/{bob_id}/block")
+    assert response.status_code == 401
+
+
+def test_block_removes_follow_relationships(client):
+    """Test that blocking removes existing follow relationships"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, bob_token = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Alice follows Bob and Bob follows Alice
+    client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
+    client.post(f"/users/{alice_id}/follow", cookies={"session_token": bob_token})
+    
+    # Verify follow relationships exist
+    user_dao = user_controller_instance.user_dao
+    alice = user_dao.get_user(alice_id)
+    bob = user_dao.get_user(bob_id)
+    assert bob_id in alice["following"]
+    assert alice_id in bob["following"]
+    
+    # Alice blocks Bob
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Verify follow relationships are removed
+    alice = user_dao.get_user(alice_id)
+    bob = user_dao.get_user(bob_id)
+    assert bob_id not in alice.get("following", [])
+    assert alice_id not in bob.get("following", [])
+    assert alice_id not in alice.get("followers", [])
+    assert bob_id not in bob.get("followers", [])
+
+
+def test_block_prevents_following(client):
+    """Test that blocked users cannot follow each other"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, bob_token = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Alice blocks Bob
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Alice tries to follow Bob
+    response1 = client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
+    assert response1.status_code == 400
+    assert "blocked" in response1.json()["detail"].lower()
+    
+    # Bob tries to follow Alice
+    response2 = client.post(f"/users/{alice_id}/follow", cookies={"session_token": bob_token})
+    assert response2.status_code == 400
+    assert "blocked" in response2.json()["detail"].lower()
+
+
+def test_block_idempotent(client):
+    """Test that blocking the same user twice is idempotent"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Block once
+    response1 = client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    assert response1.status_code == 200
+    
+    # Block again
+    response2 = client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    assert response2.status_code == 200
+    
+    # Verify only one block exists
+    user_dao = user_controller_instance.user_dao
+    alice = user_dao.get_user(alice_id)
+    assert alice["blocked_users"].count(bob_id) == 1
+
+
+def test_unblock_user_success(client):
+    """Test successfully unblocking a user"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # First block
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Then unblock
+    response = client.delete(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["message"] == "Successfully unblocked bob"
+    
+    # Verify block removed bidirectionally
+    user_dao = user_controller_instance.user_dao
+    alice = user_dao.get_user(alice_id)
+    bob = user_dao.get_user(bob_id)
+    assert bob_id not in alice.get("blocked_users", [])
+    assert alice_id not in bob.get("blocked_users", [])
+
+
+def test_unblock_requires_authentication(client):
+    """Test that unblocking requires authentication"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Block first (using alice's token)
+    client.cookies.clear()
+    client.cookies.set("session_token", alice_token)
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Clear cookies to simulate unauthenticated request
+    client.cookies.clear()
+    
+    # Try to unblock without authentication
+    response = client.delete(f"/users/{bob_id}/block")
+    assert response.status_code == 401
+
+
+def test_unblock_allows_following_again(client):
+    """Test that users can follow each other again after unblocking"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, bob_token = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Alice blocks Bob
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Alice unblocks Bob
+    client.delete(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Now Alice should be able to follow Bob
+    response1 = client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
+    assert response1.status_code == 200
+    
+    # And Bob should be able to follow Alice
+    response2 = client.post(f"/users/{alice_id}/follow", cookies={"session_token": bob_token})
+    assert response2.status_code == 200
