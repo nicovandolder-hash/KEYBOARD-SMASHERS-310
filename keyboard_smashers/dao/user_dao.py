@@ -69,6 +69,16 @@ class UserDAO:
                         if blocked_str else []
                     )
 
+                    # Load notifications (stored as JSON-like string)
+                    notifications = []
+                    notifications_str = row.get('notifications', '')
+                    if notifications_str:
+                        try:
+                            import json
+                            notifications = json.loads(notifications_str)
+                        except:
+                            notifications = []
+
                     user_dict = {
                         'userid': row['userid'],
                         'username': row['username'],
@@ -91,7 +101,8 @@ class UserDAO:
                         'favorites': favorites,
                         'following': following,
                         'followers': followers,
-                        'blocked_users': blocked_users
+                        'blocked_users': blocked_users,
+                        'notifications': notifications
                     }
 
                     self.users[user_dict['userid']] = user_dict
@@ -136,7 +147,8 @@ class UserDAO:
                     'favorites',
                     'following',
                     'followers',
-                    'blocked_users'
+                    'blocked_users',
+                    'notifications'
                 ]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
@@ -154,6 +166,18 @@ class UserDAO:
                     blocked_str = (
                         ','.join(user.get('blocked_users', []))
                     )
+                    # Serialize notifications to JSON
+                    import json
+                    notifications = user.get('notifications', [])
+                    # Convert datetime objects to strings for JSON serialization
+                    notifications_serializable = []
+                    for notif in notifications:
+                        notif_copy = notif.copy()
+                        if 'timestamp' in notif_copy and hasattr(notif_copy['timestamp'], 'isoformat'):
+                            notif_copy['timestamp'] = notif_copy['timestamp'].isoformat()
+                        notifications_serializable.append(notif_copy)
+                    notifications_str = json.dumps(notifications_serializable)
+                    
                     writer.writerow({
                         'userid': user['userid'],
                         'username': user['username'],
@@ -174,7 +198,8 @@ class UserDAO:
                         'favorites': favorites_str,
                         'following': following_str,
                         'followers': followers_str,
-                        'blocked_users': blocked_str
+                        'blocked_users': blocked_str,
+                        'notifications': notifications_str
                     })
 
             logger.info(f"Saved {len(self.users)} users to {self.csv_path}")
@@ -210,7 +235,8 @@ class UserDAO:
             'favorites': [],
             'following': [],
             'followers': [],
-            'blocked_users': []
+            'blocked_users': [],
+            'notifications': []
         }
 
         self.users[user_id] = user_dict

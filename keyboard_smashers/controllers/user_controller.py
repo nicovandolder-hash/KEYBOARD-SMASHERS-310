@@ -961,3 +961,48 @@ def search_users(
         "offset": offset,
         "query": q
     }
+
+
+@router.get("/users/me/notifications")
+def get_my_notifications(
+    session: str = Cookie(None),
+    limit: int = 50,
+    offset: int = 0
+):
+    """
+    Get the authenticated user's notifications (e.g., new followers).
+    Returns most recent notifications first.
+    """
+    if not session:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    user_id = user_controller_instance.session_manager.get_user_id(session)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    try:
+        user = user_controller_instance.user_dao.get_user(user_id)
+        notifications = user.get('notifications', [])
+        
+        # Sort by timestamp (most recent first)
+        sorted_notifications = sorted(
+            notifications,
+            key=lambda n: n.get('timestamp', ''),
+            reverse=True
+        )
+        
+        total = len(sorted_notifications)
+        paginated = sorted_notifications[offset:offset + limit]
+        
+        return {
+            "notifications": paginated,
+            "total": total,
+            "unread": total,  # All notifications considered unread for now
+            "limit": limit,
+            "offset": offset
+        }
+    except KeyError:
+        raise HTTPException(status_code=404, detail="User not found")
+    except Exception as e:
+        logger.error(f"Error getting notifications for {user_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
