@@ -1,3 +1,3 @@
 userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites,following,followers,blocked_users
-user_001,alice,alice@example.com,2d86de80a4eafc831875be7d59a430f3$3a7e6c95a44fecad868108502d5d901c70822ea265b5bfc9773eb71f69dd3444,3,2025-12-03T01:38:19.334757,false,false,0,0,,user_002,user_002,
-user_002,bob,bob@example.com,2b84b4e843de51bd24138dcf7b40b559$b9576029295a61a3e25a678e82bd58f8280f386a1ad245dc5f2e54c24cf9361a,3,2025-12-03T01:38:19.341484,false,false,0,0,,user_001,user_001,
+user_001,alice,alice@example.com,b83abf83bb4676e599be5c7d9b76a250$0aca5fcf817454ab16953f4dcc03d8aca9d92387f55d698606ea5c243748c306,3,2025-12-03T01:47:12.661660,false,false,0,0,,,,user_002
+user_002,bob,bob@example.com,a18496aee33d89c358e6ea099adddd55$051afa047611f77f42f1265f149a0fdaa7244454dfd3fd4f397c06174caa7da8,3,2025-12-03T01:47:12.671114,false,false,0,0,,,,user_001

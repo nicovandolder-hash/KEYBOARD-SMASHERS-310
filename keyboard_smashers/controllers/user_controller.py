@@ -859,3 +859,52 @@ def unblock_user(
         raise HTTPException(status_code=400, detail=str(e))
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/search/users")
+def search_users(
+    q: str = "",
+    limit: int = 20,
+    offset: int = 0
+):
+    """
+    Public endpoint to search for users by username.
+    Allows users to discover and find each other.
+    
+    Args:
+        q: Search query (username substring, case-insensitive)
+        limit: Maximum number of results (default 20)
+        offset: Number of results to skip for pagination
+    """
+    if limit < 1 or limit > 100:
+        raise HTTPException(
+            status_code=400,
+            detail="Limit must be between 1 and 100"
+        )
+    
+    # Get all users
+    all_users = user_controller_instance.get_all_users()
+    
+    # Filter by search query if provided
+    if q:
+        query_lower = q.lower()
+        filtered_users = [
+            user for user in all_users
+            if query_lower in user.username.lower()
+        ]
+    else:
+        filtered_users = all_users
+    
+    # Sort by username for consistency
+    filtered_users.sort(key=lambda u: u.username.lower())
+    
+    total = len(filtered_users)
+    paginated = filtered_users[offset:offset + limit]
+    
+    return {
+        "users": paginated,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "query": q
+    }
