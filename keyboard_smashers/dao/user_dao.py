@@ -363,3 +363,110 @@ class UserDAO:
                 f" user {userid}'s favorites"
             )
             return True
+
+    def follow_user(self, follower_id: str, followee_id: str) -> None:
+        """
+        Make follower_id follow followee_id.
+        Sends notification to followee.
+        """
+        if follower_id not in self.users:
+            raise KeyError(f"User with ID '{follower_id}' not found")
+        if followee_id not in self.users:
+            raise KeyError(f"User with ID '{followee_id}' not found")
+        if follower_id == followee_id:
+            raise ValueError("Users cannot follow themselves")
+
+        follower = self.users[follower_id]
+        followee = self.users[followee_id]
+
+        if 'following' not in follower:
+            follower['following'] = []
+        if 'followers' not in followee:
+            followee['followers'] = []
+
+        # Idempotent - only add if not already following
+        if followee_id not in follower['following']:
+            follower['following'].append(followee_id)
+            followee['followers'].append(follower_id)
+
+            # Send notification using Observer pattern
+            from keyboard_smashers.models.user_model import User
+            followee_user = User(
+                username=followee['username'],
+                email=followee['email'],
+                userid=followee['userid'],
+                password=followee['password'],
+                reputation=followee['reputation'],
+                creation_date=followee['creation_date'],
+                is_admin=followee['is_admin'],
+                is_suspended=followee.get('is_suspended', False),
+                total_penalty_count=followee.get('total_penalty_count', 0),
+                following=followee.get('following', []),
+                followers=followee.get('followers', []),
+                blocked_users=followee.get('blocked_users', [])
+            )
+            followee_user.update(
+                f"{follower['username']} started following you!"
+            )
+            # Update notifications in dict
+            followee['notifications'] = followee_user.notifications
+
+            self.save_users()
+            logger.info(
+                f"User {follower_id} now follows {followee_id}"
+            )
+
+    def unfollow_user(self, follower_id: str, followee_id: str) -> None:
+        """Remove follow relationship between two users."""
+        if follower_id not in self.users:
+            raise KeyError(f"User with ID '{follower_id}' not found")
+        if followee_id not in self.users:
+            raise KeyError(f"User with ID '{followee_id}' not found")
+
+        follower = self.users[follower_id]
+        followee = self.users[followee_id]
+
+        if 'following' not in follower:
+            follower['following'] = []
+        if 'followers' not in followee:
+            followee['followers'] = []
+
+        if followee_id in follower['following']:
+            follower['following'].remove(followee_id)
+        if follower_id in followee['followers']:
+            followee['followers'].remove(follower_id)
+
+        self.save_users()
+        logger.info(
+            f"User {follower_id} unfollowed {followee_id}"
+        )
+
+    def get_followers(self, userid: str) -> List[Dict[str, Any]]:
+        """Get list of users who follow this user."""
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        user = self.users[userid]
+        follower_ids = user.get('followers', [])
+
+        followers = []
+        for follower_id in follower_ids:
+            if follower_id in self.users:
+                followers.append(self.users[follower_id].copy())
+
+        return followers
+
+    def get_following(self, userid: str) -> List[Dict[str, Any]]:
+        """Get list of users that this user follows."""
+        if userid not in self.users:
+            raise KeyError(f"User with ID '{userid}' not found")
+
+        user = self.users[userid]
+        following_ids = user.get('following', [])
+
+        following = []
+        for following_id in following_ids:
+            if following_id in self.users:
+                following.append(self.users[following_id].copy())
+
+        return following
