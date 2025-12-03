@@ -379,6 +379,10 @@ class UserDAO:
         follower = self.users[follower_id]
         followee = self.users[followee_id]
 
+        # Check if users have blocked each other
+        if self.is_blocked(follower_id, followee_id):
+            raise ValueError("Cannot follow a user you have blocked or who has blocked you")
+
         if 'following' not in follower:
             follower['following'] = []
         if 'followers' not in followee:
@@ -405,8 +409,14 @@ class UserDAO:
                 followers=followee.get('followers', []),
                 blocked_users=followee.get('blocked_users', [])
             )
+            # Create a dummy review object for notification
+            class FollowNotification:
+                review_id = "follow_notification"
+
             followee_user.update(
-                f"{follower['username']} started following you!"
+                FollowNotification(),
+                'user_follow',
+                {'message': f"{follower['username']} started following you!"}
             )
             # Update notifications in dict
             followee['notifications'] = followee_user.notifications
