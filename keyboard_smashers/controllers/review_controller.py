@@ -941,7 +941,7 @@ def get_following_feed(
     Get a feed of reviews from users you follow.
     Efficiently retrieves all reviews from followed users in one call.
     Returns reviews sorted by most recent first.
-    
+
     Args:
         skip: Number of reviews to skip (pagination)
         limit: Maximum reviews to return (1-100)
@@ -951,21 +951,21 @@ def get_following_feed(
     from keyboard_smashers.controllers.user_controller import (
         user_controller_instance
     )
-    
+
     # Require authentication
     if not session_token:
         raise HTTPException(
             status_code=401,
             detail="Not authenticated. Please login."
         )
-    
+
     current_user_id = SessionManager.validate_session(session_token)
     if not current_user_id:
         raise HTTPException(
             status_code=401,
             detail="Invalid or expired session. Please login again."
         )
-    
+
     # Validate pagination params
     if skip < 0:
         raise HTTPException(
@@ -977,7 +977,7 @@ def get_following_feed(
             status_code=400,
             detail="Limit must be between 1 and 100"
         )
-    
+
     # Get list of users current user follows
     try:
         following_users = user_controller_instance.user_dao.get_following(
@@ -986,7 +986,7 @@ def get_following_feed(
         following_ids = [user['userid'] for user in following_users]
     except KeyError:
         following_ids = []
-    
+
     if not following_ids:
         return {
             "reviews": [],
@@ -995,20 +995,19 @@ def get_following_feed(
             "limit": limit,
             "following_count": 0
         }
-    
+
     # Get all reviews from followed users
     all_reviews = []
     for user_id in following_ids:
-        user_reviews = review_controller_instance.review_dao.get_reviews_by_user(
-            user_id
-        )
+        dao = review_controller_instance.review_dao
+        user_reviews = dao.get_reviews_by_user(user_id)
         all_reviews.extend(user_reviews)
-    
+
     # Filter suspended users
     all_reviews = review_controller_instance._filter_suspended_user_reviews(
         all_reviews
     )
-    
+
     # Sort by creation date (newest first)
     # Assuming reviews have a timestamp field
     try:
@@ -1019,10 +1018,10 @@ def get_following_feed(
     except (KeyError, TypeError):
         # If no timestamp, keep original order
         pass
-    
+
     total = len(all_reviews)
     paginated = all_reviews[skip:skip + limit]
-    
+
     return {
         "reviews": [
             review_controller_instance._dict_to_schema(review)

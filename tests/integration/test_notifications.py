@@ -15,7 +15,10 @@ client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def clean_test_data():
-    """Clean up test data before and after each test (in-memory only, no file writes)"""
+    """
+    Clean up test data before and after each test.
+    In-memory only, no file writes.
+    """
     # Use the singleton instances that the API actually uses
     user_dao = user_controller_instance.user_dao
     review_dao = review_controller_instance.review_dao
@@ -215,7 +218,8 @@ def test_get_notifications_pagination():
     # Target checks notifications with pagination
     # Get first 2
     response1 = client.get(
-        "/users/me/notifications?limit=2&offset=0", cookies=target_login.cookies)
+        "/users/me/notifications?limit=2&offset=0",
+        cookies=target_login.cookies)
     assert response1.status_code == 200
     data1 = response1.json()
     assert data1["total"] == 3
@@ -225,7 +229,8 @@ def test_get_notifications_pagination():
 
     # Get next 2 (should only have 1)
     response2 = client.get(
-        "/users/me/notifications?limit=2&offset=2", cookies=target_login.cookies)
+        "/users/me/notifications?limit=2&offset=2",
+        cookies=target_login.cookies)
     assert response2.status_code == 200
     data2 = response2.json()
     assert data2["total"] == 3
@@ -288,7 +293,8 @@ def test_notifications_persist_after_reload(tmp_path):
     # Save to CSV (this actually writes)
     temp_dao.save_users()
 
-    # Simulate server restart: create new DAO instance that loads from the same temp file
+    # Simulate server restart: create new DAO instance that loads from the
+    # same temp file
     reloaded_dao = UserDAO(csv_path=str(temp_csv))
 
     # Bob should still have the notification

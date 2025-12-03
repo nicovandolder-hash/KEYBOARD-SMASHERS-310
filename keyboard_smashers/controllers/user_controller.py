@@ -35,7 +35,8 @@ class PublicUserSchema(BaseModel):
     userid: str = Field(..., description="Unique User ID")
     username: str = Field(..., description="User's display name")
     reputation: int = Field(..., description="User reputation score")
-    total_reviews: int = Field(..., description="Total number of reviews written")
+    total_reviews: int = Field(...,
+                               description="Total number of reviews written")
     favorites: List[str] = Field(..., description="List of favorite movie IDs")
 
     class Config:
@@ -783,7 +784,10 @@ def get_followers(
             "followers": public_followers
         }
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=f"User not found: {str(e)}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"User not found: {
+                str(e)}")
     except Exception as e:
         logger.error(f"Error getting followers for {user_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -825,7 +829,10 @@ def get_following(
             "following": public_following
         }
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=f"User not found: {str(e)}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"User not found: {
+                str(e)}")
     except Exception as e:
         logger.error(f"Error getting following for {user_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -959,7 +966,7 @@ def search_users(
     """
     Public endpoint to search for users by username.
     Allows users to discover and find each other.
-    
+
     Args:
         q: Search query (username substring, case-insensitive)
         limit: Maximum number of results (default 20)

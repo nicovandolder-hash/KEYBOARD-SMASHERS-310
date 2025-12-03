@@ -169,12 +169,14 @@ class UserDAO:
                     # Serialize notifications to JSON
                     import json
                     notifications = user.get('notifications', [])
-                    # Convert datetime objects to strings for JSON serialization
+                    # Convert datetime objects to strings for JSON
+                    # serialization
                     notifications_serializable = []
                     for notif in notifications:
                         notif_copy = notif.copy()
-                        if 'timestamp' in notif_copy and hasattr(notif_copy['timestamp'], 'isoformat'):
-                            notif_copy['timestamp'] = notif_copy['timestamp'].isoformat()
+                        ts = notif_copy.get('timestamp')
+                        if ts and hasattr(ts, 'isoformat'):
+                            notif_copy['timestamp'] = ts.isoformat()
                         notifications_serializable.append(notif_copy)
                     notifications_str = json.dumps(notifications_serializable)
 
@@ -407,7 +409,8 @@ class UserDAO:
 
         # Check if users have blocked each other
         if self.is_blocked(follower_id, followee_id):
-            raise ValueError("Cannot follow a user you have blocked or who has blocked you")
+            raise ValueError(
+                "Cannot follow a user you have blocked or who has blocked you")
 
         if 'following' not in follower:
             follower['following'] = []

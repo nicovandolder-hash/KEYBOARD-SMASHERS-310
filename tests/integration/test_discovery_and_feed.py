@@ -4,8 +4,12 @@ Integration tests for user discovery and following feed functionality
 import pytest
 from fastapi.testclient import TestClient
 from keyboard_smashers.api import app
-from keyboard_smashers.controllers.user_controller import user_controller_instance
-from keyboard_smashers.controllers.review_controller import review_controller_instance
+from keyboard_smashers.controllers.user_controller import (
+    user_controller_instance
+)
+from keyboard_smashers.controllers.review_controller import (
+    review_controller_instance
+)
 from keyboard_smashers import auth
 
 
@@ -14,18 +18,18 @@ def clean_test_data():
     """Clean test data before and after each test"""
     user_dao = user_controller_instance.user_dao
     review_dao = review_controller_instance.review_dao
-    
+
     user_dao.users.clear()
     user_dao.email_index.clear()
     user_dao.username_index.clear()
     user_dao.user_counter = 1
     auth.sessions.clear()
-    
+
     # Store and clear original reviews and indexes
     original_reviews = review_dao.reviews.copy()
     original_reviews_by_movie = review_dao.reviews_by_movie.copy()
     original_reviews_by_user = review_dao.reviews_by_user.copy()
-    
+
     review_dao.reviews.clear()
     review_dao.reviews_by_movie.clear()
     review_dao.reviews_by_user.clear()
@@ -37,7 +41,7 @@ def clean_test_data():
     user_dao.username_index.clear()
     user_dao.user_counter = 1
     auth.sessions.clear()
-    
+
     # Restore reviews and indexes
     review_dao.reviews = original_reviews
     review_dao.reviews_by_movie = original_reviews_by_movie
@@ -59,24 +63,32 @@ def create_and_login_user(client, username, email, password):
     })
     assert register_response.status_code == 201
     user_id = register_response.json()["userid"]
-    
+
     login_response = client.post("/users/login", json={
         "email": email,
         "password": password
     })
     assert login_response.status_code == 200
     token = login_response.cookies.get("session_token")
-    
+
     return user_id, token
 
 
 def test_search_users_public_access(client):
     """Test that user search is publicly accessible"""
     # Create some users
-    create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    create_and_login_user(
+        client,
+        "alice",
+        "alice@example.com",
+        "AlicePass123!")
     create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
-    create_and_login_user(client, "charlie", "charlie@example.com", "CharliePass123!")
-    
+    create_and_login_user(
+        client,
+        "charlie",
+        "charlie@example.com",
+        "CharliePass123!")
+
     # Search without authentication
     response = client.get("/users/search/users")
     assert response.status_code == 200
@@ -87,10 +99,18 @@ def test_search_users_public_access(client):
 
 def test_search_users_by_query(client):
     """Test searching users by username"""
-    create_and_login_user(client, "alice123", "alice@example.com", "AlicePass123!")
+    create_and_login_user(
+        client,
+        "alice123",
+        "alice@example.com",
+        "AlicePass123!")
     create_and_login_user(client, "bob456", "bob@example.com", "BobPass123!")
-    create_and_login_user(client, "alice789", "alice2@example.com", "AlicePass123!")
-    
+    create_and_login_user(
+        client,
+        "alice789",
+        "alice2@example.com",
+        "AlicePass123!")
+
     # Search for "alice"
     response = client.get("/users/search/users?q=alice")
     assert response.status_code == 200
@@ -113,7 +133,7 @@ def test_search_users_pagination(client):
             f"user{i}@example.com",
             f"User{i}Pass123!"
         )
-    
+
     # Get first page
     response1 = client.get("/users/search/users?limit=2&offset=0")
     assert response1.status_code == 200
@@ -122,13 +142,13 @@ def test_search_users_pagination(client):
     assert len(data1["users"]) == 2
     assert data1["limit"] == 2
     assert data1["offset"] == 0
-    
+
     # Get second page
     response2 = client.get("/users/search/users?limit=2&offset=2")
     assert response2.status_code == 200
     data2 = response2.json()
     assert len(data2["users"]) == 2
-    
+
     # Ensure different results
     page1_ids = [u["userid"] for u in data1["users"]]
     page2_ids = [u["userid"] for u in data2["users"]]
@@ -146,7 +166,7 @@ def test_following_feed_empty(client):
     alice_id, alice_token = create_and_login_user(
         client, "alice", "alice@example.com", "AlicePass123!"
     )
-    
+
     response = client.get(
         "/reviews/feed/following",
         cookies={"session_token": alice_token}
@@ -170,10 +190,10 @@ def test_following_feed_with_follows(client):
     charlie_id, charlie_token = create_and_login_user(
         client, "charlie", "charlie@example.com", "CharliePass123!"
     )
-    
+
     # Create some reviews for bob and charlie
     review_dao = review_controller_instance.review_dao
-    
+
     bob_review = {
         'review_id': 'review_bob_1',
         'user_id': bob_id,
@@ -190,20 +210,30 @@ def test_following_feed_with_follows(client):
         'rating': 5,
         'review_date': '2024-01-02T10:00:00'
     }
-    
+
     review_dao.reviews[bob_review['review_id']] = bob_review
     review_dao.reviews[charlie_review['review_id']] = charlie_review
-    
+
     # Update indexes
-    review_dao.reviews_by_user.setdefault(bob_id, []).append(bob_review['review_id'])
-    review_dao.reviews_by_user.setdefault(charlie_id, []).append(charlie_review['review_id'])
-    review_dao.reviews_by_movie.setdefault(bob_review['movie_id'], []).append(bob_review['review_id'])
-    review_dao.reviews_by_movie.setdefault(charlie_review['movie_id'], []).append(charlie_review['review_id'])
-    
+    review_dao.reviews_by_user.setdefault(
+        bob_id, []).append(
+        bob_review['review_id'])
+    review_dao.reviews_by_user.setdefault(
+        charlie_id, []).append(
+        charlie_review['review_id'])
+    review_dao.reviews_by_movie.setdefault(
+        bob_review['movie_id'], []).append(
+        bob_review['review_id'])
+    review_dao.reviews_by_movie.setdefault(
+        charlie_review['movie_id'], []).append(
+        charlie_review['review_id'])
+
     # Alice follows Bob and Charlie
-    client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
-    client.post(f"/users/{charlie_id}/follow", cookies={"session_token": alice_token})
-    
+    client.post(f"/users/{bob_id}/follow",
+                cookies={"session_token": alice_token})
+    client.post(f"/users/{charlie_id}/follow",
+                cookies={"session_token": alice_token})
+
     # Get following feed
     response = client.get(
         "/reviews/feed/following",
@@ -214,7 +244,7 @@ def test_following_feed_with_follows(client):
     assert data["total"] == 2
     assert len(data["reviews"]) == 2
     assert data["following_count"] == 2
-    
+
     # Verify reviews are from followed users
     review_user_ids = [r["user_id"] for r in data["reviews"]]
     assert bob_id in review_user_ids
@@ -230,7 +260,7 @@ def test_following_feed_pagination(client):
     bob_id, bob_token = create_and_login_user(
         client, "bob", "bob@example.com", "BobPass123!"
     )
-    
+
     # Create multiple reviews for bob
     review_dao = review_controller_instance.review_dao
     for i in range(5):
@@ -240,16 +270,21 @@ def test_following_feed_pagination(client):
             'movie_id': 'tt0111161',
             'review_text': f'Review {i}',
             'rating': 5,
-            'review_date': f'2024-01-0{i+1}T10:00:00'
+            'review_date': f'2024-01-0{i + 1}T10:00:00'
         }
         review_dao.reviews[review['review_id']] = review
         # Update indexes
-        review_dao.reviews_by_user.setdefault(bob_id, []).append(review['review_id'])
-        review_dao.reviews_by_movie.setdefault(review['movie_id'], []).append(review['review_id'])
-    
+        review_dao.reviews_by_user.setdefault(
+            bob_id, []).append(
+            review['review_id'])
+        review_dao.reviews_by_movie.setdefault(
+            review['movie_id'], []).append(
+            review['review_id'])
+
     # Alice follows Bob
-    client.post(f"/users/{bob_id}/follow", cookies={"session_token": alice_token})
-    
+    client.post(f"/users/{bob_id}/follow",
+                cookies={"session_token": alice_token})
+
     # Get first page
     response1 = client.get(
         "/reviews/feed/following?limit=2&skip=0",
@@ -259,7 +294,7 @@ def test_following_feed_pagination(client):
     data1 = response1.json()
     assert data1["total"] == 5
     assert len(data1["reviews"]) == 2
-    
+
     # Get second page
     response2 = client.get(
         "/reviews/feed/following?limit=2&skip=2",

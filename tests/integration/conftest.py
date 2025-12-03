@@ -2,15 +2,19 @@
 Shared pytest fixtures for integration tests.
 Prevents tests from writing to production data files.
 """
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-import pytest
-from unittest.mock import patch, MagicMock
 from keyboard_smashers.controllers.user_controller import (
     user_controller_instance
 )
+from unittest.mock import patch, MagicMock
+import pytest
+import sys
+import os
+sys.path.insert(
+    0,
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '../..')))
 
 
 @pytest.fixture(autouse=True)
