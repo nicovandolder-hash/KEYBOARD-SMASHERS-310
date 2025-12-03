@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query, Path
 from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
@@ -98,6 +98,18 @@ class MovieController:
     def get_all_movies(
         self, skip: int = 0, limit: int = 20
     ) -> PaginatedMoviesResponse:
+        # Validate inputs
+        if skip < 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Skip must be non-negative"
+            )
+        if limit < 1 or limit > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Limit must be between 1 and 100"
+            )
+        
         logger.info(f"Fetching movies with skip={skip}, limit={limit}")
         all_movies = self.movie_dao.get_all_movies()
         total = len(all_movies)
@@ -118,6 +130,13 @@ class MovieController:
         )
 
     def get_movie_by_id(self, movie_id: str) -> MovieSchema:
+        # Validate input
+        if not movie_id or not movie_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Movie ID cannot be empty"
+            )
+        
         logger.info(f"Fetching movie: {movie_id}")
         try:
             movie_dict = self.movie_dao.get_movie(movie_id)
@@ -207,6 +226,18 @@ class MovieController:
             )
 
     def search_movies_by_title(self, title: str) -> List[MovieSchema]:
+        # Validate input
+        if not title or not title.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Title search query cannot be empty"
+            )
+        if len(title) > 500:
+            raise HTTPException(
+                status_code=400,
+                detail="Title search query must be 500 characters or less"
+            )
+        
         logger.info(f"Searching movies by title: {title}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -222,6 +253,18 @@ class MovieController:
         return [self._dict_to_schema(movie) for movie in matching_movies]
 
     def get_movies_by_genre(self, genre: str) -> List[MovieSchema]:
+        # Validate input
+        if not genre or len(genre.strip()) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Genre cannot be empty"
+            )
+        if len(genre) > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Genre must be 100 characters or less"
+            )
+        
         logger.info(f"Fetching movies by genre: {genre}")
         all_movies = self.movie_dao.get_all_movies()
 
@@ -247,6 +290,28 @@ class MovieController:
         genre: Optional[str] = None,
         year: Optional[int] = None
     ) -> List[MovieSchema]:
+        # Validate inputs
+        if sort_by and sort_by not in ["year", "title"]:
+            raise HTTPException(
+                status_code=400,
+                detail="sort_by must be 'year' or 'title'"
+            )
+        if year and (year < 1800 or year > 2100):
+            raise HTTPException(
+                status_code=400,
+                detail="Year must be between 1800 and 2100"
+            )
+        if query and len(query) > 500:
+            raise HTTPException(
+                status_code=400,
+                detail="Query must be 500 characters or less"
+            )
+        if genre and len(genre) > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Genre must be 100 characters or less"
+            )
+        
         logger.info(
             f"Searching movies: query={query}, sort={sort_by}, "
             f"genre={genre}, year={year}"
@@ -310,16 +375,19 @@ router = APIRouter(
 # PUBLIC ENDPOINTS
 
 @router.get("/", response_model=PaginatedMoviesResponse)
-def get_all_movies(skip: int = 0, limit: int = 20):
+def get_all_movies(
+    skip: int = Query(0, ge=0, description="Number of movies to skip"),
+    limit: int = Query(20, ge=1, le=100, description="Maximum movies to return")
+):
     return movie_controller_instance.get_all_movies(skip=skip, limit=limit)
 
 
 @router.get("/search", response_model=List[MovieSchema])
 def search_movies(
-    q: Optional[str] = None,
-    sort_by: Optional[str] = None,
-    genre: Optional[str] = None,
-    year: Optional[int] = None
+    q: Optional[str] = Query(None, max_length=500, description="Search query"),
+    sort_by: Optional[str] = Query(None, description="Sort by: 'title' or 'year'"),
+    genre: Optional[str] = Query(None, max_length=100, description="Filter by genre"),
+    year: Optional[int] = Query(None, ge=1800, le=2100, description="Filter by year")
 ):
     return movie_controller_instance.search_movies(
         q, sort_by=sort_by, genre=genre, year=year
@@ -327,12 +395,12 @@ def search_movies(
 
 
 @router.get("/genre/{genre}", response_model=List[MovieSchema])
-def get_movies_by_genre(genre: str):
+def get_movies_by_genre(genre: str = Path(..., max_length=100, min_length=1)):
     return movie_controller_instance.get_movies_by_genre(genre)
 
 
 @router.get("/{movie_id}", response_model=MovieSchema)
-def get_movie(movie_id: str):
+def get_movie(movie_id: str = Path(..., min_length=1, max_length=100)):
     return movie_controller_instance.get_movie_by_id(movie_id)
 
 
@@ -348,8 +416,8 @@ def create_movie(
 
 @router.put("/{movie_id}", response_model=MovieSchema)
 def update_movie(
-    movie_id: str,
-    movie_data: MovieUpdateSchema,
+    movie_id: str = Path(..., min_length=1, max_length=100),
+    movie_data: MovieUpdateSchema = None,
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     return movie_controller_instance.update_movie(movie_id, movie_data)
@@ -357,7 +425,7 @@ def update_movie(
 
 @router.delete("/{movie_id}")
 def delete_movie(
-    movie_id: str,
+    movie_id: str = Path(..., min_length=1, max_length=100),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     return movie_controller_instance.delete_movie(movie_id)

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response, Cookie
+from fastapi import APIRouter, HTTPException, Response, Cookie, Path
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
@@ -99,6 +99,14 @@ class UserController:
         return UserAPISchema(**user_dict)
 
     def authenticate_user(self, email: str, password: str):
+        # Validate inputs
+        if not email or not email.strip():
+            logger.warning("Authentication failed: Email cannot be empty")
+            return None
+        if not password:
+            logger.warning("Authentication failed: Password cannot be empty")
+            return None
+        
         user_dict = self.user_dao.get_user_by_email(email)
 
         if not user_dict:
@@ -288,6 +296,13 @@ class UserController:
         return [self.dict_to_schema(user) for user in users]
 
     def get_user_by_id(self, user_id: str) -> Optional[UserAPISchema]:
+        # Validate input
+        if not user_id or not user_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="User ID cannot be empty"
+            )
+        
         logger.debug(f"Retrieving user by ID: {user_id}")
         try:
             user_dict = self.user_dao.get_user(user_id)
@@ -433,7 +448,7 @@ def get_users(
 
 @router.get("/{user_id}", response_model=UserAPISchema)
 def get_user(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -466,8 +481,8 @@ def get_user(
 
 @router.put("/{user_id}", response_model=UserAPISchema)
 def update_user(
-    user_id: str,
-    user_data: UpdateUserSchema,
+    user_id: str = Path(..., min_length=1, max_length=100),
+    user_data: UpdateUserSchema = None,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -496,7 +511,7 @@ def update_user(
 
 @router.delete("/{user_id}")
 def delete_user(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -522,7 +537,7 @@ def delete_user(
 
 @router.post("/{user_id}/suspend")
 def suspend_user(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -556,7 +571,7 @@ def suspend_user(
 
 @router.post("/{user_id}/reactivate")
 def reactivate_user(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
@@ -589,8 +604,8 @@ def reactivate_user(
 
 @router.post("/{user_id}/favorites/{movie_id}")
 def toggle_favorite(
-    user_id: str,
-    movie_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
+    movie_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """

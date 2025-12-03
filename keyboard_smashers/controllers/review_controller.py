@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query, Path
 from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
-from pathlib import Path
+from pathlib import Path as FilePath
 from keyboard_smashers.dao.review_dao import review_dao_instance
 from keyboard_smashers.dao.report_dao import ReportDAO
 from keyboard_smashers.auth import get_current_user, get_current_admin_user
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 admin_logger = logging.getLogger('admin_actions')
 admin_logger.setLevel(logging.INFO)
 if not admin_logger.handlers:
-    log_dir = Path('logs')
+    log_dir = FilePath('logs')
     log_dir.mkdir(exist_ok=True)
     admin_handler = logging.FileHandler('logs/admin_actions.log')
     admin_handler.setFormatter(
@@ -165,6 +165,13 @@ class ReviewController:
         return filtered_reviews
 
     def get_review_by_id(self, review_id: str) -> ReviewSchema:
+        # Validate input
+        if not review_id or not review_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Review ID cannot be empty"
+            )
+        
         logger.info(f"Fetching review: {review_id}")
         try:
             review_dict = self.review_dao.get_review(review_id)
@@ -183,6 +190,23 @@ class ReviewController:
         limit: int = 10,
         include_suspended: bool = False
     ) -> PaginatedReviewResponse:
+        # Validate inputs
+        if not movie_id or not movie_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Movie ID cannot be empty"
+            )
+        if skip < 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Skip must be non-negative"
+            )
+        if limit < 1 or limit > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Limit must be between 1 and 100"
+            )
+        
         logger.info(
             f"Fetching reviews for movie: {movie_id} "
             f"(skip={skip}, limit={limit}, "
@@ -221,6 +245,23 @@ class ReviewController:
         limit: int = 10,
         include_suspended: bool = False
     ) -> PaginatedReviewResponse:
+        # Validate inputs
+        if not user_id or not user_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="User ID cannot be empty"
+            )
+        if skip < 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Skip must be non-negative"
+            )
+        if limit < 1 or limit > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Limit must be between 1 and 100"
+            )
+        
         logger.info(
             f"Fetching reviews by user: {user_id} "
             f"(skip={skip}, limit={limit}, "
@@ -457,6 +498,18 @@ class ReviewController:
         admin_viewed: Optional[bool] = None
     ) -> dict:
         """Get paginated list of reported reviews with review details"""
+        # Validate inputs
+        if skip < 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Skip must be non-negative"
+            )
+        if limit < 1 or limit > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Limit must be between 1 and 100"
+            )
+        
         logger.info(
             f"Admin fetching reported reviews (skip={skip}, limit={limit}, "
             f"admin_viewed={admin_viewed})"
@@ -607,9 +660,9 @@ router = APIRouter(
 
 @router.get("/movie/{movie_id}", response_model=PaginatedReviewResponse)
 def get_reviews_for_movie(
-    movie_id: str,
-    skip: int = 0,
-    limit: int = 10
+    movie_id: str = Path(..., min_length=1, max_length=100),
+    skip: int = Query(0, ge=0, description="Number of reviews to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum reviews to return")
 ):
     """
     Get paginated reviews for a specific movie.
@@ -617,17 +670,15 @@ def get_reviews_for_movie(
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
-    # Enforce max limit
-    limit = min(limit, 100)
     return review_controller_instance.get_reviews_for_movie(
         movie_id, skip, limit)
 
 
 @router.get("/user/{user_id}", response_model=PaginatedReviewResponse)
 def get_reviews_by_user(
-    user_id: str,
-    skip: int = 0,
-    limit: int = 10
+    user_id: str = Path(..., min_length=1, max_length=100),
+    skip: int = Query(0, ge=0, description="Number of reviews to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum reviews to return")
 ):
     """
     Get paginated reviews by a specific user.
@@ -635,13 +686,11 @@ def get_reviews_by_user(
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
-    # Enforce max limit
-    limit = min(limit, 100)
     return review_controller_instance.get_reviews_by_user(user_id, skip, limit)
 
 
 @router.get("/{review_id}", response_model=ReviewSchema)
-def get_review(review_id: str):
+def get_review(review_id: str = Path(..., min_length=1, max_length=100)):
     """Get a specific review by ID"""
     return review_controller_instance.get_review_by_id(review_id)
 
@@ -671,8 +720,8 @@ def create_review(
 
 @router.put("/{review_id}", response_model=ReviewSchema)
 def update_review(
-    review_id: str,
-    review_data: ReviewUpdateSchema,
+    review_id: str = Path(..., min_length=1, max_length=100),
+    review_data: ReviewUpdateSchema = None,
     current_user_id: str = Depends(get_current_user)
 ):
     """Update your own review (requires authentication)"""
@@ -683,7 +732,7 @@ def update_review(
 
 @router.delete("/{review_id}")
 def delete_review(
-    review_id: str,
+    review_id: str = Path(..., min_length=1, max_length=100),
     current_user_id: str = Depends(get_current_user)
 ):
     """Delete your own review (requires authentication)"""
@@ -692,8 +741,8 @@ def delete_review(
 
 @router.post("/{review_id}/report", status_code=201)
 def report_review(
-    review_id: str,
-    reason: str = "",
+    review_id: str = Path(..., min_length=1, max_length=100),
+    reason: str = Query("", max_length=500, description="Reason for reporting"),
     current_user_id: str = Depends(get_current_user)
 ):
     """Report a review for moderation (requires authentication)"""
@@ -742,9 +791,9 @@ def report_review(
     response_model=PaginatedReportedReviewsResponse
 )
 def admin_get_reported_reviews(
-    skip: int = 0,
-    limit: int = 50,
-    admin_viewed: Optional[bool] = None,
+    skip: int = Query(0, ge=0, description="Number of reports to skip"),
+    limit: int = Query(50, ge=1, le=100, description="Maximum reports per page"),
+    admin_viewed: Optional[bool] = Query(None, description="Filter by viewed status"),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Get paginated list of reported reviews (admin only)
@@ -764,7 +813,7 @@ def admin_get_reported_reviews(
 
 @router.patch("/reports/{report_id}/admin/view")
 def admin_mark_report_viewed(
-    report_id: str,
+    report_id: str = Path(..., min_length=1, max_length=100),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Mark a report as viewed by admin (admin only)"""
@@ -773,7 +822,7 @@ def admin_mark_report_viewed(
 
 @router.delete("/{review_id}/admin")
 def admin_delete_review(
-    review_id: str,
+    review_id: str = Path(..., min_length=1, max_length=100),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Admin delete any review for moderation (requires admin privileges)"""
@@ -782,7 +831,7 @@ def admin_delete_review(
 
 @router.delete("/reports/{report_id}/admin")
 def admin_delete_report(
-    report_id: str,
+    report_id: str = Path(..., min_length=1, max_length=100),
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     """Admin delete a specific report (requires admin privileges)"""

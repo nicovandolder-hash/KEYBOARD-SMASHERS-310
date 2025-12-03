@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Cookie
+from fastapi import APIRouter, HTTPException, Cookie, Path, Query
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
@@ -181,6 +181,13 @@ class PenaltyController:
             raise HTTPException(status_code=400, detail=str(e))
 
     def get_penalty_by_id(self, penalty_id: str) -> PenaltyAPISchema:
+        # Validate input
+        if not penalty_id or not penalty_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Penalty ID cannot be empty"
+            )
+        
         logger.debug(f"Retrieving penalty: {penalty_id}")
 
         try:
@@ -201,6 +208,23 @@ class PenaltyController:
         skip: int = 0,
         limit: int = 50
     ) -> PaginatedPenaltyResponse:
+        # Validate inputs
+        if user_id is not None and (not user_id or not user_id.strip()):
+            raise HTTPException(
+                status_code=400,
+                detail="User ID cannot be empty if provided"
+            )
+        if skip < 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Skip must be non-negative"
+            )
+        if limit < 1 or limit > 100:
+            raise HTTPException(
+                status_code=400,
+                detail="Limit must be between 1 and 100"
+            )
+        
         logger.debug(
             f"Retrieving penalties (status={status}, user_id={user_id}, "
             f"skip={skip}, limit={limit})"
@@ -299,6 +323,13 @@ class PenaltyController:
 
     def get_user_penalty_summary(self, user_id: str) -> PenaltySummarySchema:
         """Get summary of active and historical penalties for a user"""
+        # Validate input
+        if not user_id or not user_id.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="User ID cannot be empty"
+            )
+        
         logger.info(f"Fetching penalty summary for user: {user_id}")
 
         try:
@@ -340,9 +371,9 @@ router = APIRouter(
 
 @router.get("/my-penalties", response_model=PaginatedPenaltyResponse)
 def get_my_penalties(
-    status: Optional[str] = None,
-    skip: int = 0,
-    limit: int = 50,
+    status: Optional[str] = Query(None, pattern="^(active|inactive)$", description="Filter by 'active' or 'inactive'"),
+    skip: int = Query(0, ge=0, description="Number of penalties to skip"),
+    limit: int = Query(50, ge=1, le=100, description="Maximum penalties to return"),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get paginated list of current user's penalties
@@ -360,9 +391,6 @@ def get_my_penalties(
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid session")
 
-    # Enforce max limit
-    limit = min(limit, 100)
-
     return penalty_controller_instance.get_all_penalties(
         status=status,
         user_id=user_id,
@@ -373,7 +401,7 @@ def get_my_penalties(
 
 @router.get("/user/{user_id}/summary", response_model=PenaltySummarySchema)
 def get_user_penalty_summary(
-    user_id: str,
+    user_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get summary of active and historical penalties for a user
@@ -436,10 +464,10 @@ def create_penalty(
 
 @router.get("/", response_model=PaginatedPenaltyResponse)
 def get_all_penalties(
-    status: Optional[str] = None,
-    user_id: Optional[str] = None,
-    skip: int = 0,
-    limit: int = 50,
+    status: Optional[str] = Query(None, pattern="^(active|inactive)$", description="Filter by 'active' or 'inactive'"),
+    user_id: Optional[str] = Query(None, description="Filter by specific user"),
+    skip: int = Query(0, ge=0, description="Number of penalties to skip"),
+    limit: int = Query(50, ge=1, le=100, description="Maximum penalties to return"),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """Get paginated list of all penalties (admin only)
@@ -467,16 +495,13 @@ def get_all_penalties(
             "Admin privileges required")
         )
 
-    # Enforce max limit
-    limit = min(limit, 100)
-
     return penalty_controller_instance.get_all_penalties(
         status=status, user_id=user_id, skip=skip, limit=limit)
 
 
 @router.get("/{penalty_id}", response_model=PenaltyAPISchema)
 def get_penalty(
-    penalty_id: str,
+    penalty_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -502,8 +527,8 @@ def get_penalty(
 
 @router.put("/{penalty_id}", response_model=PenaltyAPISchema)
 def update_penalty(
-    penalty_id: str,
-    penalty_data: UpdatePenaltySchema,
+    penalty_id: str = Path(..., min_length=1, max_length=100),
+    penalty_data: UpdatePenaltySchema = None,
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
@@ -529,7 +554,7 @@ def update_penalty(
 
 @router.delete("/{penalty_id}")
 def delete_penalty(
-    penalty_id: str,
+    penalty_id: str = Path(..., min_length=1, max_length=100),
     session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     from keyboard_smashers.auth import SessionManager
