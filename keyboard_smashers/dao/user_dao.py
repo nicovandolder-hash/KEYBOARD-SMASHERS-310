@@ -470,3 +470,93 @@ class UserDAO:
                 following.append(self.users[following_id].copy())
 
         return following
+
+    def block_user(self, blocker_id: str, blocked_id: str):
+        """
+        Block a user. Bidirectional blocking - both users block each other.
+        Automatically removes any existing follow relationships.
+        """
+        if blocker_id not in self.users:
+            raise KeyError(f"User with ID '{blocker_id}' not found")
+        if blocked_id not in self.users:
+            raise KeyError(f"User with ID '{blocked_id}' not found")
+
+        if blocker_id == blocked_id:
+            raise ValueError("Cannot block yourself")
+
+        blocker = self.users[blocker_id]
+        blocked = self.users[blocked_id]
+
+        # Initialize blocked_users lists if needed
+        if 'blocked_users' not in blocker:
+            blocker['blocked_users'] = []
+        if 'blocked_users' not in blocked:
+            blocked['blocked_users'] = []
+
+        # Add bidirectional blocking (idempotent)
+        if blocked_id not in blocker['blocked_users']:
+            blocker['blocked_users'].append(blocked_id)
+        if blocker_id not in blocked['blocked_users']:
+            blocked['blocked_users'].append(blocker_id)
+
+        # Remove any existing follow relationships
+        if 'following' in blocker and blocked_id in blocker['following']:
+            blocker['following'].remove(blocked_id)
+        if 'followers' in blocker and blocked_id in blocker['followers']:
+            blocker['followers'].remove(blocked_id)
+        if 'following' in blocked and blocker_id in blocked['following']:
+            blocked['following'].remove(blocker_id)
+        if 'followers' in blocked and blocker_id in blocked['followers']:
+            blocked['followers'].remove(blocker_id)
+
+        self.save_users()
+        logger.info(
+            f"User {blocker_id} blocked {blocked_id}"
+            f" (bidirectional block applied)"
+        )
+
+    def unblock_user(self, unblocker_id: str, blocked_id: str):
+        """
+        Unblock a user. Removes bidirectional block for both users.
+        """
+        if unblocker_id not in self.users:
+            raise KeyError(f"User with ID '{unblocker_id}' not found")
+        if blocked_id not in self.users:
+            raise KeyError(f"User with ID '{blocked_id}' not found")
+
+        unblocker = self.users[unblocker_id]
+        blocked = self.users[blocked_id]
+
+        # Initialize blocked_users lists if needed
+        if 'blocked_users' not in unblocker:
+            unblocker['blocked_users'] = []
+        if 'blocked_users' not in blocked:
+            blocked['blocked_users'] = []
+
+        # Remove bidirectional block (idempotent)
+        if blocked_id in unblocker['blocked_users']:
+            unblocker['blocked_users'].remove(blocked_id)
+        if unblocker_id in blocked['blocked_users']:
+            blocked['blocked_users'].remove(unblocker_id)
+
+        self.save_users()
+        logger.info(
+            f"User {unblocker_id} unblocked {blocked_id}"
+            f" (bidirectional unblock applied)"
+        )
+
+    def is_blocked(self, user_id: str, other_user_id: str) -> bool:
+        """
+        Check if two users have blocked each other.
+        Returns True if either user has blocked the other.
+        """
+        if user_id not in self.users or other_user_id not in self.users:
+            return False
+
+        user = self.users[user_id]
+        other_user = self.users[other_user_id]
+
+        user_blocked = other_user_id in user.get('blocked_users', [])
+        other_blocked = user_id in other_user.get('blocked_users', [])
+
+        return user_blocked or other_blocked
