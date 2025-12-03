@@ -235,3 +235,70 @@ def test_unblock_allows_following_again(client):
     # And Bob should be able to follow Alice
     response2 = client.post(f"/users/{alice_id}/follow", cookies={"session_token": bob_token})
     assert response2.status_code == 200
+
+
+def test_get_blocked_users_empty(client):
+    """Test getting blocked users when none are blocked"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    
+    response = client.get("/users/me/blocked", cookies={"session_token": alice_token})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["blocked_users"] == []
+    assert data["total"] == 0
+
+
+def test_get_blocked_users_list(client):
+    """Test getting list of blocked users"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    charlie_id, _ = create_and_login_user(client, "charlie", "charlie@example.com", "CharliePass123!")
+    
+    # Alice blocks Bob and Charlie
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    client.post(f"/users/{charlie_id}/block", cookies={"session_token": alice_token})
+    
+    # Get blocked users
+    response = client.get("/users/me/blocked", cookies={"session_token": alice_token})
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert data["total"] == 2
+    assert len(data["blocked_users"]) == 2
+    
+    # Check that both users are in the list
+    blocked_ids = [user["userid"] for user in data["blocked_users"]]
+    assert bob_id in blocked_ids
+    assert charlie_id in blocked_ids
+    
+    # Check structure
+    for user in data["blocked_users"]:
+        assert "userid" in user
+        assert "username" in user
+
+
+def test_get_blocked_users_after_unblock(client):
+    """Test that unblocking removes user from blocked list"""
+    alice_id, alice_token = create_and_login_user(client, "alice", "alice@example.com", "AlicePass123!")
+    bob_id, _ = create_and_login_user(client, "bob", "bob@example.com", "BobPass123!")
+    
+    # Block
+    client.post(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Verify blocked
+    response1 = client.get("/users/me/blocked", cookies={"session_token": alice_token})
+    assert response1.json()["total"] == 1
+    
+    # Unblock
+    client.delete(f"/users/{bob_id}/block", cookies={"session_token": alice_token})
+    
+    # Verify unblocked
+    response2 = client.get("/users/me/blocked", cookies={"session_token": alice_token})
+    assert response2.json()["total"] == 0
+
+
+def test_get_blocked_users_requires_auth(client):
+    """Test that getting blocked users requires authentication"""
+    response = client.get("/users/me/blocked")
+    assert response.status_code == 401
+

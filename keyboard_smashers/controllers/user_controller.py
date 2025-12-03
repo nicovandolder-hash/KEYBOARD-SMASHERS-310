@@ -903,6 +903,53 @@ def unblock_user(
         raise HTTPException(status_code=404, detail=str(e))
 
 
+@router.get("/me/blocked")
+def get_blocked_users(
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
+):
+    """
+    Get list of users blocked by the authenticated user.
+    Returns user IDs and usernames of blocked users.
+    """
+    from keyboard_smashers.auth import SessionManager
+
+    if not session_token:
+        raise HTTPException(status_code=401,
+                            detail="Not authenticated. Please login.")
+
+    current_user_id = SessionManager.validate_session(session_token)
+    if not current_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired session. Please login again.")
+
+    try:
+        user = user_controller_instance.user_dao.get_user(current_user_id)
+        blocked_user_ids = user.get('blocked_users', [])
+
+        # Get details for each blocked user
+        blocked_users = []
+        for blocked_id in blocked_user_ids:
+            try:
+                blocked_user = user_controller_instance.user_dao.get_user(
+                    blocked_id
+                )
+                blocked_users.append({
+                    "userid": blocked_user['userid'],
+                    "username": blocked_user['username']
+                })
+            except KeyError:
+                # Skip if blocked user no longer exists
+                continue
+
+        return {
+            "blocked_users": blocked_users,
+            "total": len(blocked_users)
+        }
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
 @router.get("/search/users")
 def search_users(
     q: str = "",
