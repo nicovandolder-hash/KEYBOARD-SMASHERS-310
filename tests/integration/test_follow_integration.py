@@ -57,6 +57,10 @@ def create_and_login_user(client, username, email, password):
     token = login_response.cookies.get("session_token")
     assert token is not None, f"No session token for {username}"
 
+    # Clear client cookies to prevent cookie jar interference
+    # This ensures explicit cookies in requests are used, not cached ones
+    client.cookies.clear()
+
     return user_id, token
 
 

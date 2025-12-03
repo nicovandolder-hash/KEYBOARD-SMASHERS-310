@@ -71,6 +71,10 @@ def create_and_login_user(client, username, email, password):
     assert login_response.status_code == 200
     token = login_response.cookies.get("session_token")
 
+    # Clear client cookies to prevent cookie jar interference
+    # This ensures explicit cookies in requests are used, not cached ones
+    client.cookies.clear()
+
     return user_id, token
 
 
