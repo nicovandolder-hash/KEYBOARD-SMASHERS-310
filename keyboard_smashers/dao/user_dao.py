@@ -42,6 +42,33 @@ class UserDAO:
                         if favorites_str else []
                     )
 
+                    following_str = row.get('following', '')
+                    following = (
+                        [
+                            f.strip()
+                            for f in following_str.split(',') if f.strip()
+                        ]
+                        if following_str else []
+                    )
+
+                    followers_str = row.get('followers', '')
+                    followers = (
+                        [
+                            f.strip()
+                            for f in followers_str.split(',') if f.strip()
+                        ]
+                        if followers_str else []
+                    )
+
+                    blocked_str = row.get('blocked_users', '')
+                    blocked_users = (
+                        [
+                            f.strip()
+                            for f in blocked_str.split(',') if f.strip()
+                        ]
+                        if blocked_str else []
+                    )
+
                     user_dict = {
                         'userid': row['userid'],
                         'username': row['username'],
@@ -61,7 +88,10 @@ class UserDAO:
                         'total_penalty_count': int(
                             row.get('total_penalty_count', 0)
                         ),
-                        'favorites': favorites
+                        'favorites': favorites,
+                        'following': following,
+                        'followers': followers,
+                        'blocked_users': blocked_users
                     }
 
                     self.users[user_dict['userid']] = user_dict
@@ -103,7 +133,10 @@ class UserDAO:
                     'is_suspended',
                     'total_reviews',
                     'total_penalty_count',
-                    'favorites'
+                    'favorites',
+                    'following',
+                    'followers',
+                    'blocked_users'
                 ]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
@@ -111,6 +144,15 @@ class UserDAO:
                 for user in self.users.values():
                     favorites_str = (
                         ','.join(user.get('favorites', []))
+                    )
+                    following_str = (
+                        ','.join(user.get('following', []))
+                    )
+                    followers_str = (
+                        ','.join(user.get('followers', []))
+                    )
+                    blocked_str = (
+                        ','.join(user.get('blocked_users', []))
                     )
                     writer.writerow({
                         'userid': user['userid'],
@@ -129,7 +171,10 @@ class UserDAO:
                         'total_penalty_count': (
                             user.get('total_penalty_count', 0)
                         ),
-                        'favorites': favorites_str
+                        'favorites': favorites_str,
+                        'following': following_str,
+                        'followers': followers_str,
+                        'blocked_users': blocked_str
                     })
 
             logger.info(f"Saved {len(self.users)} users to {self.csv_path}")
@@ -162,7 +207,10 @@ class UserDAO:
             'is_suspended': user_data.get('is_suspended', False),
             'total_reviews': 0,
             'total_penalty_count': 0,
-            'favorites': []
+            'favorites': [],
+            'following': [],
+            'followers': [],
+            'blocked_users': []
         }
 
         self.users[user_id] = user_dict
