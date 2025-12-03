@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Query, Path
+from fastapi import APIRouter, HTTPException, Depends, Query, Path, Cookie
 from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 import logging
@@ -119,6 +119,52 @@ class ReviewController:
     def _dict_to_schema(self, review_dict: dict) -> ReviewSchema:
         return ReviewSchema(**review_dict)
 
+    def _filter_blocked_user_reviews(
+        self,
+        reviews: List[dict],
+        current_user_id: str,
+        user_dao=None
+    ) -> List[dict]:
+        """
+        Filter out reviews from users who have blocked current user
+        or whom current user has blocked.
+        IMDB reviews (user_id is None) are always included.
+
+        Args:
+            reviews: List of review dictionaries
+            current_user_id: ID of the current viewing user
+            user_dao: Optional UserDAO instance for testing
+        """
+        if user_dao is None:
+            from keyboard_smashers.controllers.user_controller import (
+                user_controller_instance
+            )
+            user_dao = user_controller_instance.user_dao
+
+        filtered_reviews = []
+        for review in reviews:
+            review_user_id = review.get('user_id')
+
+            # Include IMDB reviews (no user_id)
+            if review_user_id is None:
+                filtered_reviews.append(review)
+                continue
+
+            # Check if blocked
+            try:
+                if not user_dao.is_blocked(current_user_id, review_user_id):
+                    filtered_reviews.append(review)
+                else:
+                    logger.debug(
+                        f"Filtered review {review.get('review_id')} "
+                        f"from blocked user {review_user_id}"
+                    )
+            except (KeyError, ValueError, AttributeError):
+                # If any error checking block status, include review
+                filtered_reviews.append(review)
+
+        return filtered_reviews
+
     def _filter_suspended_user_reviews(
         self,
         reviews: List[dict],
@@ -188,7 +234,8 @@ class ReviewController:
         movie_id: str,
         skip: int = 0,
         limit: int = 10,
-        include_suspended: bool = False
+        include_suspended: bool = False,
+        current_user_id: Optional[str] = None
     ) -> PaginatedReviewResponse:
         # Validate inputs
         if not movie_id or not movie_id.strip():
@@ -218,6 +265,12 @@ class ReviewController:
         if not include_suspended:
             all_reviews = self._filter_suspended_user_reviews(all_reviews)
 
+        # Filter blocked users if current user is authenticated
+        if current_user_id:
+            all_reviews = self._filter_blocked_user_reviews(
+                all_reviews, current_user_id
+            )
+
         total = len(all_reviews)
 
         # Apply pagination
@@ -243,7 +296,8 @@ class ReviewController:
         user_id: str,
         skip: int = 0,
         limit: int = 10,
-        include_suspended: bool = False
+        include_suspended: bool = False,
+        current_user_id: Optional[str] = None
     ) -> PaginatedReviewResponse:
         # Validate inputs
         if not user_id or not user_id.strip():
@@ -272,6 +326,12 @@ class ReviewController:
         # Filter if user is suspended (unless explicitly included)
         if not include_suspended:
             all_reviews = self._filter_suspended_user_reviews(all_reviews)
+
+        # Filter blocked users if current user is authenticated
+        if current_user_id:
+            all_reviews = self._filter_blocked_user_reviews(
+                all_reviews, current_user_id
+            )
 
         total = len(all_reviews)
 
@@ -664,16 +724,26 @@ def get_reviews_for_movie(
     skip: int = Query(0, ge=0, description="Number of reviews to skip"),
     limit: int = Query(
         10, ge=1, le=100, description="Maximum reviews to return"
-    )
+    ),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
     Get paginated reviews for a specific movie.
+    If authenticated, filters out reviews from blocked users.
 
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
+    from keyboard_smashers.auth import SessionManager
+
+    # Validate session if token exists
+    current_user_id = None
+    if session_token:
+        current_user_id = SessionManager.validate_session(session_token)
+
     return review_controller_instance.get_reviews_for_movie(
-        movie_id, skip, limit)
+        movie_id, skip, limit, current_user_id=current_user_id
+    )
 
 
 @router.get("/user/{user_id}", response_model=PaginatedReviewResponse)
@@ -682,15 +752,26 @@ def get_reviews_by_user(
     skip: int = Query(0, ge=0, description="Number of reviews to skip"),
     limit: int = Query(
         10, ge=1, le=100, description="Maximum reviews to return"
-    )
+    ),
+    session_token: Optional[str] = Cookie(default=None, alias="session_token")
 ):
     """
     Get paginated reviews by a specific user.
+    If authenticated, filters out reviews from blocked users.
 
     - **skip**: Number of reviews to skip (default: 0)
     - **limit**: Maximum reviews to return (default: 10, max: 100)
     """
-    return review_controller_instance.get_reviews_by_user(user_id, skip, limit)
+    from keyboard_smashers.auth import SessionManager
+
+    # Validate session if token exists
+    current_user_id = None
+    if session_token:
+        current_user_id = SessionManager.validate_session(session_token)
+
+    return review_controller_instance.get_reviews_by_user(
+        user_id, skip, limit, current_user_id=current_user_id
+    )
 
 
 @router.get("/{review_id}", response_model=ReviewSchema)
