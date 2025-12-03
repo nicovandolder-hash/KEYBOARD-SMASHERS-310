@@ -28,6 +28,14 @@ class UserAPISchema(BaseModel):
     favorites: List[str] = Field(default_factory=list, description=(
         "List of favorite movie IDs"))
 
+
+class PublicUserSchema(BaseModel):
+    """Minimal user information safe for public viewing"""
+    userid: str = Field(..., description="Unique User ID")
+    username: str = Field(..., description="User's display name")
+    reputation: int = Field(..., description="User reputation score")
+    total_reviews: int = Field(..., description="Total number of reviews written")
+
     class Config:
         from_attributes = True
 
@@ -752,15 +760,30 @@ def get_followers(
             user_id
         )
         paginated = all_followers[offset:offset + limit]
+        
+        # Convert to public schema (hide sensitive info)
+        public_followers = [
+            PublicUserSchema(
+                userid=follower['userid'],
+                username=follower['username'],
+                reputation=follower.get('reputation', 3),
+                total_reviews=follower.get('total_reviews', 0)
+            )
+            for follower in paginated
+        ]
+        
         return {
             "user_id": user_id,
             "total": len(all_followers),
             "limit": limit,
             "offset": offset,
-            "followers": paginated
+            "followers": public_followers
         }
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=f"User not found: {str(e)}")
+    except Exception as e:
+        logger.error(f"Error getting followers for {user_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/{user_id}/following")
@@ -778,15 +801,30 @@ def get_following(
             user_id
         )
         paginated = all_following[offset:offset + limit]
+        
+        # Convert to public schema (hide sensitive info)
+        public_following = [
+            PublicUserSchema(
+                userid=followee['userid'],
+                username=followee['username'],
+                reputation=followee.get('reputation', 3),
+                total_reviews=followee.get('total_reviews', 0)
+            )
+            for followee in paginated
+        ]
+        
         return {
             "user_id": user_id,
             "total": len(all_following),
             "limit": limit,
             "offset": offset,
-            "following": paginated
+            "following": public_following
         }
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=f"User not found: {str(e)}")
+    except Exception as e:
+        logger.error(f"Error getting following for {user_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/{user_id}/block")
@@ -901,8 +939,19 @@ def search_users(
     total = len(filtered_users)
     paginated = filtered_users[offset:offset + limit]
     
+    # Convert to public schema (hide sensitive info)
+    public_users = [
+        PublicUserSchema(
+            userid=user.userid,
+            username=user.username,
+            reputation=user.reputation,
+            total_reviews=user.total_reviews
+        )
+        for user in paginated
+    ]
+    
     return {
-        "users": paginated,
+        "users": public_users,
         "total": total,
         "limit": limit,
         "offset": offset,

@@ -1,3 +1,5 @@
 userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites,following,followers,blocked_users
-user_001,alice,alice@example.com,29db8cb9362f5c7caeb72222337a7e9c$2ac4f120760c8d4d6f9574466bed92b76b850aeabffe65912a218b1b8acf4ef1,3,2025-12-03T02:15:34.507312,false,false,0,0,,user_002,,
-user_002,bob,bob@example.com,947b4e51bebb66924de0d72ddc2b2522$358dcd406247120895e3d821515a9804f2c67047593a353ab0da9aa5126de08e,3,2025-12-03T02:15:34.513647,false,false,0,0,,,user_001,
+user_001,alice,alice@example.com,7d3a55c3dfab220ce0cbb8d3da237658$f28032f72ec7348f99e78091cb4db74c7e0b963f434d5665dfed4ffd1e6ecb7c,3,2025-12-03T02:35:15.339148,false,false,0,0,,,"user_002,user_003,user_004",
+user_002,follower0,follower0@example.com,a2f092e8db9a1f4cc4f91afdb6f1786e$e854e7516e4834995b2e8f3a010293896e69542b718081a999e7902fe920fdf4,3,2025-12-03T02:35:15.345511,false,false,0,0,,user_001,,
+user_003,follower1,follower1@example.com,5f5da19ece5cf83a9e4b23a7d8acf15c$358e3b2a428d50039c4155f41e13a3dfbd34854d8f8203a33752cea62d598242,3,2025-12-03T02:35:15.355357,false,false,0,0,,user_001,,
+user_004,follower2,follower2@example.com,a9a520211f335169585e7e8c373aae69$e73e7ca32b1411165625c2fc6600490854525beb35d6475686231b5d692e57cb,3,2025-12-03T02:35:15.364733,false,false,0,0,,user_001,,
