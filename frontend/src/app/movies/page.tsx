@@ -333,7 +333,7 @@ export default function MoviesPage() {
             <div className={styles.activeFilters}>
               {searchQuery && (
                 <span className={styles.filterTag}>
-                  Search: "{searchQuery}"
+                  Search: &quot;{searchQuery}&quot;
                   <button onClick={() => setSearchQuery("")}>✕</button>
                 </span>
               )}
