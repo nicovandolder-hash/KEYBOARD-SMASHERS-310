@@ -254,6 +254,7 @@
 }
 
 .favoriteCard {
+  position: relative;
   padding: 1rem;
   background: #1a1a1a;
   border-radius: 12px;
@@ -265,6 +266,33 @@
 .favoriteCard:hover {
   border-color: #ef4444;
   transform: translateY(-2px);
+}
+
+.removeFavoriteButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: rgba(239, 68, 68, 0.2);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.favoriteCard:hover .removeFavoriteButton {
+  opacity: 1;
+}
+
+.removeFavoriteButton:hover {
+  background: rgba(239, 68, 68, 0.4);
 }
 
 .favoriteTitle {

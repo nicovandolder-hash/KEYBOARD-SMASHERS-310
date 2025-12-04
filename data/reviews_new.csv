@@ -395,3 +395,4 @@ create,review_047562,movie_003,user_003,,1,Review 2 from suspended user,2025-12-
 create,review_047563,movie_004,user_003,,1,Review 3 from suspended user,2025-12-03T04:22:33.430019
 create,review_047564,movie_001,user_002,,3,Review from user,2025-12-03T04:22:33.452390
 create,review_047568,10,user_008,,5,fdsf,2025-12-04T00:52:18.726857
+delete,review_047568,10,user_008,,5,fdsf,2025-12-04T00:52:18.726857
