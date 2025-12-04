@@ -1,0 +1,104 @@
+.main {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #0f0f0f;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.logoutButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutButton:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #888;
+  font-size: 1.25rem;
+}
+
+.welcomeCard {
+  padding: 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.welcomeCard h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.email {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.statCard {
+  padding: 1.25rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4a9eff;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.placeholder {
+  padding: 3rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  text-align: center;
+  color: #666;
+}

@@ -1,0 +1,119 @@
+.main {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #0f0f0f;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.adminBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  border-radius: 9999px;
+}
+
+.logoutButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutButton:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #888;
+  font-size: 1.25rem;
+}
+
+.welcomeCard {
+  padding: 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.welcomeCard h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.email {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.adminGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .adminGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adminCard {
+  padding: 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adminCard:hover {
+  border-color: #a855f7;
+  transform: translateY(-2px);
+}
+
+.adminCard h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.adminCard p {
+  color: #888;
+  font-size: 0.875rem;
+}
