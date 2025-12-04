@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, Mock
-
 from keyboard_smashers.api import app
+from keyboard_smashers.auth import get_current_admin_user
 from keyboard_smashers.external_services.movie_service import (
     ExternalMovieResult
 )
@@ -10,7 +10,15 @@ from keyboard_smashers.external_services.movie_service import (
 
 @pytest.fixture
 def client():
-    return TestClient(app)
+    def mock_get_current_admin_user():
+        return "admin_user_123"
+
+    app.dependency_overrides[get_current_admin_user] = (
+        mock_get_current_admin_user)
+
+    yield TestClient(app)
+
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture
@@ -139,10 +147,6 @@ class TestImportMovieEndpoint:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     @patch(
@@ -150,10 +154,9 @@ class TestImportMovieEndpoint:
         'movie_controller_instance.movie_dao'
     )
     def test_import_movie_endpoint_success(
-        self, mock_dao, mock_service, mock_auth, client,
+        self, mock_dao, mock_service, client,
         sample_external_movie
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.get_movie_by_id.return_value = (
             sample_external_movie
         )
@@ -180,10 +183,6 @@ class TestImportMovieEndpoint:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     @patch(
@@ -191,10 +190,9 @@ class TestImportMovieEndpoint:
         'movie_controller_instance.movie_dao'
     )
     def test_import_movie_already_exists(
-        self, mock_dao, mock_service, mock_auth, client,
+        self, mock_dao, mock_service, client,
         sample_external_movie
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.get_movie_by_id.return_value = (
             sample_external_movie
         )
@@ -214,21 +212,22 @@ class TestImportMovieEndpoint:
         )
 
     def test_import_movie_requires_auth(self, client):
+        app.dependency_overrides.clear()
         response = client.post("/movies/external/import/27205")
         assert response.status_code == 401
 
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
+    def mock_get_current_admin_user():
+        return "admin_user_123"
+    app.dependency_overrides[get_current_admin_user] = (
+        mock_get_current_admin_user)
+
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     def test_import_movie_not_found_in_external(
-        self, mock_service, mock_auth, client
+        self, mock_service, client
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.get_movie_by_id.return_value = None
 
         response = client.post(
@@ -240,17 +239,12 @@ class TestImportMovieEndpoint:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service',
         None
     )
     def test_import_movie_service_not_configured(
-        self, mock_auth, client
+        self, client
     ):
-        mock_auth.return_value = "admin_user_123"
 
         response = client.post(
             "/movies/external/import/27205",
@@ -264,17 +258,12 @@ class TestSearchAndImportEndpoint:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     def test_search_and_import_without_auto_import(
-        self, mock_service, mock_auth, client,
+        self, mock_service, client,
         sample_external_movie
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.search_movies.return_value = [
             sample_external_movie
         ]
@@ -294,10 +283,6 @@ class TestSearchAndImportEndpoint:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     @patch(
@@ -305,10 +290,9 @@ class TestSearchAndImportEndpoint:
         'movie_controller_instance.movie_dao'
     )
     def test_search_and_import_with_auto_import(
-        self, mock_dao, mock_service, mock_auth, client,
+        self, mock_dao, mock_service, client,
         sample_external_movie
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.search_movies.return_value = [
             sample_external_movie
         ]
@@ -340,16 +324,11 @@ class TestSearchAndImportEndpoint:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     def test_search_and_import_no_results(
-        self, mock_service, mock_auth, client
+        self, mock_service, client
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.search_movies.return_value = []
 
         response = client.post(
@@ -364,10 +343,16 @@ class TestSearchAndImportEndpoint:
         assert "No movies found" in data['message']
 
     def test_search_and_import_requires_auth(self, client):
+        app.dependency_overrides.clear()
         response = client.post(
             "/movies/external/search-and-import?q=test"
         )
         assert response.status_code == 401
+
+    def mock_get_current_admin_user():
+        return "admin_user_123"
+    app.dependency_overrides[get_current_admin_user] = (
+        mock_get_current_admin_user)
 
     def test_search_and_import_missing_query(self, client):
         response = client.post(
@@ -381,10 +366,6 @@ class TestEndToEndWorkflow:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     @patch(
@@ -392,10 +373,9 @@ class TestEndToEndWorkflow:
         'movie_controller_instance.movie_dao'
     )
     def test_complete_search_and_import_workflow(
-        self, mock_dao, mock_service, mock_auth, client,
+        self, mock_dao, mock_service, client,
         sample_external_movie
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.search_movies.return_value = [
             sample_external_movie
         ]
@@ -440,10 +420,6 @@ class TestEndToEndWorkflow:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     @patch(
@@ -451,7 +427,7 @@ class TestEndToEndWorkflow:
         'movie_controller_instance.movie_dao'
     )
     def test_search_review_and_import_workflow(
-        self, mock_dao, mock_service, mock_auth, client
+        self, mock_dao, mock_service, client
     ):
         movie1 = ExternalMovieResult(
             external_id="1",
@@ -472,7 +448,6 @@ class TestEndToEndWorkflow:
             rating=3.2
         )
 
-        mock_auth.return_value = "admin_user_123"
         mock_service.search_movies.return_value = [
             movie1, movie2
         ]
@@ -523,16 +498,11 @@ class TestErrorHandling:
 
     @patch(
         'keyboard_smashers.controllers.movie_controller.'
-        'get_current_admin_user'
-    )
-    @patch(
-        'keyboard_smashers.controllers.movie_controller.'
         'movie_controller_instance.external_service'
     )
     def test_handles_invalid_external_id(
-        self, mock_service, mock_auth, client
+        self, mock_service, client
     ):
-        mock_auth.return_value = "admin_user_123"
         mock_service.get_movie_by_id.return_value = None
 
         response = client.post(

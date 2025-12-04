@@ -308,7 +308,9 @@ class TestSearchAndImportSuggestions:
 
         service.search_movies.return_value = many_movies
 
-        service.search_movies.assert_called_once_with("test", limit=5)
+        controller.search_and_import_suggestions("test")
+
+        service.search_movies.assert_called_once_with("test", 5)
 
     def test_search_and_import_only_imports_top_result(
         self, controller_with_external_service
