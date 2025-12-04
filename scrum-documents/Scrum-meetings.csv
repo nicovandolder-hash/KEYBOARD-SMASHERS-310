@@ -1,0 +1,20 @@
+Date,Nico,Joe,Eric,Hugo,Purpose,Type of meetings,Responsibilites:
+September 28,Present,Present,Present,Present,Figuring out each persons responsibility for M1. Also discussed a rough time line for it with setting clear guidelines if needing help and setting a future meeting date.,Sprint Planning,Nico - Non-functional and Domain requirements. Hugo - User stories and backlog entries. Joe - Functional requirements. Eric - Traceability matrix and final doc
+October 1,Present,Present,Present,Present,"Reviewed everyone progress with M1, talked about blockers if applicable and what we could do to help to pass them regarding our set time line.",Sprint Review,
+October 8,Present,Present,Present,Present,"Figuring out each persons responsibility for M2, once again discussed rough time line with regards to that.",Sprint Planning,Nico - Design Patterns + Sequence Diagram. Hugo - All UML Diagrams. Joe - High level Architecture. Eric - Traceability
+October 18,Present,Present,Present,Present,Ensured we are all going to meet deadline for M2. Also discussed and chose the items we want to populate for issues.,Sprint Review,
+October 20,Present,Present,Present,Present,"Set roles for actual coding aspects. Also presented the base layers of our code with docker set up, fast api implementation and model,controller models.",Sprint planning,Nico - User files. Hugo - Movie files. Joe & Eric - Review Files.
+October 26,Present,Present,Present,Present,"Decided to progress in data access layer, making sure we have all the proper controllers and get post put methods and etc. showing up at the url port",Sprint Review,
+Nov 4,Present,Present,Present,Present,"Figured out where everyone was at with back end, discussed blockers, and next actionable items such as CI and everything we will want completed for M3",Sprint Review + Retrospective,Nico - Authentication/Protected Routes & Cookie Sessions. Hugo - CI. Joe & Eric - Review Files.
+Nov 18,Present,Present,Present,Present,"Project check in, disccuss where we are at with M3, see how we can help complete everything we need for this mid point submission point",Sprint Review,
+Nov 20,Present,Present,Absent,Absent,Discussed with prof how to proceed/tackle the lack of assistance from 2 groupmates.,Retrospective,Nico - Penalties Files. Hugo - Review Files.
+Nov 25,Present,Present,Present,Present,"Discuss plan of if we are all going to proceed working on this project, and if not how to continue between the two of us.",Retrospective,
+Nov 25,Present,Present,Absent,Absent,"This and below are all daily checkins to discuss blockers, discuss what we are intending to do for the project today, discussing overall goals and proceedings, etc",Daily standup,Nico - External API. Hugo - Front end and Following Feature.
+Nov 26,Present,Present,Absent,Absent,^,Daily standup,Hugo - Update existing files
+Nov 27,Present,Present,Absent,Absent,^,Daily standup,Hugo - Update existing files
+Nov 28,Present,Present,Absent,Absent,^,Daily standup,Hugo - Update existing files
+Nov 29,Present,Present,Absent,Absent,^,Daily standup,Nico - Documentation for M4 and final submission
+Nov 30,Present,Present,Absent,Absent,^,Daily standup,
+Dec 1,Present,Present,Absent,Absent,^,Daily standup,
+Dec 2,Present,Present,Absent,Absent,^,Daily standup,
+Dec 3,Present,Present,Absent,Absent,^,Daily standup,
