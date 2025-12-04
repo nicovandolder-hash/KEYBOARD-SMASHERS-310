@@ -1,0 +1,8 @@
+{
+  "name": "Keyboard Smashers",
+  "short_name": "KS Reviews",
+  "icons": [],
+  "theme_color": "#0f0f0f",
+  "background_color": "#0f0f0f",
+  "display": "standalone"
+}

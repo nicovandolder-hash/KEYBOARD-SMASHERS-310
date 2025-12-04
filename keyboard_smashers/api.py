@@ -1,5 +1,6 @@
 import logging
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -24,6 +25,19 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="IMDB Reviews API")
+
+# CORS middleware to allow frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",      # Local frontend dev
+        "http://127.0.0.1:3000",      # Alternative localhost
+        "http://frontend:3000",        # Docker compose service name
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(review_router)
 app.include_router(user_router)
