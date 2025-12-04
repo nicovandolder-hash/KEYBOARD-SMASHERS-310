@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 import styles from "./page.module.css";
 
 interface User {
@@ -50,24 +51,13 @@ export default function DashboardPage() {
     fetchUser();
   }, [router]);
 
-  const handleLogout = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      await fetch(`${apiUrl}/users/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch {
-      // Ignore errors
-    }
-    router.push("/login");
-  };
-
   if (isLoading) {
     return (
-      <main className={styles.main}>
-        <div className={styles.loading}>Loading...</div>
-      </main>
+      <div className={styles.pageWrapper}>
+        <main className={styles.main}>
+          <div className={styles.loading}>Loading...</div>
+        </main>
+      </div>
     );
   }
 
@@ -76,31 +66,31 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Dashboard</h1>
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            Sign Out
-          </button>
-        </div>
+    <div className={styles.pageWrapper}>
+      <Navbar username={user.username} isAdmin={user.is_admin} />
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>Dashboard</h1>
+          </div>
 
-        <div className={styles.welcomeCard}>
-          <h2>Welcome, {user.username}!</h2>
-          <p className={styles.email}>{user.email}</p>
-        </div>
+          <div className={styles.welcomeCard}>
+            <h2>Welcome, {user.username}!</h2>
+            <p className={styles.email}>{user.email}</p>
+          </div>
 
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <span className={styles.statValue}>{user.reputation}</span>
-            <span className={styles.statLabel}>Reputation</span>
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <span className={styles.statValue}>{user.reputation}</span>
+              <span className={styles.statLabel}>Reputation</span>
+            </div>
+          </div>
+
+          <div className={styles.placeholder}>
+            <p>🎬 Your movie reviews and activity will appear here.</p>
           </div>
         </div>
-
-        <div className={styles.placeholder}>
-          <p>🎬 Your movie reviews and activity will appear here.</p>
-        </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

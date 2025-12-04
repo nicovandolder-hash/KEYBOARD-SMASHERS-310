@@ -1,7 +1,10 @@
-.main {
+.pageWrapper {
   min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+}
+
+.main {
   padding: 2rem;
-  background: #0f0f0f;
 }
 
 .container {
@@ -33,23 +36,6 @@
   background: linear-gradient(135deg, #a855f7, #7c3aed);
   color: white;
   border-radius: 9999px;
-}
-
-.logoutButton {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid #333;
-  border-radius: 6px;
-  background: transparent;
-  color: #888;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.logoutButton:hover {
-  border-color: #ef4444;
-  color: #ef4444;
 }
 
 .loading {
