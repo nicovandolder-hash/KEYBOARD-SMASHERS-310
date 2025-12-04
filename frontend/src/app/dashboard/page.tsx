@@ -51,6 +51,17 @@ interface BlockedUser {
   username: string;
 }
 
+interface Notification {
+  timestamp: string;
+  event_type: string;
+  data: {
+    message?: string;
+    follower_id?: string;
+    follower_username?: string;
+  };
+  review_id?: string;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -60,6 +71,8 @@ export default function DashboardPage() {
   const [followers, setFollowers] = useState<PublicUser[]>([]);
   const [following, setFollowing] = useState<PublicUser[]>([]);
   const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [reviewMovies, setReviewMovies] = useState<Record<string, Movie>>({});
   const [showBlockedModal, setShowBlockedModal] = useState(false);
@@ -106,11 +119,12 @@ export default function DashboardPage() {
         setUser(userData);
 
         // Fetch all dashboard data in parallel
-        const [reviewsRes, penaltiesRes, followersRes, followingRes] = await Promise.all([
+        const [reviewsRes, penaltiesRes, followersRes, followingRes, notificationsRes] = await Promise.all([
           fetch(`${apiUrl}/reviews/user/${userData.userid}?limit=50`, { credentials: "include" }),
           fetch(`${apiUrl}/penalties/my-penalties`, { credentials: "include" }),
           fetch(`${apiUrl}/users/${userData.userid}/followers?limit=100`, { credentials: "include" }),
           fetch(`${apiUrl}/users/${userData.userid}/following?limit=100`, { credentials: "include" }),
+          fetch(`${apiUrl}/users/me/notifications?limit=20`, { credentials: "include" }),
         ]);
 
         // Process reviews
@@ -156,6 +170,13 @@ export default function DashboardPage() {
           const followingData = await followingRes.json();
           setFollowing(followingData.following || []);
           setFollowingCount(followingData.total || 0);
+        }
+
+        // Process notifications
+        if (notificationsRes.ok) {
+          const notificationsData = await notificationsRes.json();
+          setNotifications(notificationsData.notifications || []);
+          setUnreadCount(notificationsData.unread || 0);
         }
 
         // Fetch blocked users
@@ -359,6 +380,43 @@ export default function DashboardPage() {
               )}
             </section>
           </div>
+
+          {/* Notifications Section */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>
+              🔔 Notifications
+              {unreadCount > 0 && (
+                <span className={styles.notificationBadge}>{unreadCount}</span>
+              )}
+            </h2>
+            {notifications.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>No notifications yet</p>
+              </div>
+            ) : (
+              <div className={styles.notificationsList}>
+                {notifications.slice(0, 10).map((notification, index) => (
+                  <div key={index} className={styles.notificationItem}>
+                    <div className={styles.notificationIcon}>
+                      {notification.event_type === 'user_follow' ? '👤' : 
+                       notification.event_type === 'new_review' ? '📝' : '🔔'}
+                    </div>
+                    <div className={styles.notificationContent}>
+                      <p className={styles.notificationMessage}>
+                        {notification.data?.message || notification.event_type}
+                      </p>
+                      <span className={styles.notificationTime}>
+                        {formatDate(notification.timestamp)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                {notifications.length > 10 && (
+                  <p className={styles.moreText}>+ {notifications.length - 10} more</p>
+                )}
+              </div>
+            )}
+          </section>
 
           {/* Ratings History Section */}
           <section className={styles.section}>
