@@ -53,8 +53,16 @@ export default function RegisterPage() {
     // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one digit";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one special character (!@#$%^&*(),.?\":{}|<>)";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one uppercase letter";
+    } else if (!/[a-z]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one lowercase letter";
     }
 
     // Confirm password validation
@@ -104,10 +112,9 @@ export default function RegisterPage() {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        // Handle backend errors (duplicate email/username)
+        // Handle backend errors (duplicate email/username, validation errors)
+        const data = await response.json();
         throw new Error(data.detail || "Registration failed");
       }
 
@@ -120,7 +127,9 @@ export default function RegisterPage() {
       }, 2000);
 
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        setServerError("Unable to connect to server. Please make sure the backend is running.");
+      } else if (error instanceof Error) {
         setServerError(error.message);
       } else {
         setServerError("An unexpected error occurred. Please try again.");
