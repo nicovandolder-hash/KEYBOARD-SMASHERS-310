@@ -45,6 +45,12 @@ export default function MovieDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const REVIEWS_PER_PAGE = 20;
+  const totalPages = Math.ceil(totalReviews / REVIEWS_PER_PAGE);
+  
   // Review modal state
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -99,39 +105,71 @@ export default function MovieDetailPage() {
     }
   }, [movieId, apiUrl]);
 
-  const fetchReviews = useCallback(async (currentUserId?: string) => {
+  const fetchReviews = useCallback(async (currentUserId?: string, currentUsername?: string, page = 1) => {
     try {
-      const response = await fetch(`${apiUrl}/reviews/movie/${movieId}?limit=50`, {
+      const skip = (page - 1) * REVIEWS_PER_PAGE;
+      
+      // Fetch movie reviews with pagination
+      const response = await fetch(`${apiUrl}/reviews/movie/${movieId}?skip=${skip}&limit=${REVIEWS_PER_PAGE}`, {
         credentials: "include",
       });
 
+      let reviewsList: Review[] = [];
+      let myReview: Review | null = null;
+
       if (response.ok) {
         const data = await response.json();
-        let reviewsList: Review[] = data.reviews || [];
-        
-        // Sort by date descending (most recent first)
-        // Handle both ISO dates (2025-11-20T...) and text dates (4 May 2019)
-        reviewsList = reviewsList.sort((a, b) => {
-          const dateA = new Date(a.review_date).getTime();
-          const dateB = new Date(b.review_date).getTime();
-          // If parsing fails (NaN), treat as old date
-          const safeA = isNaN(dateA) ? 0 : dateA;
-          const safeB = isNaN(dateB) ? 0 : dateB;
-          return safeB - safeA;
-        });
-        
-        setReviews(reviewsList);
-        
-        // Find current user's review
-        if (currentUserId) {
-          const myReview = reviewsList.find((r: Review) => r.user_id === currentUserId);
-          setUserReview(myReview || null);
+        reviewsList = data.reviews || [];
+        setTotalReviews(data.total || 0);
+      }
+
+      // If user is logged in, also fetch their review for this movie
+      if (currentUserId) {
+        try {
+          const userReviewsResponse = await fetch(`${apiUrl}/reviews/user/${currentUserId}?limit=100`, {
+            credentials: "include",
+          });
+          if (userReviewsResponse.ok) {
+            const userReviewsData = await userReviewsResponse.json();
+            const userReviews: Review[] = userReviewsData.reviews || [];
+            // Find user's review for this movie and add username
+            const foundReview = userReviews.find((r: Review) => r.movie_id === movieId);
+            if (foundReview) {
+              myReview = { ...foundReview, username: currentUsername };
+            }
+            setUserReview(myReview);
+            
+            // On first page, add user's review at top if not already present
+            if (page === 1 && myReview && !reviewsList.find((r: Review) => r.review_id === myReview!.review_id)) {
+              reviewsList.unshift(myReview);
+            }
+          }
+        } catch {
+          // Ignore user review fetch errors
         }
       }
+      
+      // Sort by date descending (most recent first)
+      // Handle both ISO dates (2025-11-20T...) and text dates (4 May 2019)
+      reviewsList = reviewsList.sort((a, b) => {
+        const dateA = new Date(a.review_date).getTime();
+        const dateB = new Date(b.review_date).getTime();
+        // If parsing fails (NaN), treat as old date
+        const safeA = isNaN(dateA) ? 0 : dateA;
+        const safeB = isNaN(dateB) ? 0 : dateB;
+        return safeB - safeA;
+      });
+      
+      setReviews(reviewsList);
+      setCurrentPage(page);
     } catch {
       // Ignore review fetch errors
     }
   }, [movieId, apiUrl]);
+
+  const handleReviewPageChange = (page: number) => {
+    fetchReviews(user?.userid, user?.username, page);
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -139,7 +177,7 @@ export default function MovieDetailPage() {
       const userData = await fetchUser();
       if (userData) {
         await fetchMovie();
-        await fetchReviews(userData.userid);
+        await fetchReviews(userData.userid, userData.username);
       }
       setIsLoading(false);
     };
@@ -228,7 +266,7 @@ export default function MovieDetailPage() {
 
       // Refresh data
       await fetchMovie();
-      await fetchReviews(user?.userid);
+      await fetchReviews(user?.userid, user?.username);
       closeModal();
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Something went wrong");
@@ -256,7 +294,7 @@ export default function MovieDetailPage() {
 
       // Refresh data
       await fetchMovie();
-      await fetchReviews(user?.userid);
+      await fetchReviews(user?.userid, user?.username);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to delete review");
     } finally {
@@ -426,28 +464,55 @@ export default function MovieDetailPage() {
           {/* All Reviews Section */}
           <div className={styles.reviewsSection}>
             <h2 className={styles.sectionTitle}>
-              Reviews ({reviews.length})
+              Reviews ({totalReviews})
             </h2>
             {reviews.length === 0 ? (
               <p className={styles.noReviews}>No reviews yet. Be the first to review!</p>
             ) : (
-              <div className={styles.reviewsList}>
-                {reviews.map((review) => (
-                  <div 
-                    key={review.review_id} 
-                    className={`${styles.reviewCard} ${review.user_id === user?.userid ? styles.ownReview : ""}`}
-                  >
-                    <div className={styles.reviewHeader}>
-                      <span className={styles.reviewAuthor}>
-                        {review.username || review.imdb_username || "Anonymous"}
-                      </span>
-                      {renderStars(review.rating)}
-                      <span className={styles.reviewDate}>{formatDate(review.review_date)}</span>
+              <>
+                <div className={styles.reviewsList}>
+                  {reviews.map((review) => (
+                    <div 
+                      key={review.review_id} 
+                      className={`${styles.reviewCard} ${review.user_id === user?.userid ? styles.ownReview : ""}`}
+                    >
+                      <div className={styles.reviewHeader}>
+                        <span className={styles.reviewAuthor}>
+                          {review.username || review.imdb_username || "Anonymous"}
+                        </span>
+                        {renderStars(review.rating)}
+                        <span className={styles.reviewDate}>{formatDate(review.review_date)}</span>
+                      </div>
+                      <p className={styles.reviewText}>{review.review_text}</p>
                     </div>
-                    <p className={styles.reviewText}>{review.review_text}</p>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className={styles.pagination}>
+                    <button
+                      className={styles.pageButton}
+                      onClick={() => handleReviewPageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+
+                    <span className={styles.pageInfo}>
+                      Page {currentPage} of {totalPages}
+                    </span>
+
+                    <button
+                      className={styles.pageButton}
+                      onClick={() => handleReviewPageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
         </div>

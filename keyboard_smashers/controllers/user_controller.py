@@ -49,8 +49,9 @@ class PublicUserSchema(BaseModel):
     reputation: int = Field(..., description="User reputation score")
     total_reviews: int = Field(...,
                                description="Total number of reviews written")
-    favorites: List[str] = Field(..., description="List of favorite movie IDs")
-    is_admin: bool = Field(default=False, description="Whether user is an admin")
+    favorites: List[str] = Field(...,
+                                 description="List of favorite movie IDs")
+    is_admin: bool = Field(default=False, description="Whether user is admin")
 
     class Config:
         from_attributes = True
