@@ -252,10 +252,36 @@ class MovieController:
 
     def delete_movie(self, movie_id: str) -> dict:
         logger.info(f"Deleting movie: {movie_id}")
+
+        # Protect legacy IMDB movies (IDs 1-10)
         try:
+            movie_id_int = int(movie_id)
+            if 1 <= movie_id_int <= 10:
+                raise HTTPException(
+                    status_code=403,
+                    detail="Cannot delete legacy IMDB movies (IDs 1-10)"
+                )
+        except ValueError:
+            pass  # Non-numeric ID, allow deletion
+
+        try:
+            # First delete all user reviews for this movie
+            from keyboard_smashers.dao.review_dao import review_dao_instance
+            deleted_reviews = review_dao_instance.delete_reviews_by_movie(
+                movie_id
+            )
+            if deleted_reviews > 0:
+                logger.info(
+                    f"Cascade deleted {deleted_reviews} reviews "
+                    f"for movie {movie_id}"
+                )
+
             self.movie_dao.delete_movie(movie_id)
             logger.info(f"Movie deleted successfully: {movie_id}")
-            return {"message": f"Movie '{movie_id}' deleted successfully"}
+            return {
+                "message": f"Movie '{movie_id}' deleted successfully",
+                "reviews_deleted": deleted_reviews
+            }
         except KeyError:
             logger.error(f"Movie not found for deletion: {movie_id}")
             raise HTTPException(
