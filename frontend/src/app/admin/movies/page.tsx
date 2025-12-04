@@ -15,6 +15,17 @@ interface Movie {
   average_rating?: number;
 }
 
+interface ExternalMovie {
+  external_id: string;
+  title: string;
+  genre: string;
+  year: number;
+  director: string;
+  description: string;
+  poster_url?: string;
+  rating?: number;
+}
+
 interface User {
   userid: string;
   username: string;
@@ -49,6 +60,14 @@ export default function AdminMoviesPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [movieToDelete, setMovieToDelete] = useState<Movie | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // TMDB search state
+  const [tmdbSearchQuery, setTmdbSearchQuery] = useState("");
+  const [tmdbResults, setTmdbResults] = useState<ExternalMovie[]>([]);
+  const [tmdbLoading, setTmdbLoading] = useState(false);
+  const [tmdbError, setTmdbError] = useState("");
+  const [importingId, setImportingId] = useState<string | null>(null);
+  const [importSuccess, setImportSuccess] = useState<string | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -243,6 +262,82 @@ export default function AdminMoviesPage() {
     }
   };
 
+  // TMDB Search Functions
+  const handleTmdbSearch = async () => {
+    if (!tmdbSearchQuery.trim()) return;
+
+    setTmdbLoading(true);
+    setTmdbError("");
+    setTmdbResults([]);
+    setImportSuccess(null);
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/movies/external/search?q=${encodeURIComponent(tmdbSearchQuery.trim())}`,
+        { credentials: "include" }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMsg = typeof errorData.detail === 'string' 
+          ? errorData.detail 
+          : Array.isArray(errorData.detail) 
+            ? errorData.detail.map((e: { msg?: string }) => e.msg).join(', ')
+            : "Failed to search TMDB";
+        throw new Error(errorMsg);
+      }
+
+      const data = await response.json();
+      setTmdbResults(data);
+    } catch (err) {
+      setTmdbError(err instanceof Error ? err.message : "Failed to search TMDB");
+    } finally {
+      setTmdbLoading(false);
+    }
+  };
+
+  const handleImportMovie = async (externalId: string) => {
+    setImportingId(externalId);
+    setImportSuccess(null);
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/movies/external/import/${externalId}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to import movie");
+      }
+
+      const importedMovie = await response.json();
+      setImportSuccess(`Successfully imported "${importedMovie.title}"!`);
+      
+      // Refresh the movies list
+      await fetchMovies();
+      
+      // Remove the imported movie from TMDB results
+      setTmdbResults((prev) =>
+        prev.filter((movie) => movie.external_id !== externalId)
+      );
+    } catch (err) {
+      setTmdbError(err instanceof Error ? err.message : "Failed to import movie");
+    } finally {
+      setImportingId(null);
+    }
+  };
+
+  const clearTmdbSearch = () => {
+    setTmdbSearchQuery("");
+    setTmdbResults([]);
+    setTmdbError("");
+    setImportSuccess(null);
+  };
+
   if (isLoading) {
     return (
       <div className={styles.pageWrapper}>
@@ -299,6 +394,109 @@ export default function AdminMoviesPage() {
                 </button>
               )}
             </div>
+          </div>
+
+          {/* TMDB Search Section */}
+          <div className={styles.tmdbSection}>
+            <h2 className={styles.tmdbTitle}>🎬 Import from TMDB</h2>
+            <p className={styles.tmdbSubtitle}>
+              Search The Movie Database to import new movies
+            </p>
+            
+            <div className={styles.tmdbSearchBar}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input
+                type="text"
+                placeholder="Search TMDB for movies..."
+                value={tmdbSearchQuery}
+                onChange={(e) => setTmdbSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleTmdbSearch()}
+                className={styles.searchInput}
+              />
+              {tmdbSearchQuery && (
+                <button
+                  className={styles.clearSearch}
+                  onClick={clearTmdbSearch}
+                >
+                  ✕
+                </button>
+              )}
+              <button
+                className={styles.tmdbSearchButton}
+                onClick={handleTmdbSearch}
+                disabled={tmdbLoading || !tmdbSearchQuery.trim()}
+              >
+                {tmdbLoading ? "Searching..." : "Search"}
+              </button>
+            </div>
+
+            {tmdbError && <div className={styles.tmdbError}>{tmdbError}</div>}
+            {importSuccess && (
+              <div className={styles.tmdbSuccess}>{importSuccess}</div>
+            )}
+
+            {tmdbResults.length > 0 && (
+              <div className={styles.tmdbResults}>
+                <h3 className={styles.tmdbResultsTitle}>
+                  Search Results ({tmdbResults.length})
+                </h3>
+                <div className={styles.tmdbGrid}>
+                  {tmdbResults.map((movie) => (
+                    <div key={movie.external_id} className={styles.tmdbCard}>
+                      {movie.poster_url ? (
+                        <img
+                          src={movie.poster_url}
+                          alt={movie.title}
+                          className={styles.tmdbPoster}
+                        />
+                      ) : (
+                        <div className={styles.tmdbNoPoster}>
+                          <span>🎬</span>
+                          <span>No Poster</span>
+                        </div>
+                      )}
+                      <div className={styles.tmdbCardInfo}>
+                        <h4 className={styles.tmdbCardTitle}>{movie.title}</h4>
+                        <div className={styles.tmdbCardMeta}>
+                          {movie.year > 0 && (
+                            <span className={styles.tmdbYear}>{movie.year}</span>
+                          )}
+                          {movie.rating && (
+                            <span className={styles.tmdbRating}>
+                              ⭐ {movie.rating.toFixed(1)}
+                            </span>
+                          )}
+                        </div>
+                        {movie.genre && (
+                          <p className={styles.tmdbGenre}>{movie.genre}</p>
+                        )}
+                        {movie.director && (
+                          <p className={styles.tmdbDirector}>
+                            Director: {movie.director}
+                          </p>
+                        )}
+                        {movie.description && (
+                          <p className={styles.tmdbDescription}>
+                            {movie.description.length > 150
+                              ? movie.description.substring(0, 150) + "..."
+                              : movie.description}
+                          </p>
+                        )}
+                        <button
+                          className={styles.importButton}
+                          onClick={() => handleImportMovie(movie.external_id)}
+                          disabled={importingId === movie.external_id}
+                        >
+                          {importingId === movie.external_id
+                            ? "Importing..."
+                            : "Import Movie"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {error && <div className={styles.error}>{error}</div>}
