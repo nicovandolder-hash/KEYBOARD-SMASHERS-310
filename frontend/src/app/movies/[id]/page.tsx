@@ -25,8 +25,9 @@ interface User {
 interface Review {
   review_id: string;
   movie_id: string;
-  user_id: string;
-  username: string;
+  user_id: string | null;
+  username?: string;
+  imdb_username?: string;
   rating: number;
   review_text: string;
   review_date: string;
@@ -106,7 +107,13 @@ export default function MovieDetailPage() {
 
       if (response.ok) {
         const data = await response.json();
-        const reviewsList: Review[] = data.reviews || [];
+        let reviewsList: Review[] = data.reviews || [];
+        
+        // Sort by date descending (most recent first)
+        reviewsList = reviewsList.sort((a, b) => 
+          new Date(b.review_date).getTime() - new Date(a.review_date).getTime()
+        );
+        
         setReviews(reviewsList);
         
         // Find current user's review
@@ -425,7 +432,9 @@ export default function MovieDetailPage() {
                     className={`${styles.reviewCard} ${review.user_id === user?.userid ? styles.ownReview : ""}`}
                   >
                     <div className={styles.reviewHeader}>
-                      <span className={styles.reviewAuthor}>{review.username}</span>
+                      <span className={styles.reviewAuthor}>
+                        {review.username || review.imdb_username || "Anonymous"}
+                      </span>
                       {renderStars(review.rating)}
                       <span className={styles.reviewDate}>{formatDate(review.review_date)}</span>
                     </div>
