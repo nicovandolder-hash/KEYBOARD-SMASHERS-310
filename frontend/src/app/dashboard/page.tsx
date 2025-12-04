@@ -78,6 +78,10 @@ export default function DashboardPage() {
   const [showBlockedModal, setShowBlockedModal] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -92,6 +96,38 @@ export default function DashboardPage() {
       }
     } catch {
       // Ignore errors
+    }
+  };
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    
+    if (query.trim().length === 0) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    setShowSearchResults(true);
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/users/search/users?q=${encodeURIComponent(query)}&limit=10`,
+        { credentials: "include" }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        // Filter out current user from results
+        const filteredUsers = (data.users || []).filter(
+          (u: PublicUser) => u.userid !== user?.userid
+        );
+        setSearchResults(filteredUsers);
+      }
+    } catch {
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -288,6 +324,68 @@ export default function DashboardPage() {
           <div className={styles.welcomeCard}>
             <h2>Welcome, {user.username}!</h2>
             <p className={styles.email}>{user.email}</p>
+          </div>
+
+          {/* User Search */}
+          <div className={styles.searchSection}>
+            <div className={styles.searchContainer}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input
+                type="text"
+                className={styles.searchInput}
+                placeholder="Search users to follow or view their profile..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                onFocus={() => searchQuery && setShowSearchResults(true)}
+              />
+              {searchQuery && (
+                <button
+                  className={styles.clearSearch}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSearchResults([]);
+                    setShowSearchResults(false);
+                  }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            {showSearchResults && (
+              <div className={styles.searchResults}>
+                {isSearching ? (
+                  <div className={styles.searchLoading}>Searching...</div>
+                ) : searchResults.length === 0 ? (
+                  <div className={styles.searchEmpty}>
+                    {searchQuery ? "No users found" : "Start typing to search"}
+                  </div>
+                ) : (
+                  searchResults.map((result) => (
+                    <div
+                      key={result.userid}
+                      className={styles.searchResultItem}
+                      onClick={() => {
+                        router.push(`/users/${result.userid}`);
+                        setShowSearchResults(false);
+                        setSearchQuery("");
+                      }}
+                    >
+                      <div className={styles.searchResultAvatar}>
+                        {result.username.charAt(0).toUpperCase()}
+                      </div>
+                      <div className={styles.searchResultInfo}>
+                        <span className={styles.searchResultName}>
+                          {result.username}
+                        </span>
+                        <span className={styles.searchResultMeta}>
+                          {result.total_reviews} reviews
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           <div className={styles.statsGrid}>

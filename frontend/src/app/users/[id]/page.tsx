@@ -17,6 +17,7 @@ interface UserProfile {
   total_reviews: number;
   favorites: string[];
   creation_date: string;
+  is_admin?: boolean;
 }
 
 interface Review {
@@ -53,6 +54,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [isBlocked, setIsBlocked] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [isProfileAdmin, setIsProfileAdmin] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -119,6 +121,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         }
         
         setProfile(profileData);
+        
+        // Check if profile user is admin (if the field exists)
+        if (profileData.is_admin) {
+          setIsProfileAdmin(true);
+        }
 
         // Fetch followers/following counts
         const [followersRes, followingRes] = await Promise.all([
@@ -296,13 +303,15 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 >
                   {isFollowing ? "Unfollow" : "Follow"}
                 </button>
-                <button
-                  className={`${styles.actionButton} ${styles.block} ${isBlocked ? styles.blocked : ""}`}
-                  onClick={handleBlock}
-                  disabled={actionLoading}
-                >
-                  {isBlocked ? "Unblock" : "Block"}
-                </button>
+                {!isProfileAdmin && (
+                  <button
+                    className={`${styles.actionButton} ${styles.block} ${isBlocked ? styles.blocked : ""}`}
+                    onClick={handleBlock}
+                    disabled={actionLoading}
+                  >
+                    {isBlocked ? "Unblock" : "Block"}
+                  </button>
+                )}
               </div>
             )}
           </div>

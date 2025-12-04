@@ -50,6 +50,7 @@ class PublicUserSchema(BaseModel):
     total_reviews: int = Field(...,
                                description="Total number of reviews written")
     favorites: List[str] = Field(..., description="List of favorite movie IDs")
+    is_admin: bool = Field(default=False, description="Whether user is an admin")
 
     class Config:
         from_attributes = True
@@ -796,7 +797,8 @@ def get_followers(
                 username=follower['username'],
                 reputation=follower.get('reputation', DEFAULT_REPUTATION),
                 total_reviews=follower.get('total_reviews', 0),
-                favorites=follower.get('favorites', [])
+                favorites=follower.get('favorites', []),
+                is_admin=follower.get('is_admin', False)
             )
             for follower in paginated
         ]
@@ -841,7 +843,8 @@ def get_following(
                 username=followee['username'],
                 reputation=followee.get('reputation', DEFAULT_REPUTATION),
                 total_reviews=followee.get('total_reviews', 0),
-                favorites=followee.get('favorites', [])
+                favorites=followee.get('favorites', []),
+                is_admin=followee.get('is_admin', False)
             )
             for followee in paginated
         ]
@@ -1033,7 +1036,8 @@ def search_users(
             username=user.username,
             reputation=user.reputation,
             total_reviews=user.total_reviews,
-            favorites=user.favorites
+            favorites=user.favorites,
+            is_admin=user.is_admin
         )
         for user in paginated
     ]
