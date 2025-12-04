@@ -42,14 +42,15 @@ export default function MovieDetailPage() {
   const [user, setUser] = useState<User | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [allReviews, setAllReviews] = useState<Review[]>([]); // Store all reviews for client-side pagination
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalReviews, setTotalReviews] = useState(0);
   const REVIEWS_PER_PAGE = 20;
+  const totalReviews = allReviews.length;
   const totalPages = Math.ceil(totalReviews / REVIEWS_PER_PAGE);
   
   // Review modal state
@@ -110,53 +111,62 @@ export default function MovieDetailPage() {
     }
   }, [movieId, apiUrl]);
 
-  const fetchReviews = useCallback(async (currentUserId?: string, currentUsername?: string, page = 1) => {
+  const fetchReviews = useCallback(async (currentUserId?: string, currentUsername?: string) => {
     try {
-      const skip = (page - 1) * REVIEWS_PER_PAGE;
-      
-      // Fetch movie reviews with pagination
-      const response = await fetch(`${apiUrl}/reviews/movie/${movieId}?skip=${skip}&limit=${REVIEWS_PER_PAGE}`, {
+      // First, get total count to fetch from the end (newest reviews)
+      const countResponse = await fetch(`${apiUrl}/reviews/movie/${movieId}?skip=0&limit=1`, {
         credentials: "include",
       });
-
+      
       let reviewsList: Review[] = [];
       let myReview: Review | null = null;
 
-      if (response.ok) {
-        const data = await response.json();
-        reviewsList = data.reviews || [];
-        setTotalReviews(data.total || 0);
+      if (countResponse.ok) {
+        const countData = await countResponse.json();
+        const total = countData.total || 0;
         
-        // Fetch usernames for reviews that have user_id but no username
-        const userIds = [...new Set(
-          reviewsList
-            .filter((r: Review) => r.user_id && !r.username && !r.imdb_username)
-            .map((r: Review) => r.user_id)
-        )];
+        // Fetch the LAST 100 reviews (newest ones) by skipping from the end
+        const skip = Math.max(0, total - 100);
+        const response = await fetch(`${apiUrl}/reviews/movie/${movieId}?skip=${skip}&limit=100`, {
+          credentials: "include",
+        });
         
-        if (userIds.length > 0) {
-          // Use the public search endpoint to get all users and create a lookup map
-          try {
-            const searchRes = await fetch(`${apiUrl}/users/search/users?limit=100`, {
-              credentials: "include",
-            });
-            if (searchRes.ok) {
-              const searchData = await searchRes.json();
-              const userMap: Record<string, string> = {};
-              searchData.users?.forEach((u: { userid: string; username: string }) => {
-                userMap[u.userid] = u.username;
+        if (response.ok) {
+          const data = await response.json();
+          // Reverse to show newest first
+          reviewsList = (data.reviews || []).reverse();
+        
+          // Fetch usernames for reviews that have user_id but no username
+          const userIds = [...new Set(
+            reviewsList
+              .filter((r: Review) => r.user_id && !r.username && !r.imdb_username)
+              .map((r: Review) => r.user_id)
+          )];
+          
+          if (userIds.length > 0) {
+            // Use the public search endpoint to get all users and create a lookup map
+            try {
+              const searchRes = await fetch(`${apiUrl}/users/search/users?limit=100`, {
+                credentials: "include",
               });
-              
-              // Add usernames to reviews
-              reviewsList = reviewsList.map((r: Review) => {
-                if (r.user_id && userMap[r.user_id]) {
-                  return { ...r, username: userMap[r.user_id] };
-                }
-                return r;
-              });
+              if (searchRes.ok) {
+                const searchData = await searchRes.json();
+                const userMap: Record<string, string> = {};
+                searchData.users?.forEach((u: { userid: string; username: string }) => {
+                  userMap[u.userid] = u.username;
+                });
+                
+                // Add usernames to reviews
+                reviewsList = reviewsList.map((r: Review) => {
+                  if (r.user_id && userMap[r.user_id]) {
+                    return { ...r, username: userMap[r.user_id] };
+                  }
+                  return r;
+                });
+              }
+            } catch {
+              // Ignore user fetch errors
             }
-          } catch {
-            // Ignore user fetch errors
           }
         }
       }
@@ -177,8 +187,8 @@ export default function MovieDetailPage() {
             }
             setUserReview(myReview);
             
-            // On first page, add user's review at top if not already present
-            if (page === 1 && myReview && !reviewsList.find((r: Review) => r.review_id === myReview!.review_id)) {
+            // Add user's review to list if not already present (at the beginning since it's newest)
+            if (myReview && !reviewsList.find((r: Review) => r.review_id === myReview!.review_id)) {
               reviewsList.unshift(myReview);
             }
           }
@@ -187,26 +197,20 @@ export default function MovieDetailPage() {
         }
       }
       
-      // Sort by date descending (most recent first)
-      // Handle both ISO dates (2025-11-20T...) and text dates (4 May 2019)
-      reviewsList = reviewsList.sort((a, b) => {
-        const dateA = new Date(a.review_date).getTime();
-        const dateB = new Date(b.review_date).getTime();
-        // If parsing fails (NaN), treat as old date
-        const safeA = isNaN(dateA) ? 0 : dateA;
-        const safeB = isNaN(dateB) ? 0 : dateB;
-        return safeB - safeA;
-      });
-      
-      setReviews(reviewsList);
-      setCurrentPage(page);
+      // Store all reviews, display first page
+      setAllReviews(reviewsList);
+      setReviews(reviewsList.slice(0, REVIEWS_PER_PAGE));
+      setCurrentPage(1);
     } catch {
       // Ignore review fetch errors
     }
   }, [movieId, apiUrl]);
 
   const handleReviewPageChange = (page: number) => {
-    fetchReviews(user?.userid, user?.username, page);
+    const start = (page - 1) * REVIEWS_PER_PAGE;
+    const end = start + REVIEWS_PER_PAGE;
+    setReviews(allReviews.slice(start, end));
+    setCurrentPage(page);
   };
 
   useEffect(() => {
