@@ -126,6 +126,39 @@ export default function MovieDetailPage() {
         const data = await response.json();
         reviewsList = data.reviews || [];
         setTotalReviews(data.total || 0);
+        
+        // Fetch usernames for reviews that have user_id but no username
+        const userIds = [...new Set(
+          reviewsList
+            .filter((r: Review) => r.user_id && !r.username && !r.imdb_username)
+            .map((r: Review) => r.user_id)
+        )];
+        
+        if (userIds.length > 0) {
+          // Use the public search endpoint to get all users and create a lookup map
+          try {
+            const searchRes = await fetch(`${apiUrl}/users/search/users?limit=100`, {
+              credentials: "include",
+            });
+            if (searchRes.ok) {
+              const searchData = await searchRes.json();
+              const userMap: Record<string, string> = {};
+              searchData.users?.forEach((u: { userid: string; username: string }) => {
+                userMap[u.userid] = u.username;
+              });
+              
+              // Add usernames to reviews
+              reviewsList = reviewsList.map((r: Review) => {
+                if (r.user_id && userMap[r.user_id]) {
+                  return { ...r, username: userMap[r.user_id] };
+                }
+                return r;
+              });
+            }
+          } catch {
+            // Ignore user fetch errors
+          }
+        }
       }
 
       // If user is logged in, also fetch their review for this movie

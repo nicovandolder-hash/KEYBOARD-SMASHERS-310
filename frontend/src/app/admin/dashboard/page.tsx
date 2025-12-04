@@ -83,7 +83,10 @@ export default function AdminDashboardPage() {
             <h3>👥 User Management</h3>
             <p>Manage users, suspensions, and roles</p>
           </div>
-          <div className={styles.adminCard}>
+          <div 
+            className={`${styles.adminCard} ${styles.clickable}`}
+            onClick={() => router.push('/admin/movies')}
+          >
             <h3>🎬 Movie Management</h3>
             <p>Add, edit, or remove movies</p>
           </div>
