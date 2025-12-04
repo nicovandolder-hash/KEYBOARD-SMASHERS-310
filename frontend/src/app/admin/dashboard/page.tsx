@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 import styles from "./page.module.css";
 
 interface User {
@@ -49,24 +50,11 @@ export default function AdminDashboardPage() {
     fetchUser();
   }, [router]);
 
-  const handleLogout = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      await fetch(`${apiUrl}/users/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch {
-      // Ignore errors
-    }
-    router.push("/login");
-  };
-
   if (isLoading) {
     return (
-      <main className={styles.main}>
+      <div className={styles.pageWrapper}>
         <div className={styles.loading}>Loading...</div>
-      </main>
+      </div>
     );
   }
 
@@ -75,17 +63,16 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <div>
-            <h1 className={styles.title}>Admin Dashboard</h1>
-            <span className={styles.adminBadge}>Administrator</span>
+    <div className={styles.pageWrapper}>
+      <Navbar username={user.username} isAdmin={user.is_admin} />
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <div>
+              <h1 className={styles.title}>Admin Dashboard</h1>
+              <span className={styles.adminBadge}>Administrator</span>
+            </div>
           </div>
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            Sign Out
-          </button>
-        </div>
 
         <div className={styles.welcomeCard}>
           <h2>Welcome, {user.username}!</h2>
@@ -111,6 +98,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
