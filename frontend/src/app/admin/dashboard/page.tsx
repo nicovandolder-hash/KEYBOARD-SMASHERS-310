@@ -9,7 +9,6 @@ interface User {
   userid: string;
   username: string;
   email: string;
-  reputation: number;
   is_admin: boolean;
 }
 
