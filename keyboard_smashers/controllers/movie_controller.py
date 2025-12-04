@@ -6,6 +6,16 @@ import pandas as pd
 from keyboard_smashers.dao.movie_dao import MovieDAO
 from keyboard_smashers.dao.review_dao import review_dao_instance
 from keyboard_smashers.auth import get_current_admin_user
+from keyboard_smashers.external_services.movie_service import (
+    ExternalMovieService,
+    ExternalMovieResult
+)
+import os
+
+# DEBUG: Check if API key is loaded
+tmdb_key = os.getenv("TMDB_API_KEY")
+print(f"DEBUG: TMDB_API_KEY loaded: {tmdb_key is not None}")
+print(f"DEBUG: TMDB_API_KEY value: {tmdb_key[:10] if tmdb_key else 'None'}...")
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +78,13 @@ class PaginatedMoviesResponse(BaseModel):
 class MovieController:
     def __init__(self, csv_path: str = "data/movies.csv"):
         self.movie_dao = MovieDAO(csv_path=csv_path)
+
+        tmdb_api_key = os.getenv("TMDB_API_KEY")
+        self.external_service = (
+            ExternalMovieService(tmdb_api_key)
+            if tmdb_api_key else None
+        )
+
         self.review_dao = review_dao_instance
         logger.info(
             f"MovieController initialized with "
@@ -383,6 +400,157 @@ class MovieController:
         )
         return [self._dict_to_schema(movie) for movie in matching_movies]
 
+    def search_external_movies(self, query: str, limit: int = 10) -> (
+            List[ExternalMovieResult]):
+        """
+        Search for movies in external database (TMDB)
+
+        Args:
+            query: Search query string
+            limit: Maximum results to return
+
+        Returns:
+            List of external movie results
+        """
+        if not self.external_service:
+            logger.error("External movie service not configured")
+            raise HTTPException(
+                status_code=503,
+                detail="External movie search is not available. "
+                "Please configure TMDB_API_KEY."
+            )
+
+        logger.info(f"Searching external database for: {query}")
+
+        try:
+            results = self.external_service.search_movies(query, limit)
+            logger.info(f"Found {len(results)} external movies")
+            return results
+        except Exception as e:
+            logger.error(f"External search failed: {e}")
+            raise HTTPException(
+                status_code=503,
+                detail=f"External movie search failed: {str(e)}"
+            )
+
+    def import_movie_from_external(self, external_id: str) -> MovieSchema:
+        """
+        Import a movie from external database into local database
+
+        Args:
+            external_id: TMDB movie ID
+
+        Returns:
+            Created MovieSchema object
+        """
+        if not self.external_service:
+            logger.error("External movie service not configured")
+            raise HTTPException(
+                status_code=503,
+                detail="External movie import is not available."
+            )
+
+        logger.info(f"Importing movie from external ID: {external_id}")
+
+        external_movie = self.external_service.get_movie_by_id(external_id)
+
+        if not external_movie:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Movie with external ID '{external_id}' not found"
+            )
+
+        all_movies = self.movie_dao.get_all_movies()
+        existing_movie = next(
+            (m for m in all_movies
+             if m['title'].lower() == external_movie.title.lower()),
+            None
+        )
+
+        if existing_movie:
+            logger.warning(
+                f"Movie '{external_movie.title}' already exists locally"
+            )
+            raise HTTPException(
+                status_code=409,
+                detail=f"Movie '{external_movie.title}' "
+                f"already exists in your database"
+            )
+
+        movie_data = MovieCreateSchema(
+            title=external_movie.title,
+            genre=external_movie.genre,
+            year=external_movie.year,
+            director=external_movie.director,
+            description=external_movie.description
+        )
+
+        # Create movie in local database
+        created_movie = self.create_movie(movie_data)
+
+        logger.info(
+            f"Successfully imported movie: {created_movie.title} "
+            f"(ID: {created_movie.movie_id})"
+        )
+
+        return created_movie
+
+    def search_and_import_suggestions(
+        self,
+        query: str,
+        auto_import: bool = False
+    ) -> dict:
+        """
+        Search external database and optionally import top result
+
+        Args:
+            query: Search query
+            auto_import: If True, automatically import the top match
+
+        Returns:
+            Dictionary with search results and import status
+        """
+        if not self.external_service:
+            raise HTTPException(
+                status_code=503,
+                detail="External movie service not available"
+            )
+
+        # Search external database
+        external_results = self.search_external_movies(query, limit=5)
+
+        if not external_results:
+            return {
+                "query": query,
+                "results": [],
+                "imported": None,
+                "message": "No movies found"
+            }
+
+        imported_movie = None
+
+        if auto_import:
+            # Import the top match
+            try:
+                top_result = external_results[0]
+                imported_movie = self.import_movie_from_external(
+                    top_result.external_id
+                )
+            except HTTPException as e:
+                # Movie might already exist
+                logger.warning(f"Could not auto-import: {e.detail}")
+
+        return {
+            "query": query,
+            "results": external_results,
+            "imported": imported_movie,
+            "message": (
+                f"Imported '{imported_movie.title}'"
+                if imported_movie
+                else "Search completed"
+            )
+        }
+
 
 # Global instance
 movie_controller_instance = MovieController()
@@ -430,6 +598,19 @@ def search_movies(
     )
 
 
+@router.get("/external/search", response_model=List[ExternalMovieResult])
+def search_external_movies(q: str, limit: int = 10):
+    """
+    Args:
+        q: Search query
+        limit: Maximum number of results (default: 10)
+
+    Returns:
+        List of movies from external database
+    """
+    return movie_controller_instance.search_external_movies(q, limit)
+
+
 @router.get("/genre/{genre}", response_model=List[MovieSchema])
 def get_movies_by_genre(
     genre: str = Path(
@@ -449,6 +630,7 @@ def get_movie(
 
 
 # ADMIN-ONLY ENDPOINTS
+
 
 @router.post("/", response_model=MovieSchema, status_code=201)
 def create_movie(
@@ -477,3 +659,41 @@ def delete_movie(
     admin_user_id: str = Depends(get_current_admin_user)
 ):
     return movie_controller_instance.delete_movie(movie_id)
+
+
+@router.post("/external/import/{external_id}",
+             response_model=MovieSchema)
+def import_movie(
+    external_id: str,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """
+    Import a movie from external database (TMDB) into local database
+
+    Args:
+        external_id: TMDB movie ID
+
+    Returns:
+        Created movie object
+    """
+    return movie_controller_instance.import_movie_from_external(external_id)
+
+
+@router.post("/external/search-and-import", response_model=dict)
+def search_and_import(
+    q: str,
+    auto_import: bool = False,
+    admin_user_id: str = Depends(get_current_admin_user)
+):
+    """
+    Args:
+        q: Search query
+        auto_import: If True, automatically import the best match
+
+    Returns:
+        Search results and import status
+    """
+    return movie_controller_instance.search_and_import_suggestions(
+        q,
+        auto_import
+    )

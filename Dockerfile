@@ -23,8 +23,7 @@ CMD ["uvicorn", "keyboard_smashers.api:app", "--host", "0.0.0.0", "--port", "800
 # docker stop keyboard-smashers-api
 # docker rm keyboard-smashers-api
 # docker build -t keyboard-smashers-api .
-# docker run -d -p 8000:8000 -v ${PWD}/data:/app/data --name keyboard-smashers-api --restart unless-stopped keyboard-smashers-api
-
+# docker run -d -p 8000:8000 `-v ${PWD}/data:/app/data `--env-file .env `--name keyboard-smashers-api `--restart unless-stopped `keyboard-smashers-api
 #how to push
 #git add .
 #git status

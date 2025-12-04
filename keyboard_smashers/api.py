@@ -1,19 +1,24 @@
 import logging
 from fastapi import FastAPI
 from pathlib import Path
-from keyboard_smashers.logging_config import setup_logging
-from keyboard_smashers.controllers.review_controller import (
-    router as review_router, review_controller_instance
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from keyboard_smashers.logging_config import setup_logging  # noqa: E402
+from keyboard_smashers.controllers.review_controller import (   # noqa: E402
+     router as review_router, review_controller_instance
 )
-from keyboard_smashers.controllers.user_controller import (
-    router as user_router, user_controller_instance
+from keyboard_smashers.controllers.user_controller import (    # noqa: E402
+     router as user_router, user_controller_instance
 )
-from keyboard_smashers.controllers.movie_controller import (
-    router as movie_router, movie_controller_instance
+from keyboard_smashers.controllers.movie_controller import (    # noqa: E402
+     router as movie_router, movie_controller_instance
 )
-from keyboard_smashers.controllers.penalty_controller import (
+from keyboard_smashers.controllers.penalty_controller import (  # noqa: E402
     router as penalty_router, penalty_controller_instance
 )
+
 
 setup_logging()
 logger = logging.getLogger(__name__)
