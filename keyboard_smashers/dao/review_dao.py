@@ -22,7 +22,12 @@ class ReviewDAO:
         self._lock = Lock()
         # Cached max review ID (initialized after loading)
         self._max_review_id = 0
+        # Operation counter for auto-compaction
+        self._operation_count = 0
+        self._compact_threshold = 100  # Compact after this many operations
         self._load_reviews()
+        # Compact on startup if file exists
+        self._maybe_compact_on_startup()
         logger.info(f"ReviewDAO initialized with {len(self.reviews)} reviews")
 
     def _load_reviews(self) -> None:
@@ -125,6 +130,28 @@ class ReviewDAO:
             if rid.startswith('review_')
         ]
         self._max_review_id = max(existing_ids) if existing_ids else 0
+
+    def _maybe_compact_on_startup(self) -> None:
+        """Compact reviews file on startup if it has grown large"""
+        if not Path(self.new_reviews_csv_path).exists():
+            return
+        try:
+            df = pd.read_csv(self.new_reviews_csv_path)
+            if len(df) > self._compact_threshold:
+                logger.info(
+                    f"Compacting reviews on startup ({len(df)} operations)")
+                self.compact_reviews()
+        except Exception as e:
+            logger.warning(f"Failed to check/compact on startup: {e}")
+
+    def _maybe_compact(self) -> None:
+        """Trigger compaction if operation threshold is reached"""
+        self._operation_count += 1
+        if self._operation_count >= self._compact_threshold:
+            logger.info(
+                f"Auto-compacting after {self._operation_count} operations")
+            self.compact_reviews()
+            self._operation_count = 0
 
     def _add_review_to_indexes(
             self, review_id: str, review_dict: Dict[str, Any]) -> None:
@@ -256,6 +283,9 @@ class ReviewDAO:
 
             # Append to file
             self._append_review(new_review, operation='create')
+
+            # Check if compaction needed
+            self._maybe_compact()
             return new_review
 
     def get_review(self, review_id: str) -> Dict[str, Any]:
@@ -295,6 +325,9 @@ class ReviewDAO:
 
             # Append update to file
             self._append_review(review, operation='update')
+
+            # Check if compaction needed
+            self._maybe_compact()
             return review.copy()
 
     def delete_review(self, review_id: str) -> None:
@@ -309,6 +342,9 @@ class ReviewDAO:
 
             # Append deletion marker to file
             self._append_review(review, operation='delete')
+
+            # Check if compaction needed
+            self._maybe_compact()
 
     def compact_reviews(self) -> int:
         """
