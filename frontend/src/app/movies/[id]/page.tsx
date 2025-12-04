@@ -110,9 +110,15 @@ export default function MovieDetailPage() {
         let reviewsList: Review[] = data.reviews || [];
         
         // Sort by date descending (most recent first)
-        reviewsList = reviewsList.sort((a, b) => 
-          new Date(b.review_date).getTime() - new Date(a.review_date).getTime()
-        );
+        // Handle both ISO dates (2025-11-20T...) and text dates (4 May 2019)
+        reviewsList = reviewsList.sort((a, b) => {
+          const dateA = new Date(a.review_date).getTime();
+          const dateB = new Date(b.review_date).getTime();
+          // If parsing fails (NaN), treat as old date
+          const safeA = isNaN(dateA) ? 0 : dateA;
+          const safeB = isNaN(dateB) ? 0 : dateB;
+          return safeB - safeA;
+        });
         
         setReviews(reviewsList);
         
