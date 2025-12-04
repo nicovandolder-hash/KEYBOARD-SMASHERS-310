@@ -263,6 +263,21 @@ export default function DashboardPage() {
     }
   };
 
+  const handleRemoveFavorite = async (movieId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigating to movie page
+    try {
+      const response = await fetch(`${apiUrl}/users/${user?.userid}/favorites/${movieId}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        setFavoriteMovies((prev) => prev.filter((m) => m.movie_id !== movieId));
+      }
+    } catch {
+      // Ignore errors
+    }
+  };
+
   const renderStars = (rating: number) => {
     return "★".repeat(Math.round(rating)) + "☆".repeat(5 - Math.round(rating));
   };
@@ -581,6 +596,13 @@ export default function DashboardPage() {
                     className={styles.favoriteCard}
                     onClick={() => router.push(`/movies/${movie.movie_id}`)}
                   >
+                    <button
+                      className={styles.removeFavoriteButton}
+                      onClick={(e) => handleRemoveFavorite(movie.movie_id, e)}
+                      title="Remove from favorites"
+                    >
+                      🗑️
+                    </button>
                     <h4 className={styles.favoriteTitle}>{movie.title}</h4>
                     <p className={styles.favoriteMeta}>
                       {movie.year} • {movie.genre}

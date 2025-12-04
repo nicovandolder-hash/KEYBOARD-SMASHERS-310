@@ -20,6 +20,7 @@ interface User {
   username: string;
   email: string;
   is_admin: boolean;
+  favorites: string[];
 }
 
 interface Review {
@@ -59,6 +60,10 @@ export default function MovieDetailPage() {
   const [hoverRating, setHoverRating] = useState(0);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  
+  // Favorites state
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -178,14 +183,37 @@ export default function MovieDetailPage() {
       if (userData) {
         await fetchMovie();
         await fetchReviews(userData.userid, userData.username);
+        // Check if movie is in favorites
+        setIsFavorite(userData.favorites?.includes(movieId) || false);
       }
       setIsLoading(false);
     };
     init();
-  }, [fetchUser, fetchMovie, fetchReviews]);
+  }, [fetchUser, fetchMovie, fetchReviews, movieId]);
 
   const handleBackClick = () => {
     router.push("/movies");
+  };
+
+  const handleToggleFavorite = async () => {
+    if (!user) return;
+    
+    setFavoriteLoading(true);
+    try {
+      const response = await fetch(`${apiUrl}/users/${user.userid}/favorites/${movieId}`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorite(data.added);
+      }
+    } catch {
+      // Ignore errors
+    } finally {
+      setFavoriteLoading(false);
+    }
   };
 
   const openWriteReview = () => {
@@ -421,6 +449,21 @@ export default function MovieDetailPage() {
                   <p className={styles.description}>{movie.description}</p>
                 </div>
               )}
+
+              {/* Favorite Button */}
+              <button 
+                className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+                onClick={handleToggleFavorite}
+                disabled={favoriteLoading}
+              >
+                {favoriteLoading ? (
+                  'Loading...'
+                ) : isFavorite ? (
+                  <>❤️ In Favorites</>
+                ) : (
+                  <>🤍 Add to Favorites</>
+                )}
+              </button>
             </div>
           </div>
 
