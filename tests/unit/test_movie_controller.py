@@ -308,10 +308,11 @@ class TestDeleteMovie:
         mock_dao.get_movie.return_value = sample_movie_dict
         mock_dao.delete_movie.return_value = None
 
-        result = controller.delete_movie('1')
+        # Use ID > 10 to avoid protected legacy IMDB movies
+        result = controller.delete_movie('11')
 
         assert 'deleted successfully' in result['message'].lower()
-        mock_dao.delete_movie.assert_called_once_with('1')
+        mock_dao.delete_movie.assert_called_once_with('11')
 
     def test_delete_nonexistent_movie(self, controller, mock_dao):
         """Test deleting nonexistent movie raises error."""
