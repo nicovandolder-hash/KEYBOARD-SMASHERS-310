@@ -31,7 +31,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",      # Local frontend dev
+        "http://localhost:3001",      # Alternative port
         "http://127.0.0.1:3000",      # Alternative localhost
+        "http://127.0.0.1:3001",      # Alternative localhost + port
         "http://frontend:3000",        # Docker compose service name
     ],
     allow_credentials=True,
