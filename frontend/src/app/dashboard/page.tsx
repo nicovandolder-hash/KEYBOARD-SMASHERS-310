@@ -62,6 +62,15 @@ interface Notification {
   review_id?: string;
 }
 
+interface FeedReview {
+  review_id: string;
+  movie_id: string;
+  user_id: string;
+  rating: number;
+  review_text: string;
+  review_date: string;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -82,6 +91,10 @@ export default function DashboardPage() {
   const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [feedReviews, setFeedReviews] = useState<FeedReview[]>([]);
+  const [feedMovies, setFeedMovies] = useState<Record<string, Movie>>({});
+  const [feedUsers, setFeedUsers] = useState<Record<string, string>>({});
+  const [feedLoading, setFeedLoading] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -238,6 +251,42 @@ export default function DashboardPage() {
           setFavoriteMovies(favMovies);
         }
 
+        // Fetch following feed (reviews from people you follow)
+        setFeedLoading(true);
+        try {
+          const feedRes = await fetch(`${apiUrl}/reviews/feed/following?limit=20`, {
+            credentials: "include",
+          });
+          if (feedRes.ok) {
+            const feedData = await feedRes.json();
+            const feedReviewsList = feedData.reviews || [];
+            setFeedReviews(feedReviewsList);
+
+            // Fetch movie details for feed reviews
+            const feedMovieIds = [...new Set(feedReviewsList.map((r: FeedReview) => r.movie_id))];
+            const feedMovieDetails: Record<string, Movie> = {};
+            await Promise.all(
+              feedMovieIds.map(async (movieId) => {
+                try {
+                  const movieResponse = await fetch(`${apiUrl}/movies/${movieId}`, {
+                    credentials: "include",
+                  });
+                  if (movieResponse.ok) {
+                    feedMovieDetails[movieId as string] = await movieResponse.json();
+                  }
+                } catch {
+                  // Skip failed movie fetches
+                }
+              })
+            );
+            setFeedMovies(feedMovieDetails);
+          }
+        } catch {
+          // Feed fetch failed, not critical
+        } finally {
+          setFeedLoading(false);
+        }
+
       } catch {
         router.push("/login");
       } finally {
@@ -248,6 +297,15 @@ export default function DashboardPage() {
     fetchDashboardData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, apiUrl]);
+
+  // Update feedUsers map when following list changes
+  useEffect(() => {
+    const userMap: Record<string, string> = {};
+    following.forEach((u) => {
+      userMap[u.userid] = u.username;
+    });
+    setFeedUsers(userMap);
+  }, [following]);
 
   const handleUnblock = async (userId: string) => {
     try {
@@ -526,6 +584,74 @@ export default function DashboardPage() {
                 ))}
                 {notifications.length > 10 && (
                   <p className={styles.moreText}>+ {notifications.length - 10} more</p>
+                )}
+              </div>
+            )}
+          </section>
+
+          {/* Following Feed Section */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>📰 Following Feed</h2>
+            {feedLoading ? (
+              <div className={styles.emptyState}>
+                <p>Loading feed...</p>
+              </div>
+            ) : following.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>Follow some users to see their reviews here!</p>
+                <button 
+                  className={styles.ctaButton}
+                  onClick={() => document.querySelector<HTMLInputElement>('input[placeholder*="Search users"]')?.focus()}
+                >
+                  Find Users to Follow
+                </button>
+              </div>
+            ) : feedReviews.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>No reviews from people you follow yet.</p>
+              </div>
+            ) : (
+              <div className={styles.feedList}>
+                {feedReviews.slice(0, 10).map((review) => (
+                  <div 
+                    key={review.review_id} 
+                    className={styles.feedCard}
+                    onClick={() => router.push(`/movies/${review.movie_id}`)}
+                  >
+                    <div className={styles.feedCardHeader}>
+                      <div 
+                        className={styles.feedUserInfo}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/users/${review.user_id}`);
+                        }}
+                      >
+                        <div className={styles.feedUserAvatar}>
+                          {(feedUsers[review.user_id] || "?").charAt(0).toUpperCase()}
+                        </div>
+                        <span className={styles.feedUsername}>
+                          {feedUsers[review.user_id] || "Unknown User"}
+                        </span>
+                      </div>
+                      <span className={styles.feedDate}>
+                        {formatDate(review.review_date)}
+                      </span>
+                    </div>
+                    <div className={styles.feedMovieInfo}>
+                      <span className={styles.feedMovieTitle}>
+                        {feedMovies[review.movie_id]?.title || "Loading..."}
+                      </span>
+                      <span className={styles.feedRating}>
+                        {renderStars(review.rating)}
+                      </span>
+                    </div>
+                    {review.review_text && (
+                      <p className={styles.feedReviewText}>{review.review_text}</p>
+                    )}
+                  </div>
+                ))}
+                {feedReviews.length > 10 && (
+                  <p className={styles.moreText}>+ {feedReviews.length - 10} more reviews</p>
                 )}
               </div>
             )}
