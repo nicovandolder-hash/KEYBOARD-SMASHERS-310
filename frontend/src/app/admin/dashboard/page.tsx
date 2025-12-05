@@ -94,7 +94,10 @@ export default function AdminDashboardPage() {
             <h3>📝 Review Moderation</h3>
             <p>Review and moderate user content</p>
           </div>
-          <div className={styles.adminCard}>
+          <div 
+            className={`${styles.adminCard} ${styles.clickable}`}
+            onClick={() => router.push('/admin/reports')}
+          >
             <h3>⚠️ Reports</h3>
             <p>Handle reported content</p>
           </div>
