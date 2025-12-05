@@ -66,6 +66,14 @@ export default function MovieDetailPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
 
+  // Report modal state
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportingReviewId, setReportingReviewId] = useState<string | null>(null);
+  const [reportReason, setReportReason] = useState("");
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportError, setReportError] = useState("");
+  const [reportSuccess, setReportSuccess] = useState("");
+
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   const fetchUser = useCallback(async () => {
@@ -250,6 +258,58 @@ export default function MovieDetailPage() {
       // Ignore errors
     } finally {
       setFavoriteLoading(false);
+    }
+  };
+
+  const openReportModal = (reviewId: string) => {
+    setReportingReviewId(reviewId);
+    setReportReason("");
+    setReportError("");
+    setReportSuccess("");
+    setShowReportModal(true);
+  };
+
+  const closeReportModal = () => {
+    setShowReportModal(false);
+    setReportingReviewId(null);
+    setReportReason("");
+    setReportError("");
+  };
+
+  const handleSubmitReport = async () => {
+    if (!reportingReviewId) return;
+
+    setReportLoading(true);
+    setReportError("");
+    setReportSuccess("");
+
+    try {
+      const params = new URLSearchParams();
+      if (reportReason.trim()) {
+        params.append("reason", reportReason.trim());
+      }
+      
+      const response = await fetch(
+        `${apiUrl}/reviews/${reportingReviewId}/report${params.toString() ? `?${params.toString()}` : ""}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        setReportSuccess("Review reported successfully. Thank you for helping keep our community safe.");
+        setTimeout(() => {
+          closeReportModal();
+        }, 2000);
+      } else {
+        const data = await response.json();
+        setReportError(data.detail || "Failed to report review");
+      }
+    } catch {
+      setReportError("Failed to report review. Please try again.");
+    } finally {
+      setReportLoading(false);
     }
   };
 
@@ -564,6 +624,16 @@ export default function MovieDetailPage() {
                         <span className={styles.reviewDate}>{formatDate(review.review_date)}</span>
                       </div>
                       <p className={styles.reviewText}>{review.review_text}</p>
+                      {/* Report button - only show for other users' reviews */}
+                      {review.user_id !== user?.userid && review.user_id && (
+                        <button
+                          className={styles.reportButton}
+                          onClick={() => openReportModal(review.review_id)}
+                          title="Report this review"
+                        >
+                          🚩 Report
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -646,6 +716,63 @@ export default function MovieDetailPage() {
                 disabled={submitLoading}
               >
                 {submitLoading ? "Submitting..." : isEditing ? "Update Review" : "Submit Review"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className={styles.modalOverlay} onClick={closeReportModal}>
+          <div className={styles.reportModal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>🚩 Report Review</h2>
+              <button className={styles.modalClose} onClick={closeReportModal}>×</button>
+            </div>
+            
+            <div className={styles.modalBody}>
+              <p className={styles.reportDescription}>
+                Help us maintain a safe community. Please let us know why you&apos;re reporting this review.
+              </p>
+              
+              <div className={styles.textInput}>
+                <label>Reason for reporting (optional)</label>
+                <textarea
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  placeholder="e.g., Inappropriate content, spam, harassment..."
+                  maxLength={500}
+                  rows={3}
+                />
+                <span className={styles.charCount}>
+                  {reportReason.length}/500
+                </span>
+              </div>
+
+              {reportError && (
+                <div className={styles.submitError}>{reportError}</div>
+              )}
+              
+              {reportSuccess && (
+                <div className={styles.submitSuccess}>{reportSuccess}</div>
+              )}
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button 
+                className={styles.cancelButton} 
+                onClick={closeReportModal}
+                disabled={reportLoading}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.reportSubmitButton} 
+                onClick={handleSubmitReport}
+                disabled={reportLoading || !!reportSuccess}
+              >
+                {reportLoading ? "Submitting..." : "Submit Report"}
               </button>
             </div>
           </div>
