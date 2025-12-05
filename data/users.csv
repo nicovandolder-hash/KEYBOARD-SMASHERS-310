@@ -1,0 +1,2 @@
+userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites,following,followers,blocked_users,notifications
+user_001,Admin,admin@keyboardsmashers.com,2d43098e55aa9a8b39a29ca979b12561$923a1f44cf31c3a4759edc8f2a6763194d6e04081c7053deb13d2391a62d6f4f,3,2025-12-05T04:28:05.595464,true,false,0,0,,,,,[]

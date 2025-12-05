@@ -1,0 +1,400 @@
+.pageWrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+}
+
+.main {
+  padding: 32px 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  color: #a1a1aa;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #a1a1aa;
+}
+
+.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.moviesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.movieCard {
+  background: linear-gradient(145deg, #1e1e2e 0%, #252536 100%);
+  border: 1px solid #333;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.movieCard:hover {
+  transform: translateY(-4px);
+  border-color: #6366f1;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+}
+
+.moviePoster {
+  height: 160px;
+  background: linear-gradient(135deg, #2d2d44 0%, #1e1e2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.posterIcon {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+.movieInfo {
+  padding: 16px;
+}
+
+.movieTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.movieMeta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.year {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.genre {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.director {
+  color: #71717a;
+  font-size: 0.85rem;
+  margin: 0 0 8px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.star {
+  font-size: 1rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 64px 24px;
+  color: #71717a;
+  font-size: 1.1rem;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0;
+  flex-wrap: wrap;
+}
+
+.pageButton {
+  background-color: #252536;
+  border: 1px solid #333;
+  color: #a1a1aa;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: #6366f1;
+  border-color: #6366f1;
+  color: #fff;
+}
+
+.pageButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  color: #a1a1aa;
+  font-size: 0.95rem;
+  padding: 0 16px;
+}
+
+/* Search and Filter Controls */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.searchBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  font-size: 1.1rem;
+  opacity: 0.6;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 14px 44px;
+  font-size: 1rem;
+  background: #1e1e2e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.searchInput::placeholder {
+  color: #666;
+}
+
+.clearSearch {
+  position: absolute;
+  right: 12px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.clearSearch:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.filterSelect {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  background: #1e1e2e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.filterSelect:hover {
+  border-color: #444;
+}
+
+.filterSelect option {
+  background: #1e1e2e;
+  color: #ffffff;
+}
+
+.clearFilters {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearFilters:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.activeFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  color: #a5b4fc;
+}
+
+.filterTag button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  font-size: 0.75rem;
+  background: transparent;
+  border: none;
+  color: #a5b4fc;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.filterTag button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.searching {
+  text-align: center;
+  padding: 16px;
+  color: #a1a1aa;
+  font-size: 0.95rem;
+}
+
+.clearFiltersBtn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: #6366f1;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearFiltersBtn:hover {
+  background: #5558e3;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .moviesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .pagination {
+    gap: 8px;
+  }
+
+  .pageButton {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterSelect {
+    width: 100%;
+  }
+
+  .clearFilters {
+    width: 100%;
+  }
+}
