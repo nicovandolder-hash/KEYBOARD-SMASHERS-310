@@ -95,6 +95,16 @@ export default function DashboardPage() {
   const [feedMovies, setFeedMovies] = useState<Record<string, Movie>>({});
   const [feedUsers, setFeedUsers] = useState<Record<string, string>>({});
   const [feedLoading, setFeedLoading] = useState(false);
+  
+  // Edit Profile state
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [editUsername, setEditUsername] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [editConfirmPassword, setEditConfirmPassword] = useState("");
+  const [editProfileError, setEditProfileError] = useState("");
+  const [editProfileSuccess, setEditProfileSuccess] = useState("");
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -336,6 +346,96 @@ export default function DashboardPage() {
     }
   };
 
+  const openEditProfileModal = () => {
+    if (user) {
+      setEditUsername(user.username);
+      setEditEmail(user.email);
+      setEditPassword("");
+      setEditConfirmPassword("");
+      setEditProfileError("");
+      setEditProfileSuccess("");
+      setShowEditProfileModal(true);
+    }
+  };
+
+  const handleEditProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditProfileError("");
+    setEditProfileSuccess("");
+
+    // Validation
+    if (!editUsername.trim()) {
+      setEditProfileError("Username cannot be empty");
+      return;
+    }
+    if (!editEmail.trim()) {
+      setEditProfileError("Email cannot be empty");
+      return;
+    }
+    if (editPassword && editPassword !== editConfirmPassword) {
+      setEditProfileError("Passwords do not match");
+      return;
+    }
+    if (editPassword && editPassword.length < 6) {
+      setEditProfileError("Password must be at least 6 characters");
+      return;
+    }
+
+    setIsUpdatingProfile(true);
+
+    try {
+      const updateData: { username?: string; email?: string; password?: string } = {};
+      
+      if (editUsername !== user?.username) {
+        updateData.username = editUsername;
+      }
+      if (editEmail !== user?.email) {
+        updateData.email = editEmail;
+      }
+      if (editPassword) {
+        updateData.password = editPassword;
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        setEditProfileError("No changes detected");
+        setIsUpdatingProfile(false);
+        return;
+      }
+
+      const response = await fetch(`${apiUrl}/users/${user?.userid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(updateData),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser((prev) => prev ? {
+          ...prev,
+          username: updatedUser.username,
+          email: updatedUser.email,
+        } : null);
+        setEditProfileSuccess("Profile updated successfully!");
+        setEditPassword("");
+        setEditConfirmPassword("");
+        // Close modal after short delay
+        setTimeout(() => {
+          setShowEditProfileModal(false);
+        }, 1500);
+      } else {
+        const errorData = await response.json();
+        setEditProfileError(errorData.detail || "Failed to update profile");
+      }
+    } catch {
+      setEditProfileError("An error occurred while updating profile");
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
   const renderStars = (rating: number) => {
     return "★".repeat(Math.round(rating)) + "☆".repeat(5 - Math.round(rating));
   };
@@ -395,8 +495,18 @@ export default function DashboardPage() {
           )}
 
           <div className={styles.welcomeCard}>
-            <h2>Welcome, {user.username}!</h2>
-            <p className={styles.email}>{user.email}</p>
+            <div className={styles.welcomeCardContent}>
+              <div>
+                <h2>Welcome, {user.username}!</h2>
+                <p className={styles.email}>{user.email}</p>
+              </div>
+              <button 
+                className={styles.editProfileButton}
+                onClick={openEditProfileModal}
+              >
+                ✏️ Edit Profile
+              </button>
+            </div>
           </div>
 
           {/* User Search */}
@@ -806,6 +916,98 @@ export default function DashboardPage() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Profile Modal */}
+      {showEditProfileModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowEditProfileModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>✏️ Edit Profile</h2>
+              <button 
+                className={styles.modalClose}
+                onClick={() => setShowEditProfileModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <form onSubmit={handleEditProfile} className={styles.editProfileForm}>
+                {editProfileError && (
+                  <div className={styles.editProfileError}>{editProfileError}</div>
+                )}
+                {editProfileSuccess && (
+                  <div className={styles.editProfileSuccess}>{editProfileSuccess}</div>
+                )}
+                
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Username</label>
+                  <input
+                    type="text"
+                    className={styles.formInput}
+                    value={editUsername}
+                    onChange={(e) => setEditUsername(e.target.value)}
+                    placeholder="Enter username"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Email</label>
+                  <input
+                    type="email"
+                    className={styles.formInput}
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    placeholder="Enter email"
+                  />
+                </div>
+
+                <div className={styles.formDivider}>
+                  <span>Change Password (optional)</span>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>New Password</label>
+                  <input
+                    type="password"
+                    className={styles.formInput}
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    placeholder="Leave blank to keep current"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Confirm New Password</label>
+                  <input
+                    type="password"
+                    className={styles.formInput}
+                    value={editConfirmPassword}
+                    onChange={(e) => setEditConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                  />
+                </div>
+
+                <div className={styles.formActions}>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={() => setShowEditProfileModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className={styles.saveButton}
+                    disabled={isUpdatingProfile}
+                  >
+                    {isUpdatingProfile ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
