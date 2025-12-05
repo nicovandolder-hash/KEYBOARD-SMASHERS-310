@@ -1,9 +1,2 @@
 userid,username,email,password,reputation,creation_date,is_admin,is_suspended,total_reviews,total_penalty_count,favorites,following,followers,blocked_users,notifications
-user_001,admin_user,admin@test.com,65c99a5af4d04d5cfb440a10e9d480c4$fedc791ed052a077c5b38f7f6448e196ccca1c53def2f3ede5c08b0b1aceda8a,3,2025-12-03T04:22:33.594132,true,false,0,0,,,,,[]
-user_002,reviewer,reviewer@test.com,6dcefde3b0718d4d1eb65e1a9c0e30f8$7dd753151b1e4418b77f6616c8cdb60b0a373032e675ad8c7ccfd525228f2f4e,3,2025-12-03T04:22:33.601011,false,true,0,0,,,,,[]
-user_003,Senzu,senzu@test.com,c5137cf84b44df79a4940e5a150c8825$c9f09758839d6672e5ac8e3d66383d530c29b385c7a30fb10078a6168d9f6b18,3,2025-12-03T17:11:51.319816,false,false,0,0,,,,,[]
-user_004,Senzup,senzu@test.comp,8b5b946a9595debb6c4b0794cbfd7177$83a93915431130be4656e6208ea7dbc395451721c4d5e2c74eb1e198433aa958,3,2025-12-03T17:15:10.729636,false,false,0,0,,,,,[]
-user_005,Techno,techno@test.com,31c8c66c39a329ee69779cd76e50994e$faa14e49b5c46c61bfe733b72e8b5823f06792849972402e3f639af2f8e03026,3,2025-12-03T17:22:02.604693,false,false,0,0,,,,,"[{""timestamp"": ""2025-12-03T23:39:26.603007"", ""review_id"": ""follow_notification"", ""event_type"": ""user_follow"", ""data"": {""message"": ""cuzz started following you!""}}]"
-user_006,blitz,blitz@test.com,0693bd1447b7fd88d84b68938e94b25d$3445c48aaac8c7658628cc548ec9b0343d694789b8c5e0699882173c97526ac0,3,2025-12-03T17:50:48.891744,false,false,0,0,,,,,"[{""timestamp"": ""2025-12-03T23:18:49.647371"", ""review_id"": ""follow_notification"", ""event_type"": ""user_follow"", ""data"": {""message"": ""cuzz started following you!""}}]"
-user_007,zucc,zucc@test.com,7ec189d3299d76ff8e80430cfba1e64e$46c35ff43a9170f5ad7a87a67da213b09af236af0ac350c996c8ada70e99be1a,3,2025-12-03T21:16:25.368782,true,false,0,0,,,,,[]
-user_008,cuzz,cuzz@test.com,22adf33bf1ee561d5ff9724f1de33f69$4badb696e57582f8cb32f5ab22c1f89119bd2e608578bd8641b1da6c53fa1603,3,2025-12-03T22:10:54.487644,false,false,0,0,,,,,[]
+user_001,Admin,admin@keyboardsmashers.com,2d43098e55aa9a8b39a29ca979b12561$923a1f44cf31c3a4759edc8f2a6763194d6e04081c7053deb13d2391a62d6f4f,3,2025-12-05T04:28:05.595464,true,false,0,0,,,,,[]
