@@ -79,9 +79,12 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className={styles.adminGrid}>
-          <div className={styles.adminCard}>
+          <div 
+            className={`${styles.adminCard} ${styles.clickable}`}
+            onClick={() => router.push('/admin/users')}
+          >
             <h3>👥 User Management</h3>
-            <p>Manage users, suspensions, and roles</p>
+            <p>Manage users, suspensions, and penalties</p>
           </div>
           <div 
             className={`${styles.adminCard} ${styles.clickable}`}

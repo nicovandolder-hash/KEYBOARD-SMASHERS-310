@@ -36,6 +36,8 @@ class UserAPISchema(BaseModel):
         "Total number of reviews written"))
     is_admin: bool = Field(False, description=(
         "Whether the user is an administrator"))
+    is_suspended: bool = Field(False, description=(
+        "Whether the user account is suspended"))
     total_penalty_count: int = Field(0, description=(
         "Total number of penalties issued to the user"))
     favorites: List[str] = Field(default_factory=list, description=(
