@@ -103,3 +103,11 @@
   color: #888;
   font-size: 0.875rem;
 }
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background: #252525;
+}

@@ -397,6 +397,33 @@ class ReviewDAO:
             )
             return operations_removed
 
+    def delete_reviews_by_movie(self, movie_id: str) -> int:
+        """
+        Delete all user-created reviews for a specific movie.
+        Does not delete IMDB legacy reviews (those without user_id).
+        Returns the number of reviews deleted.
+        """
+        with self._lock:
+            movie_id = str(movie_id)
+            review_ids = self.reviews_by_movie.get(movie_id, []).copy()
+            deleted_count = 0
+
+            for review_id in review_ids:
+                review = self.reviews.get(review_id)
+                if review and review.get('user_id') is not None:
+                    # Only delete user-created reviews
+                    self._remove_review_from_indexes(review_id)
+                    self._append_review(review, operation='delete')
+                    deleted_count += 1
+
+            if deleted_count > 0:
+                self._maybe_compact()
+                logger.info(
+                    f"Deleted {deleted_count} reviews for movie {movie_id}"
+                )
+
+            return deleted_count
+
 
 # Global shared instance
 review_dao_instance = ReviewDAO()
